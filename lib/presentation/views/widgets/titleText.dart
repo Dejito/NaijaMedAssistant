@@ -25,7 +25,7 @@ Widget titleText(
       ),
     child: Text(
       text,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.alegreya(
         fontSize: fontSize.sp,
         fontWeight: fontWeight,
         color: color,
