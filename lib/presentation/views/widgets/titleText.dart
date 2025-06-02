@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 Widget titleText(
     {required String text,
       Color color = Colors.black,
-      double fontSize = 14,
+      double fontSize = 12,
       double topPadding = 0.0,
       double bottomPadding = 0.0,
       double startPadding = 0.0,

@@ -4,9 +4,18 @@ import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
 
 import '../../../../core/constant/app_assets.dart';
+import 'login_widgets.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+
+  bool isCheckedKeepLoggedIn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,8 @@ class LoginScreen extends StatelessWidget {
                   topPadding: 12,
                   bottomPadding: 12),
               titleText(
-                text: "Log In now to access your\npersonalized health dashboard",
+                text:
+                    "Log In now to access your\npersonalized health dashboard",
                 fontSize: 16,
                 textAlign: TextAlign.center,
                 bottomPadding: 30,
@@ -46,6 +56,14 @@ class LoginScreen extends StatelessWidget {
                 bottomPadding: 16,
                 suffixIcon: Icon(Icons.visibility_off_outlined),
               ),
+              keepMeLoggedInForgotPassword(
+                value: isCheckedKeepLoggedIn,
+                onClickedChanged: (value) {
+                  setState(() {
+                  isCheckedKeepLoggedIn = value!;
+                  });
+                },
+              )
             ],
           ),
         ),
