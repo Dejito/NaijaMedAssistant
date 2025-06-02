@@ -7,7 +7,6 @@ import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
 import '../../../core/constant/app_colors.dart';
 import '../../../core/constant/textfield_styles.dart';
 
-
 // ignore: must_be_immutable
 class InputText extends StatefulWidget {
   final String? title;
@@ -59,7 +58,8 @@ class InputText extends StatefulWidget {
     this.inputFormatters,
     this.subBar,
     this.subBarText,
-    this.bottomPadding, this.readOnly,
+    this.bottomPadding,
+    this.readOnly,
   });
 
   @override
@@ -97,10 +97,7 @@ class InputTextState extends State<InputText> {
           SizedBox(
             height: 6.h,
           ),
-          titleText(
-            text: widget.title ?? "",
-            fontWeight: FontWeight.w500
-          ),
+          titleText(text: widget.title ?? "", fontWeight: FontWeight.w500),
           widget.hint != "" ? 7.verticalSpace : 0.verticalSpace,
           TextFormField(
             style: textFieldTextStyle(context),
@@ -114,21 +111,22 @@ class InputTextState extends State<InputText> {
               FocusScope.of(context).unfocus();
             }),
             decoration: InputDecoration(
-                suffixIcon: widget.suffixIcon,
-                prefixIcon: widget.prefixIcon,
-                prefix: widget.prefixWidget,
-                hintText: widget.placeholder ?? widget.hint,
-                hintStyle: textFieldPlaceholderTextStyle(context),
-                isDense: false,
-                filled: !widget.enabled,
-                fillColor: AppColors.inputFieldColor,
-                focusedBorder: AppStyles.focusedBorder,
-                disabledBorder: AppStyles.focusBorder,
-                enabledBorder: AppStyles.focusBorder,
-                border: AppStyles.focusBorder,
-                errorBorder: AppStyles.focusErrorBorder,
-                focusedErrorBorder: AppStyles.focusErrorBorder,
-                errorStyle: errorTextStyle(context)),
+              suffixIcon: widget.suffixIcon,
+              prefixIcon: widget.prefixIcon,
+              prefix: widget.prefixWidget,
+              hintText: widget.placeholder ?? widget.hint,
+              hintStyle: textFieldPlaceholderTextStyle(context),
+              isDense: false,
+              filled: !widget.enabled,
+              fillColor: AppColors.inputFieldColor,
+              focusedBorder: AppStyles.focusedBorder,
+              disabledBorder: AppStyles.focusBorder,
+              enabledBorder: AppStyles.focusBorder,
+              border: AppStyles.focusBorder,
+              errorBorder: AppStyles.focusErrorBorder,
+              focusedErrorBorder: AppStyles.focusErrorBorder,
+              errorStyle: errorTextStyle(context),
+            ),
             textInputAction: widget.textInputAction,
             keyboardType: widget.keyboardType,
             obscureText: widget.obscureText,

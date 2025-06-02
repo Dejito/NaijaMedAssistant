@@ -9,7 +9,7 @@ class AppStyles {
     borderSide: BorderSide(color: AppColors.borderColor, width: 1.w),
   );
   static var focusBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(4.r),
+    borderRadius: BorderRadius.circular(50.r),
     borderSide: BorderSide(color: AppColors.inputBorderColor, width: 1.w),
   );
   static var focusedBorder = OutlineInputBorder(
