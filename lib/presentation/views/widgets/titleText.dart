@@ -13,8 +13,7 @@ Widget titleText(
       FontWeight fontWeight = FontWeight.w400,
       TextAlign textAlign = TextAlign.justify,
       FontStyle fontStyle = FontStyle.normal
-    }
-    ) {
+    }) {
   //Todo: Fix/set restricted width for title text such that overflow is enforced esp in listview items/server data that the length ,ay not be pre-determined
   return Padding(
       padding: EdgeInsets.only(

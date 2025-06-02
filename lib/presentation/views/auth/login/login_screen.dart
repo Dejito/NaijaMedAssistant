@@ -39,7 +39,7 @@ class LoginScreen extends StatelessWidget {
               ),
               InputText(
                 hint: "Phone number",
-                bottomPadding: 16,
+                bottomPadding: 0,
               ),
               InputText(
                 hint: "Password",
