@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:naija_med_assistant/core/constant/app_colors.dart';
 
-class BlackchinxBottomButton extends StatelessWidget {
+class MedBottomButton extends StatelessWidget {
 
   final VoidCallback? onPressed;
   final String text;
@@ -14,7 +15,7 @@ class BlackchinxBottomButton extends StatelessWidget {
   final double? bottomMargin;
   final bool isLoading;
 
-  const BlackchinxBottomButton({
+  const MedBottomButton({
     super.key,
     this.onPressed,
     required this.text,
@@ -33,28 +34,10 @@ class BlackchinxBottomButton extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       margin: EdgeInsets.only(top: topMargin?.h ?? 0.0, bottom: bottomMargin?.h ?? 0.0),
       width: width ?? 365.w,
-      height: height ?? 53.h,
+      height: height ?? 55.h,
       decoration: BoxDecoration(
-        gradient: (onPressed == null /*|| isLoading*/)
-            ? LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.grey.shade400,
-            Colors.grey.shade500,
-            Colors.grey.shade600,
-          ],
-        )
-            : const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF787878),
-            Color(0xFF2A2A2A),
-            Color(0xFF0E0E0E),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
+        color: onPressed == null ? Colors.grey : AppColors.primaryColor,
+        borderRadius: BorderRadius.circular(borderRadius ?? 50.r),
       ),
       child: ElevatedButton(
         style: ButtonStyle(

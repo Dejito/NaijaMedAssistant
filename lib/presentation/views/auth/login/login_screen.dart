@@ -4,6 +4,7 @@ import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
 
 import '../../../../core/constant/app_assets.dart';
+import '../../widgets/elevated_bottom_button.dart';
 import 'login_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   bool isCheckedKeepLoggedIn = false;
 
   @override
@@ -60,10 +60,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 value: isCheckedKeepLoggedIn,
                 onClickedChanged: (value) {
                   setState(() {
-                  isCheckedKeepLoggedIn = value!;
+                    isCheckedKeepLoggedIn = value!;
                   });
                 },
-              )
+              ),
+              MedBottomButton(
+                text: "Log in",
+                onPressed: () {},
+                topMargin: 30,
+              ),
             ],
           ),
         ),
