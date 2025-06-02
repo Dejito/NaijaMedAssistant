@@ -40,25 +40,29 @@ Container keepMeLoggedInForgotPassword(
   );
 }
 
-Container tradeTermsAndConditions(
-    {required bool value, required Function(bool?) onClickedChanged}) {
+Container signupButton(
+ Function() onClickedSignup) {
   return Container(
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
     child: Row(
       children: [
-        Checkbox(
-          checkColor: AppColors.white,
-          activeColor: const Color(0xFF13A121),
-          value: value,
-          onChanged: onClickedChanged,
-        ),
         titleText(
           text:
-          "I have read, understood and agreed to the Terms and \nConditions of this trade.",
+          "You're new here?",
           fontSize: 10,
           // fontStyle: FontStyle.italic,
           textAlign: TextAlign.start,
           fontWeight: FontWeight.w300,
+        ),
+        GestureDetector(
+          onTap: onClickedSignup,
+          child: titleText(
+            text:
+            "Sign Up",
+            // fontSize: 10,
+            textAlign: TextAlign.start,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     ),

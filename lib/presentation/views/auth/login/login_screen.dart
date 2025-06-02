@@ -69,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () {},
                 topMargin: 30,
               ),
+              signupButton((){})
             ],
           ),
         ),
