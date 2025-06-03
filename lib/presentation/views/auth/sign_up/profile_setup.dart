@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:naija_med_assistant/core/constant/app_colors.dart';
 
 import '../../widgets/elevated_bottom_button.dart';
 import '../../widgets/text_input.dart';
@@ -18,6 +19,7 @@ class ProfileSetup extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         // elevation: 1,
+        backgroundColor: AppColors.white,
         title: titleText('Profile Set-up', fontSize: 16),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(0.0),
