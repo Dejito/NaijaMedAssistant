@@ -8,7 +8,6 @@ import '../widgets/titleText.dart';
 import 'dashboard_widgets.dart';
 
 class Dashboard extends StatelessWidget {
-
   static const route = '/dashboard';
 
   const Dashboard({super.key});
@@ -31,10 +30,10 @@ class Dashboard extends StatelessWidget {
         actions: [
           Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
+                shape: BoxShape.circle,
                 border: Border.all(
-              color: Colors.black,
-            )),
+                  color: Colors.black,
+                )),
             child: const Icon(Icons.person),
           )
         ],
@@ -44,7 +43,8 @@ class Dashboard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            dashboardWelcomeBar()
+            dashboardWelcomeBar(),
+            quickActionsCard(),
           ],
         ),
       ),
