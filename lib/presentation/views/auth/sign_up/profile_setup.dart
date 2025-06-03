@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../widgets/elevated_bottom_button.dart';
+import '../../widgets/text_input.dart';
 import '../../widgets/titleText.dart';
+import '../auth_widgets.dart';
 
 class ProfileSetup extends StatelessWidget {
+
+  static const route = '/profile-setup';
+
   const ProfileSetup({super.key});
 
   @override
@@ -19,7 +26,64 @@ class ProfileSetup extends StatelessWidget {
             height: 2,
           ),
         ),
-
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          children: [
+            profileAvatar(),
+            InputText(
+              hint: "Full name",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "Email Address",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "Phone",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "Home Address",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "Date of Birth",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "Gender",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "Nationality",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "Blood Group",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "Heigth",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "Weight",
+              bottomPadding: 0,
+            ),
+            InputText(
+              hint: "BMI",
+              bottomPadding: 0,
+            ),
+            MedBottomButton(
+              text: "Save",
+              onPressed: () {},
+              topMargin: 30,
+              bottomMargin: 12,
+            ),
+          ],
+        ),
       ),
     );
   }
