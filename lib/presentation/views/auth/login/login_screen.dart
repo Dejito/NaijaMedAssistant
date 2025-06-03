@@ -6,6 +6,8 @@ import '../../widgets/elevated_bottom_button.dart';
 import 'login_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const route = '/login';
+
   const LoginScreen({super.key});
 
   @override
