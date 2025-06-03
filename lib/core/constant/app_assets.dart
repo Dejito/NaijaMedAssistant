@@ -10,5 +10,6 @@ class AppImages {
 }
 
 class AppIcons {
+  static const cross = 'assets/vector/cross.svg';
 
 }

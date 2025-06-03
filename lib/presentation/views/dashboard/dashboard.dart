@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../core/constant/app_assets.dart';
 import '../../../core/constant/app_colors.dart';
 import '../widgets/titleText.dart';
+import 'dashboard_widgets.dart';
 
 class Dashboard extends StatelessWidget {
 
@@ -27,12 +31,22 @@ class Dashboard extends StatelessWidget {
         actions: [
           Container(
             decoration: BoxDecoration(
+              shape: BoxShape.circle,
                 border: Border.all(
               color: Colors.black,
             )),
-            child: Icon(Icons.person),
+            child: const Icon(Icons.person),
           )
         ],
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            dashboardWelcomeBar()
+          ],
+        ),
       ),
     );
   }
