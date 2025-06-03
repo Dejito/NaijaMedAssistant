@@ -6,6 +6,7 @@ import 'package:naija_med_assistant/presentation/views/widgets/elevated_bottom_b
 
 import '../../../core/constant/app_assets.dart';
 import '../../../core/constant/app_colors.dart';
+import '../../../core/constant/decoration_styles.dart';
 import '../widgets/titleText.dart';
 
 Container keepMeLoggedInForgotPassword(
@@ -194,6 +195,39 @@ Widget didNotReceiveOTP(Function() onResendOTP) {
               color: AppColors.primaryColor),
         ),
       ],
+    ),
+  );
+}
+
+Widget profileAvatar() {
+  return Container(
+    margin: EdgeInsets.symmetric(vertical: 16.h),
+    child: Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Circular profile image
+          CircleAvatar(
+            radius: 40.w,
+            backgroundColor: Colors.white,
+            backgroundImage: const AssetImage(AppImages.brandLogo),
+          ),
+          // Camera icon overlay
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              decoration: AppDecorationStyle.boxDecoration,
+              padding: const EdgeInsets.all(6),
+              child: Icon(
+                Icons.camera_alt,
+                size: 15.w,
+                color: Colors.grey[800],
+              ),
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

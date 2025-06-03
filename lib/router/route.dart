@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/views/auth/login/login_screen.dart';
+import 'package:naija_med_assistant/presentation/views/auth/sign_up/profile_setup.dart';
 import 'package:naija_med_assistant/presentation/views/auth/sign_up/sign_up.dart';
 import 'package:naija_med_assistant/presentation/views/auth/sign_up/verify_email.dart';
 
@@ -8,6 +9,7 @@ class AppRoutes {
   static const login = LoginScreen.route;
   static const signup = Signup.route;
   static const verifyEmail = VerifyEmail.route;
+  static const profileSetup = ProfileSetup.route;
 
 }
 
@@ -31,6 +33,10 @@ final GoRouter router = GoRouter(
 
     GoRoute(path: AppRoutes.verifyEmail,
       builder: (_, __) => const VerifyEmail(),
+    ),
+
+    GoRoute(path: AppRoutes.profileSetup,
+      builder: (_, __) => const ProfileSetup(),
     ),
     // GoRoute(
     //   path: '${AppRoutes.verifyEmail}/:email',

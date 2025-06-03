@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/elevated_bottom_button.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
 import '../../widgets/pin_text_field.dart';
 import '../auth_widgets.dart';
@@ -111,7 +113,9 @@ class _VerifyEmailState extends State<VerifyEmail> {
             ),
             MedBottomButton(
               text: "Confirm",
-              onPressed: () {},
+              onPressed: () {
+                context.push(AppRoutes.profileSetup);
+              },
               topMargin: 12,
               bottomMargin: 6,
             ),
