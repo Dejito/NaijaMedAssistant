@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
               InputText(
                 hint: "Password",
                 bottomPadding: 16,
-                suffixIcon: Icon(Icons.visibility_off_outlined),
+                suffixIcon: const Icon(Icons.visibility_off_outlined),
               ),
               keepMeLoggedInForgotPassword(
                 value: isCheckedKeepLoggedIn,

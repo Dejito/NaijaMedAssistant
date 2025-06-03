@@ -33,6 +33,7 @@ class InputText extends StatefulWidget {
   late final bool? subBar;
   final String? subBarText;
   final int? bottomPadding;
+  final int? topPadding;
   final bool? readOnly;
 
   InputText({
@@ -60,6 +61,7 @@ class InputText extends StatefulWidget {
     this.subBarText,
     this.bottomPadding,
     this.readOnly,
+    this.topPadding = 0,
   });
 
   @override
@@ -95,7 +97,7 @@ class InputTextState extends State<InputText> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 6.h,
+            height: widget.topPadding?.h,
           ),
           titleText(text: widget.title ?? "", fontWeight: FontWeight.w500),
           widget.hint != "" ? 7.verticalSpace : 0.verticalSpace,
