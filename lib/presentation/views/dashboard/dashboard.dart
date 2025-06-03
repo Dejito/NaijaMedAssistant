@@ -7,10 +7,32 @@ import '../../../core/constant/app_colors.dart';
 import '../widgets/titleText.dart';
 import 'dashboard_widgets.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   static const route = '/dashboard';
 
   const Dashboard({super.key});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+
+  late final PageController _pageController;
+  int swipeIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +66,16 @@ class Dashboard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             dashboardWelcomeBar(),
-            quickActionsCard(),
+            quickActionsCardSlider(
+              context: context,
+              controller: _pageController,
+              index: swipeIndex.toDouble(),
+              onSwipe: (value) {
+                setState(() {
+                  swipeIndex = value;
+                });
+              },
+            ),
           ],
         ),
       ),

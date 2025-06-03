@@ -1,3 +1,4 @@
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -46,7 +47,7 @@ Widget dashboardWelcomeBar() {
   );
 }
 
-Widget quickActionsCard({required String icon, required String label}) {
+Widget quickActionsCard({required String icon, required String label, Color labelBackgroundColor = AppColors.primaryColor}) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 16),
     margin: const EdgeInsets.only(top: 16),
@@ -66,27 +67,27 @@ Widget quickActionsCard({required String icon, required String label}) {
     child: Column(
       children: [
         titleText(
-          "Quick Actions!",
-          color: AppColors.primaryColor,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          bottomPadding: 8
+            "Quick Actions!",
+            color: AppColors.primaryColor,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            bottomPadding: 8
         ),
-        SvgPicture.asset(AppIcons.insight),
+        SvgPicture.asset(icon),
         const SizedBox(height: 12),
         Container(
           width: 320.w,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
-            color: const Color(0xFF3B61FF),
+            color: labelBackgroundColor,
             borderRadius: BorderRadius.circular(20),
           ),
           child: titleText(
-            'AI Powered Symptom Checker',
-            fontSize: 16,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            textAlign: TextAlign.center
+              label,
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              textAlign: TextAlign.center
             // ),
           ),
         ),
@@ -95,7 +96,7 @@ Widget quickActionsCard({required String icon, required String label}) {
   );
 }
 
-Widget quickActionsCardSlider({  required BuildContext context,
+Widget quickActionsCardSlider({ required BuildContext context,
   required PageController controller,
   required double index,
   required Function(int) onSwipe,
@@ -103,89 +104,22 @@ Widget quickActionsCardSlider({  required BuildContext context,
   return Column(
     children: [
       SizedBox(
-        height: MediaQuery.of(context).size.height * 0.15,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height * 0.22,
         child: PageView(
           controller: controller,
           onPageChanged: onSwipe,
           physics: const BouncingScrollPhysics(),
           children: [
+            quickActionsCard(
+              icon: AppIcons.insight, label: 'AI Powered Symptom Checker',),
+            quickActionsCard(icon: AppIcons.insight,
+              label: 'Chat with AI',),
+            quickActionsCard(icon: AppIcons.insight,
+              label: 'AI Powered Symptom Checker', labelBackgroundColor: const Color(0xFFD83E06)),
 
-          ],
-        ),
-      )
-    ],
-  )
-}
-
-Widget onboardingScreensSliderView({
-  required BuildContext context,
-  required PageController controller,
-  required double index,
-  required Function(int) onSwipe,
-}) {
-  return Column(
-    children: [
-      SizedBox(
-        height: MediaQuery.of(context).size.height * 0.72,
-        child: PageView(
-          controller: controller,
-          onPageChanged: onSwipe,
-          physics: const BouncingScrollPhysics(),
-          children: [
-            OnboardingScreenItem(
-              imageUrl: AppImages.onboardingOne,
-              clipperDirection: BottomLeftCurveClipper(),
-              positionWidget: Positioned(
-                bottom: 50.h,
-                right: 15.w,
-                child: Container(
-                  child: titleText(
-                    text: "Trade gift cards \nfast, secure, and \nstress-free.",
-                    color: Colors.white,
-                    fontSize: 23.sp,
-                    fontWeight: FontWeight.w600,
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-              ),
-            ),
-            OnboardingScreenItem(
-              imageUrl: AppImages.onboardingTwo,
-              clipperDirection: NeutralCurveClipper(),
-              positionWidget: Positioned(
-                bottom: 50.h,
-                right: 0,
-                left: 0,
-                child: Container(
-                  child: titleText(
-                    text:
-                    "Effortless Gift Card \nRedemptions with \nUnmatched Security  \nand Value.",
-                    color: Colors.white,
-                    fontSize: 23.sp,
-                    fontWeight: FontWeight.w600,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-            OnboardingScreenItem(
-              imageUrl: AppImages.onboardingThree,
-              clipperDirection: BottomRightCurveClipper(),
-              positionWidget: Positioned(
-                bottom: 50.h,
-                left: 15.w,
-                child: Container(
-                  child: titleText(
-                    text:
-                    "Your Trusted Hub \nfor Safe, Affordable, \nand Easy Gift Card \nTrades.",
-                    color: Colors.white,
-                    fontSize: 23.sp,
-                    fontWeight: FontWeight.w600,
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -195,7 +129,7 @@ Widget onboardingScreensSliderView({
         position: index,
         decorator: DotsDecorator(
           color: const Color(0xFFD9D9D9),
-          activeColor: Colors.grey,
+          activeColor: AppColors.primaryColor,
           size: const Size.square(7.0),
           activeSize: const Size(18, 6),
           activeShape: RoundedRectangleBorder(
@@ -203,7 +137,101 @@ Widget onboardingScreensSliderView({
           ),
         ),
       ),
-      SizedBox(height: 30.h),
+
     ],
   );
 }
+
+// Widget onboardingScreensSliderView({
+//   required BuildContext context,
+//   required PageController controller,
+//   required double index,
+//   required Function(int) onSwipe,
+// }) {
+//   return Column(
+//     children: [
+//       SizedBox(
+//         height: MediaQuery
+//             .of(context)
+//             .size
+//             .height * 0.72,
+//         child: PageView(
+//           controller: controller,
+//           onPageChanged: onSwipe,
+//           physics: const BouncingScrollPhysics(),
+//           children: [
+//             OnboardingScreenItem(
+//               imageUrl: AppImages.onboardingOne,
+//               clipperDirection: BottomLeftCurveClipper(),
+//               positionWidget: Positioned(
+//                 bottom: 50.h,
+//                 right: 15.w,
+//                 child: Container(
+//                   child: titleText(
+//                     text: "Trade gift cards \nfast, secure, and \nstress-free.",
+//                     color: Colors.white,
+//                     fontSize: 23.sp,
+//                     fontWeight: FontWeight.w600,
+//                     textAlign: TextAlign.end,
+//                   ),
+//                 ),
+//               ),
+//             ),
+//             OnboardingScreenItem(
+//               imageUrl: AppImages.onboardingTwo,
+//               clipperDirection: NeutralCurveClipper(),
+//               positionWidget: Positioned(
+//                 bottom: 50.h,
+//                 right: 0,
+//                 left: 0,
+//                 child: Container(
+//                   child: titleText(
+//                     text:
+//                     "Effortless Gift Card \nRedemptions with \nUnmatched Security  \nand Value.",
+//                     color: Colors.white,
+//                     fontSize: 23.sp,
+//                     fontWeight: FontWeight.w600,
+//                     textAlign: TextAlign.center,
+//                   ),
+//                 ),
+//               ),
+//             ),
+//             OnboardingScreenItem(
+//               imageUrl: AppImages.onboardingThree,
+//               clipperDirection: BottomRightCurveClipper(),
+//               positionWidget: Positioned(
+//                 bottom: 50.h,
+//                 left: 15.w,
+//                 child: Container(
+//                   child: titleText(
+//                     text:
+//                     "Your Trusted Hub \nfor Safe, Affordable, \nand Easy Gift Card \nTrades.",
+//                     color: Colors.white,
+//                     fontSize: 23.sp,
+//                     fontWeight: FontWeight.w600,
+//                     textAlign: TextAlign.start,
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//       SizedBox(height: 15.h),
+//       DotsIndicator(
+//         dotsCount: 3,
+//         position: index,
+//         decorator: DotsDecorator(
+//           color: const Color(0xFFD9D9D9),
+//           activeColor: Colors.grey,
+//           size: const Size.square(7.0),
+//           activeSize: const Size(18, 6),
+//           activeShape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(5.0),
+//           ),
+//         ),
+//       ),
+//       SizedBox(height: 30.h),
+//     ],
+//   );
+// }
