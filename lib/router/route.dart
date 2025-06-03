@@ -1,19 +1,15 @@
-
-
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/views/auth/login/login_screen.dart';
 import 'package:naija_med_assistant/presentation/views/auth/sign_up/sign_up.dart';
-
+import 'package:naija_med_assistant/presentation/views/auth/sign_up/verify_email.dart';
 
 class AppRoutes {
   static const initial = LoginScreen.route;
   static const login = LoginScreen.route;
   static const signup = Signup.route;
-
-
+  static const verifyEmail = VerifyEmail.route;
 
 }
-
 
 final GoRouter router = GoRouter(
   initialLocation: AppRoutes.initial,
@@ -22,13 +18,20 @@ final GoRouter router = GoRouter(
       path: AppRoutes.initial,
       builder: (_, __) => const LoginScreen(),
     ),
-    GoRoute(path: AppRoutes.login,
+
+    GoRoute(
+      path: AppRoutes.login,
       builder: (_, __) => const LoginScreen(),
     ),
-    GoRoute(path: AppRoutes.signup,
-    builder: (_, __) => const Signup(),
+
+    GoRoute(
+      path: AppRoutes.signup,
+      builder: (_, __) => const Signup(),
     ),
 
+    GoRoute(path: AppRoutes.verifyEmail,
+      builder: (_, __) => const VerifyEmail(),
+    ),
     // GoRoute(
     //   path: '${AppRoutes.verifyEmail}/:email',
     //   builder: (_, state) =>
@@ -42,6 +45,5 @@ final GoRouter router = GoRouter(
     //     return AdminTransactionDetailScreen(transactionStatus: txStatus);
     //   },
     // ),
-
   ],
 );

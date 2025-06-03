@@ -80,6 +80,7 @@ class _SignupState extends State<Signup> {
               MedBottomButton(
                 text: "Sign up",
                 onPressed: () {
+                  context.push(AppRoutes.verifyEmail);
                 },
                 topMargin: 20,
               ),
