@@ -31,8 +31,7 @@ class _SignupState extends State<Signup> {
             children: [
               logoImage(),
               titleText(
-                  text:
-                      "Sign up now to access your\n personalized health dashboard",
+                  "Sign up now to access your\n personalized health dashboard",
                   fontSize: 18,
                   textAlign: TextAlign.center,
                   bottomPadding: 34,

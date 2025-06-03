@@ -30,15 +30,13 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               logoImage(),
-              titleText(
-                  text: "Log In",
+              titleText("Log In",
                   fontSize: 22,
                   fontWeight: FontWeight.w500,
                   topPadding: 12,
                   bottomPadding: 12),
               titleText(
-                text:
-                    "Log In now to access your\npersonalized health dashboard",
+                "Log In now to access your\npersonalized health dashboard",
                 fontSize: 16,
                 textAlign: TextAlign.center,
                 bottomPadding: 30,
@@ -62,11 +60,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               MedBottomButton(
                 text: "Log in",
-                onPressed: () {
-                },
+                onPressed: () {},
                 topMargin: 30,
               ),
-              newHereButton((){
+              newHereButton(() {
                 context.go(AppRoutes.signup);
               })
             ],

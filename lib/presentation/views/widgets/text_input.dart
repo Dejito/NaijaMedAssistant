@@ -99,7 +99,7 @@ class InputTextState extends State<InputText> {
           SizedBox(
             height: widget.topPadding?.h,
           ),
-          titleText(text: widget.title ?? "", fontWeight: FontWeight.w500),
+          titleText(widget.title ?? "", fontWeight: FontWeight.w500),
           widget.hint != "" ? 7.verticalSpace : 0.verticalSpace,
           TextFormField(
             style: textFieldTextStyle(context),

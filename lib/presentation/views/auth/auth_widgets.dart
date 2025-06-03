@@ -23,8 +23,7 @@ Container keepMeLoggedInForgotPassword(
               value: value,
               onChanged: onClickedChanged,
             ),
-            titleText(
-              text: "Keep me logged in",
+            titleText("Keep me logged in",
               fontSize: 11,
               // fontStyle: FontStyle.italic,
               textAlign: TextAlign.start,
@@ -33,7 +32,7 @@ Container keepMeLoggedInForgotPassword(
           ],
         ),
         titleText(
-          text: "Forgot Password?",
+          "Forgot Password?",
           fontSize: 14,
           // fontStyle: FontStyle.italic,
           textAlign: TextAlign.start,
@@ -54,7 +53,7 @@ Widget newHereButton(Function() onClickedSignup) {
       textBaseline: TextBaseline.alphabetic,
       children: [
         titleText(
-          text: "You're new here? ",
+          "You're new here? ",
           fontSize: 14,
           textAlign: TextAlign.start,
           fontWeight: FontWeight.w300,
@@ -62,7 +61,7 @@ Widget newHereButton(Function() onClickedSignup) {
         GestureDetector(
           onTap: onClickedSignup,
           child: titleText(
-            text: "Sign Up",
+            "Sign Up",
             // fontSize: 10,
             textAlign: TextAlign.start,
             fontWeight: FontWeight.bold,
@@ -83,7 +82,7 @@ Widget alreadyHaveAnAccountButton(Function() onClickedSignup) {
       textBaseline: TextBaseline.alphabetic,
       children: [
         titleText(
-          text: "Already have an account? ",
+          "Already have an account? ",
           fontSize: 14,
           textAlign: TextAlign.start,
           fontWeight: FontWeight.w300,
@@ -91,7 +90,7 @@ Widget alreadyHaveAnAccountButton(Function() onClickedSignup) {
         GestureDetector(
           onTap: onClickedSignup,
           child: titleText(
-            text: "Sign In",
+            "Sign In",
             // fontSize: 10,
             textAlign: TextAlign.start,
             fontWeight: FontWeight.bold,
@@ -154,13 +153,13 @@ Widget otpResendTime(String timerText) {
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
       titleText(
-        text: "TIME REMAINING  ",
+        "TIME REMAINING  ",
         textAlign: TextAlign.center,
         fontWeight: FontWeight.w500,
         bottomPadding: 15,
       ),
       titleText(
-        text: timerText,
+        timerText,
         textAlign: TextAlign.center,
         color: AppColors.primaryColor,
         fontWeight: FontWeight.w500,
@@ -180,7 +179,7 @@ Widget didNotReceiveOTP(Function() onResendOTP) {
       textBaseline: TextBaseline.alphabetic,
       children: [
         titleText(
-            text: "Didn't receive OTP? ",
+            "Didn't receive OTP? ",
             fontSize: 15,
             textAlign: TextAlign.start,
             fontWeight: FontWeight.w300,
@@ -188,7 +187,7 @@ Widget didNotReceiveOTP(Function() onResendOTP) {
         GestureDetector(
           onTap: onResendOTP,
           child: titleText(
-              text: "Resend to phone",
+              "Resend to phone",
               fontSize: 15,
               textAlign: TextAlign.start,
               fontWeight: FontWeight.bold,

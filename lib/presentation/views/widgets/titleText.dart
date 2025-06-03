@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Widget titleText(
-    {required String text,
+    String text,
+    {
       Color color = Colors.black,
       double fontSize = 14,
       double topPadding = 0.0,

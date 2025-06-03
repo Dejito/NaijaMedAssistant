@@ -80,14 +80,13 @@ class _VerifyEmailState extends State<VerifyEmail> {
           children: [
             SizedBox(height: 20.h,),
             titleText(
-              text: "Verify your Email",
+              "Verify your Email",
               fontSize: 24,
               fontWeight: FontWeight.w600,
               textAlign: TextAlign.center,
             ),
             titleText(
-              text:
-                  "We sent a verification code to your email,\n please enter it here",
+              "We sent a verification code to your email,\n please enter it here",
               color: Colors.grey.shade700,
               fontSize: 14,
               textAlign: TextAlign.center,
