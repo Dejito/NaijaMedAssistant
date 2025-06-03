@@ -1,17 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
+import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
-class LoginScreen extends StatelessWidget {
+import '../../widgets/elevated_bottom_button.dart';
+import '../auth_widgets.dart';
+
+class LoginScreen extends StatefulWidget {
+  static const route = '/login';
+
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool isCheckedKeepLoggedIn = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          children: [
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              logoImage(),
+              titleText("Log In",
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                  topPadding: 12,
+                  bottomPadding: 12),
+              titleText(
+                "Log In now to access your\npersonalized health dashboard",
+                fontSize: 16,
+                textAlign: TextAlign.center,
+                bottomPadding: 30,
+              ),
+              InputText(
+                hint: "Phone number",
+                bottomPadding: 0,
+              ),
+              InputText(
+                hint: "Password",
+                bottomPadding: 16,
+                suffixIcon: const Icon(Icons.visibility_off_outlined),
+              ),
+              keepMeLoggedInForgotPassword(
+                value: isCheckedKeepLoggedIn,
+                onClickedChanged: (value) {
+                  setState(() {
+                    isCheckedKeepLoggedIn = value!;
+                  });
+                },
+              ),
+              MedBottomButton(
+                text: "Log in",
+                onPressed: () {},
+                topMargin: 30,
+                bottomMargin: 12,
+              ),
+              newHereButton(() {
+                context.go(AppRoutes.signup);
+              })
 
-          ],
+            ],
+          ),
         ),
       ),
     );
