@@ -102,7 +102,6 @@ Widget alreadyHaveAnAccountButton(Function() onClickedSignup) {
   );
 }
 
-
 Widget logoImage() {
   return Align(
     alignment: Alignment.center,
@@ -112,7 +111,6 @@ Widget logoImage() {
     ),
   );
 }
-
 
 Widget termsAndConditionsText({
   required bool value,
@@ -169,5 +167,34 @@ Widget otpResendTime(String timerText) {
         bottomPadding: 15,
       ),
     ],
+  );
+}
+
+Widget didNotReceiveOTP(Function() onResendOTP) {
+  return Container(
+    margin: EdgeInsets.only(top: 12.h),
+    decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        titleText(
+            text: "Didn't receive OTP? ",
+            fontSize: 15,
+            textAlign: TextAlign.start,
+            fontWeight: FontWeight.w300,
+            color: Colors.grey.shade700),
+        GestureDetector(
+          onTap: onResendOTP,
+          child: titleText(
+              text: "Resend to phone",
+              fontSize: 15,
+              textAlign: TextAlign.start,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryColor),
+        ),
+      ],
+    ),
   );
 }

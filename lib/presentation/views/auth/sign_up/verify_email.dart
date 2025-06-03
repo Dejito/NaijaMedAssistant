@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/elevated_bottom_button.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
@@ -71,46 +72,55 @@ class _VerifyEmailState extends State<VerifyEmail> {
         backgroundColor: Colors.white,
         // title: titleText(text: ""),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          titleText(
-            text: "Verify your Email",
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            textAlign: TextAlign.center,
-          ),
-          titleText(
-            text:
-                "We sent a verification code to your email,\n please enter it here",
-            color: Colors.grey.shade700,
-            fontSize: 14,
-            textAlign: TextAlign.center,
-          ),
-          PinTextField(
-            pinLength: 4,
-            pinController: _pinController,
-            onTextChanged: (val) {
-              if (val.length >= 4) {
-                // _isValidated = true;
-              }
-            },
-            onDone: (val) {
-              if (val.length >= 4) {
-                // _isValidated = true;
-              }
-            },
-            focusNode: _pinFocusNode,
-          ),
-          otpResendTime(
-            _timerText,
-          ),
-          MedBottomButton(
-            text: "Confirm",
-            onPressed: () {},
-          )
-        ],
+      body: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(height: 20.h,),
+            titleText(
+              text: "Verify your Email",
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              textAlign: TextAlign.center,
+            ),
+            titleText(
+              text:
+                  "We sent a verification code to your email,\n please enter it here",
+              color: Colors.grey.shade700,
+              fontSize: 14,
+              textAlign: TextAlign.center,
+            ),
+            PinTextField(
+              pinLength: 4,
+              pinController: _pinController,
+              onTextChanged: (val) {
+                if (val.length >= 4) {
+                  // _isValidated = true;
+                }
+              },
+              onDone: (val) {
+                if (val.length >= 4) {
+                  // _isValidated = true;
+                }
+              },
+              focusNode: _pinFocusNode,
+            ),
+            otpResendTime(
+              _timerText,
+            ),
+            MedBottomButton(
+              text: "Confirm",
+              onPressed: () {},
+              topMargin: 12,
+              bottomMargin: 6,
+            ),
+            didNotReceiveOTP((){
+              _startTimer();
+            })
+          ],
+        ),
       ),
     );
   }

@@ -25,7 +25,7 @@ class PinTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 16,
+        // horizontal: 16,
         vertical: 30,
       ),
       child: Column(
@@ -48,7 +48,7 @@ class PinTextField extends StatelessWidget {
             // maskCharacter: "",
             onTextChanged: onTextChanged,
             onDone: onDone,
-            pinBoxWidth: 80.w,
+            pinBoxWidth: 70.w,
             pinBoxHeight: 60.h,
             hasUnderline: false,
             wrapAlignment: WrapAlignment.spaceBetween,
