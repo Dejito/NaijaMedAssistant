@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
 
-import '../../../../core/constant/app_assets.dart';
 import '../../widgets/elevated_bottom_button.dart';
 import 'login_widgets.dart';
 
@@ -27,13 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Align(
-                alignment: Alignment.center,
-                child: Image.asset(
-                  AppImages.brandLogo,
-                  height: 80.h,
-                ),
-              ),
+              logoImage(),
               titleText(
                   text: "Log In",
                   fontSize: 22,
