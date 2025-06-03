@@ -20,9 +20,9 @@ Widget dashboardWelcomeBar() {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 titleText("Hi, Blessing",
-                    fontSize: 16, fontWeight: FontWeight.w600),
+                    fontSize: 17, fontWeight: FontWeight.w600),
                 titleText("Your health is our priority",
-                    fontSize: 12, color: Colors.grey.shade700)
+                    fontSize: 13, color: Colors.grey.shade700)
               ],
             ),
             SvgPicture.asset(
@@ -47,7 +47,10 @@ Widget dashboardWelcomeBar() {
   );
 }
 
-Widget quickActionsCard({required String icon, required String label, Color labelBackgroundColor = AppColors.primaryColor}) {
+Widget quickActionsCard(
+    {required String icon,
+    required String label,
+    Color labelBackgroundColor = AppColors.primaryColor}) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 16),
     margin: const EdgeInsets.only(top: 16),
@@ -66,13 +69,11 @@ Widget quickActionsCard({required String icon, required String label, Color labe
     ),
     child: Column(
       children: [
-        titleText(
-            "Quick Actions!",
+        titleText("Quick Actions!",
             color: AppColors.primaryColor,
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            bottomPadding: 8
-        ),
+            bottomPadding: 8),
         SvgPicture.asset(icon),
         const SizedBox(height: 16),
         Container(
@@ -82,21 +83,21 @@ Widget quickActionsCard({required String icon, required String label, Color labe
             color: labelBackgroundColor,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: titleText(
-              label,
+          child: titleText(label,
               fontSize: 16,
               color: Colors.white,
               fontWeight: FontWeight.bold,
               textAlign: TextAlign.center
-            // ),
-          ),
+              // ),
+              ),
         ),
       ],
     ),
   );
 }
 
-Widget quickActionsCardSlider({ required BuildContext context,
+Widget quickActionsCardSlider({
+  required BuildContext context,
   required PageController controller,
   required double index,
   required Function(int) onSwipe,
@@ -104,22 +105,24 @@ Widget quickActionsCardSlider({ required BuildContext context,
   return Column(
     children: [
       SizedBox(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height * 0.21,
+        height: MediaQuery.of(context).size.height * 0.21,
         child: PageView(
           controller: controller,
           onPageChanged: onSwipe,
           physics: const BouncingScrollPhysics(),
           children: [
             quickActionsCard(
-              icon: AppIcons.insight, label: 'AI Powered Symptom Checker',),
-            quickActionsCard(icon: AppIcons.logoBlack,
-              label: 'Chat with AI',),
-            quickActionsCard(icon: AppIcons.emergency,
-              label: 'AI Powered Symptom Checker', labelBackgroundColor: const Color(0xFFD83E06)),
-
+              icon: AppIcons.insight,
+              label: 'AI Powered Symptom Checker',
+            ),
+            quickActionsCard(
+              icon: AppIcons.logoBlack,
+              label: 'Chat with AI',
+            ),
+            quickActionsCard(
+                icon: AppIcons.emergency,
+                label: 'AI Powered Symptom Checker',
+                labelBackgroundColor: const Color(0xFFD83E06)),
           ],
         ),
       ),
@@ -137,16 +140,14 @@ Widget quickActionsCardSlider({ required BuildContext context,
           ),
         ),
       ),
-
     ],
   );
 }
 
-
-Widget drawerListTile(
-    {required Function() onTap,
-      required String txType,
-    }) {
+Widget drawerListTile({
+  required Function() onTap,
+  required String txType,
+}) {
   return ListTile(
       leading: titleText(
         txType,
@@ -165,17 +166,17 @@ Widget drawerHeader({required String username}) {
         height: 20.h,
       ),
       Container(
-            width: 55,
-            height: 55,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-            ),
-            clipBehavior: Clip.hardEdge,
-            child: Image.asset(
-              AppImages.brandLogo,
-              fit: BoxFit.cover,
-            ),
-          ),
+        width: 55,
+        height: 55,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: Image.asset(
+          AppImages.brandLogo,
+          fit: BoxFit.cover,
+        ),
+      ),
       titleText(
         username,
         fontSize: 16,
@@ -189,7 +190,50 @@ Widget drawerHeader({required String username}) {
         // indent: 20.w,
         endIndent: 20.w,
       ),
-
     ],
+  );
+}
+
+Widget viewMoreSymptoms() {
+  return Container(
+    margin: EdgeInsets.symmetric(vertical: 12.h),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        titleText(
+          "AI Symptoms Check History",
+          fontWeight: FontWeight.bold,
+          // fontSize:
+        ),
+        Row(
+          children: [
+            titleText(
+              "View more ",
+              color: AppColors.primaryColor, fontWeight: FontWeight.w500,
+              // fontSize:
+            ),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: AppColors.primaryColor,
+              size: 12,
+            )
+          ],
+        )
+      ],
+    ),
+  );
+}
+
+Widget symptomCheckHistoryItem() {
+  return Container(
+    padding: EdgeInsets.all(8.w),
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.black)
+    ),
+    child: Column(
+      children: [
+
+      ],
+    ),
   );
 }
