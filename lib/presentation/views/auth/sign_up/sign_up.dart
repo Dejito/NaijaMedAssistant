@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:naija_med_assistant/presentation/views/auth/login/login_widgets.dart';
 
 class Signup extends StatelessWidget {
+
+  static const route = '/sign-up';
+
   const Signup({super.key});
 
   @override

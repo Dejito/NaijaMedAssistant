@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
 import '../../widgets/elevated_bottom_button.dart';
 import 'login_widgets.dart';
@@ -60,10 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               MedBottomButton(
                 text: "Log in",
-                onPressed: () {},
+                onPressed: () {
+                },
                 topMargin: 30,
               ),
-              signupButton((){})
+              signupButton((){
+                context.go(AppRoutes.signup);
+              })
             ],
           ),
         ),
