@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:naija_med_assistant/presentation/views/auth/login/login_widgets.dart';
+import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/presentation/views/auth/auth_widgets.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
-import '../../widgets/terms_and_conditions_text.dart';
+import '../../widgets/elevated_bottom_button.dart';
 import '../../widgets/text_input.dart';
 import '../../widgets/titleText.dart';
 
@@ -16,7 +18,6 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-
   bool isCheckedKeepLoggedIn = false;
 
   @override
@@ -26,7 +27,7 @@ class _SignupState extends State<Signup> {
         child: SingleChildScrollView(
           padding: EdgeInsets.all(16.w),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               logoImage(),
               titleText(
@@ -62,7 +63,7 @@ class _SignupState extends State<Signup> {
               ),
               InputText(
                 hint: "Confirm Password",
-                bottomPadding: 0,
+                bottomPadding: 3,
                 suffixIcon: const Icon(
                   Icons.visibility_off_outlined,
                   color: Colors.grey,
@@ -74,8 +75,19 @@ class _SignupState extends State<Signup> {
                   setState(() {
                     isCheckedKeepLoggedIn = value!;
                   });
-                },              )
-
+                },
+              ),
+              MedBottomButton(
+                text: "Sign up",
+                onPressed: () {
+                },
+                topMargin: 20,
+              ),
+              alreadyHaveAnAccountButton(
+                  (){
+                    context.go(AppRoutes.login);
+                  }
+              )
             ],
           ),
         ),

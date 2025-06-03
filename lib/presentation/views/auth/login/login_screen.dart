@@ -5,7 +5,7 @@ import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
 import '../../widgets/elevated_bottom_button.dart';
-import 'login_widgets.dart';
+import '../auth_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   static const route = '/login';
@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 topMargin: 30,
               ),
-              signupButton((){
+              newHereButton((){
                 context.go(AppRoutes.signup);
               })
             ],

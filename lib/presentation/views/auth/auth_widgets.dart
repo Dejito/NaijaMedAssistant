@@ -1,10 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/elevated_bottom_button.dart';
 
-import '../../../../core/constant/app_assets.dart';
-import '../../../../core/constant/app_colors.dart';
-import '../../widgets/titleText.dart';
+import '../../../core/constant/app_assets.dart';
+import '../../../core/constant/app_colors.dart';
+import '../widgets/titleText.dart';
 
 Container keepMeLoggedInForgotPassword(
     {required bool value, required Function(bool?) onClickedChanged}) {
@@ -42,7 +44,7 @@ Container keepMeLoggedInForgotPassword(
   );
 }
 
-Widget signupButton(Function() onClickedSignup) {
+Widget newHereButton(Function() onClickedSignup) {
   return Container(
     margin: EdgeInsets.only(top: 12.h),
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -53,7 +55,7 @@ Widget signupButton(Function() onClickedSignup) {
       children: [
         titleText(
           text: "You're new here? ",
-          fontSize: 13,
+          fontSize: 14,
           textAlign: TextAlign.start,
           fontWeight: FontWeight.w300,
         ),
@@ -71,6 +73,36 @@ Widget signupButton(Function() onClickedSignup) {
   );
 }
 
+Widget alreadyHaveAnAccountButton(Function() onClickedSignup) {
+  return Container(
+    margin: EdgeInsets.only(top: 12.h),
+    decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        titleText(
+          text: "Already have an account? ",
+          fontSize: 14,
+          textAlign: TextAlign.start,
+          fontWeight: FontWeight.w300,
+        ),
+        GestureDetector(
+          onTap: onClickedSignup,
+          child: titleText(
+            text: "Sign In",
+            // fontSize: 10,
+            textAlign: TextAlign.start,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+
 Widget logoImage() {
   return Align(
     alignment: Alignment.center,
@@ -78,5 +110,43 @@ Widget logoImage() {
       AppImages.brandLogo,
       height: 80.h,
     ),
+  );
+}
+
+
+Widget termsAndConditionsText({
+  required bool value,
+  required Function(bool?) onClickedChanged,
+}) {
+  return Row(
+    children: [
+      Checkbox(
+        checkColor: AppColors.white,
+        activeColor: AppColors.primaryColor,
+        value: value,
+        onChanged: onClickedChanged,
+      ),
+      RichText(
+        textAlign: TextAlign.start,
+        text: TextSpan(
+          text: "Do you agree with our ",
+          style: GoogleFonts.alegreya(
+            color: Colors.black,
+            fontSize: 13,
+          ),
+          children: [
+            TextSpan(
+              text: 'Terms & Conditions',
+              style: GoogleFonts.alegreya(
+                fontSize: 13.sp,
+                color: const Color(0xFF2957C5),
+                fontWeight: FontWeight.bold,
+              ),
+              recognizer: TapGestureRecognizer()..onTap = () {},
+            ),
+          ],
+        ),
+      ),
+    ],
   );
 }
