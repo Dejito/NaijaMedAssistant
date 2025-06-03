@@ -6,26 +6,40 @@ import '../../../core/constant/app_assets.dart';
 import '../widgets/titleText.dart';
 
 Widget dashboardWelcomeBar() {
- return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          titleText("Hi, Blessing",
-              fontWeight: FontWeight.w600
-          ),
-          titleText(
-            "Your health is our priority",
-          )
-        ],
+      Container(
+        margin: EdgeInsets.only(top: 6.h, bottom: 6.h),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                titleText("Hi, Blessing",
+                    fontSize: 16, fontWeight: FontWeight.w600),
+                titleText("Your health is our priority",
+                    fontSize: 12,
+                    color: Colors.grey.shade700)
+              ],
+            ),
+            SvgPicture.asset(
+              AppIcons.cross,
+              height: 35.h,
+              width: 35.h,
+            ),
+          ],
+        ),
       ),
-      SvgPicture.asset(
-        AppIcons.cross,
-        height: 35.h,
-        width: 35.h,
+      Divider(
+        height: 1,
+        color: Colors.grey.shade400,
       ),
+      titleText("What would you love to do today?",
+      topPadding: 14,
+      fontSize: 14,
+      textAlign: TextAlign.start,)
     ],
   );
-
 }
