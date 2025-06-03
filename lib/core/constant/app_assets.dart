@@ -12,5 +12,7 @@ class AppImages {
 class AppIcons {
   static const cross = 'assets/vector/cross.svg';
   static const insight = 'assets/vector/insight.svg';
+  static const logoBlack = 'assets/vector/logo_black.svg';
+  static const emergency = 'assets/vector/emergency.svg';
 
 }

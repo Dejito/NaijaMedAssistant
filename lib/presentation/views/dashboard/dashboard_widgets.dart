@@ -115,9 +115,9 @@ Widget quickActionsCardSlider({ required BuildContext context,
           children: [
             quickActionsCard(
               icon: AppIcons.insight, label: 'AI Powered Symptom Checker',),
-            quickActionsCard(icon: AppIcons.insight,
+            quickActionsCard(icon: AppIcons.logoBlack,
               label: 'Chat with AI',),
-            quickActionsCard(icon: AppIcons.insight,
+            quickActionsCard(icon: AppIcons.emergency,
               label: 'AI Powered Symptom Checker', labelBackgroundColor: const Color(0xFFD83E06)),
 
           ],
