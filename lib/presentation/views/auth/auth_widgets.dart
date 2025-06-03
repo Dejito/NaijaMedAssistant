@@ -150,3 +150,24 @@ Widget termsAndConditionsText({
     ],
   );
 }
+
+Widget otpResendTime(String timerText) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      titleText(
+        text: "TIME REMAINING  ",
+        textAlign: TextAlign.center,
+        fontWeight: FontWeight.w500,
+        bottomPadding: 15,
+      ),
+      titleText(
+        text: timerText,
+        textAlign: TextAlign.center,
+        color: AppColors.primaryColor,
+        fontWeight: FontWeight.w500,
+        bottomPadding: 15,
+      ),
+    ],
+  );
+}

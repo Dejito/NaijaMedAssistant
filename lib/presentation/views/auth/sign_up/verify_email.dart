@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:naija_med_assistant/core/constant/app_colors.dart';
+import 'package:naija_med_assistant/presentation/views/widgets/elevated_bottom_button.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
 
 import '../../widgets/pin_text_field.dart';
+import '../auth_widgets.dart';
 
 class VerifyEmail extends StatefulWidget {
   static const route = "/verify-email";
@@ -13,6 +18,48 @@ class VerifyEmail extends StatefulWidget {
 }
 
 class _VerifyEmailState extends State<VerifyEmail> {
+  @override
+  void initState() {
+    _startTimer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    _pinController.dispose();
+    _pinFocusNode.dispose();
+    super.dispose();
+  }
+
+  final _maxSeconds = 60;
+  var _secondsLeft = 10;
+  int _currentSecond = 0;
+  int buttonTracker = 0;
+  late Timer _timer;
+
+  void _startTimer() {
+    const duration = Duration(seconds: 1);
+    _timer = Timer.periodic(duration, (Timer timer) {
+      setState(() {
+        _currentSecond = timer.tick;
+        if (timer.tick >= _maxSeconds) timer.cancel();
+      });
+    });
+  }
+
+  String get _timerText {
+    const secondsPerMinute = 60;
+    _secondsLeft = _maxSeconds - _currentSecond;
+
+    final formattedMinutesLeft =
+        (_secondsLeft ~/ secondsPerMinute).toString().padLeft(2, '0');
+    final formattedSecondsLeft =
+        (_secondsLeft % secondsPerMinute).toString().padLeft(2, '0');
+
+    // print('$formattedMinutesLeft : $formattedSecondsLeft');
+    return '$formattedMinutesLeft : $formattedSecondsLeft';
+  }
 
   final TextEditingController _pinController = TextEditingController();
   final FocusNode _pinFocusNode = FocusNode();
@@ -37,7 +84,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
           titleText(
             text:
                 "We sent a verification code to your email,\n please enter it here",
-            color: Colors.grey,
+            color: Colors.grey.shade700,
             fontSize: 14,
             textAlign: TextAlign.center,
           ),
@@ -56,7 +103,13 @@ class _VerifyEmailState extends State<VerifyEmail> {
             },
             focusNode: _pinFocusNode,
           ),
-
+          otpResendTime(
+            _timerText,
+          ),
+          MedBottomButton(
+            text: "Confirm",
+            onPressed: () {},
+          )
         ],
       ),
     );

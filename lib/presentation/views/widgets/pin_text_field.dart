@@ -50,7 +50,7 @@ class PinTextField extends StatelessWidget {
             onDone: onDone,
             pinBoxWidth: 80.w,
             pinBoxHeight: 60.h,
-            hasUnderline: true,
+            hasUnderline: false,
             wrapAlignment: WrapAlignment.spaceBetween,
             pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
             pinTextStyle: GoogleFonts.alegreya(
