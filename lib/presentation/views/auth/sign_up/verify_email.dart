@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
 
-class VerifyEmail extends StatelessWidget {
+import '../../widgets/pin_text_field.dart';
+
+class VerifyEmail extends StatefulWidget {
   static const route = "/verify-email";
 
   const VerifyEmail({super.key});
+
+  @override
+  State<VerifyEmail> createState() => _VerifyEmailState();
+}
+
+class _VerifyEmailState extends State<VerifyEmail> {
+
+  final TextEditingController _pinController = TextEditingController();
+  final FocusNode _pinFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +41,22 @@ class VerifyEmail extends StatelessWidget {
             fontSize: 14,
             textAlign: TextAlign.center,
           ),
+          PinTextField(
+            pinLength: 4,
+            pinController: _pinController,
+            onTextChanged: (val) {
+              if (val.length >= 4) {
+                // _isValidated = true;
+              }
+            },
+            onDone: (val) {
+              if (val.length >= 4) {
+                // _isValidated = true;
+              }
+            },
+            focusNode: _pinFocusNode,
+          ),
+
         ],
       ),
     );
