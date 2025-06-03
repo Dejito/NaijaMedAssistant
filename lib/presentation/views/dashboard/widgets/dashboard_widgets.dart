@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
 
-import '../../../core/constant/app_assets.dart';
-import '../widgets/titleText.dart';
+import '../../../../core/constant/app_assets.dart';
+import '../../widgets/titleText.dart';
 
 Widget dashboardWelcomeBar() {
   return Column(
@@ -74,10 +74,10 @@ Widget quickActionsCard({required String icon, required String label, Color labe
             bottomPadding: 8
         ),
         SvgPicture.asset(icon),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Container(
-          width: 320.w,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          // width: 320.w,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           decoration: BoxDecoration(
             color: labelBackgroundColor,
             borderRadius: BorderRadius.circular(20),
@@ -107,7 +107,7 @@ Widget quickActionsCardSlider({ required BuildContext context,
         height: MediaQuery
             .of(context)
             .size
-            .height * 0.22,
+            .height * 0.21,
         child: PageView(
           controller: controller,
           onPageChanged: onSwipe,
@@ -142,96 +142,54 @@ Widget quickActionsCardSlider({ required BuildContext context,
   );
 }
 
-// Widget onboardingScreensSliderView({
-//   required BuildContext context,
-//   required PageController controller,
-//   required double index,
-//   required Function(int) onSwipe,
-// }) {
-//   return Column(
-//     children: [
-//       SizedBox(
-//         height: MediaQuery
-//             .of(context)
-//             .size
-//             .height * 0.72,
-//         child: PageView(
-//           controller: controller,
-//           onPageChanged: onSwipe,
-//           physics: const BouncingScrollPhysics(),
-//           children: [
-//             OnboardingScreenItem(
-//               imageUrl: AppImages.onboardingOne,
-//               clipperDirection: BottomLeftCurveClipper(),
-//               positionWidget: Positioned(
-//                 bottom: 50.h,
-//                 right: 15.w,
-//                 child: Container(
-//                   child: titleText(
-//                     text: "Trade gift cards \nfast, secure, and \nstress-free.",
-//                     color: Colors.white,
-//                     fontSize: 23.sp,
-//                     fontWeight: FontWeight.w600,
-//                     textAlign: TextAlign.end,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             OnboardingScreenItem(
-//               imageUrl: AppImages.onboardingTwo,
-//               clipperDirection: NeutralCurveClipper(),
-//               positionWidget: Positioned(
-//                 bottom: 50.h,
-//                 right: 0,
-//                 left: 0,
-//                 child: Container(
-//                   child: titleText(
-//                     text:
-//                     "Effortless Gift Card \nRedemptions with \nUnmatched Security  \nand Value.",
-//                     color: Colors.white,
-//                     fontSize: 23.sp,
-//                     fontWeight: FontWeight.w600,
-//                     textAlign: TextAlign.center,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             OnboardingScreenItem(
-//               imageUrl: AppImages.onboardingThree,
-//               clipperDirection: BottomRightCurveClipper(),
-//               positionWidget: Positioned(
-//                 bottom: 50.h,
-//                 left: 15.w,
-//                 child: Container(
-//                   child: titleText(
-//                     text:
-//                     "Your Trusted Hub \nfor Safe, Affordable, \nand Easy Gift Card \nTrades.",
-//                     color: Colors.white,
-//                     fontSize: 23.sp,
-//                     fontWeight: FontWeight.w600,
-//                     textAlign: TextAlign.start,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//       SizedBox(height: 15.h),
-//       DotsIndicator(
-//         dotsCount: 3,
-//         position: index,
-//         decorator: DotsDecorator(
-//           color: const Color(0xFFD9D9D9),
-//           activeColor: Colors.grey,
-//           size: const Size.square(7.0),
-//           activeSize: const Size(18, 6),
-//           activeShape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(5.0),
-//           ),
-//         ),
-//       ),
-//       SizedBox(height: 30.h),
-//     ],
-//   );
-// }
+
+Widget drawerListTile(
+    {required Function() onTap,
+      required String txType,
+    }) {
+  return ListTile(
+      leading: titleText(
+        txType,
+        fontSize: 17,
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
+      ),
+      onTap: onTap);
+}
+
+Widget drawerHeader({required String username}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      SizedBox(
+        height: 20.h,
+      ),
+      Container(
+            width: 55,
+            height: 55,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            clipBehavior: Clip.hardEdge,
+            child: Image.asset(
+              AppImages.brandLogo,
+              fit: BoxFit.cover,
+            ),
+          ),
+      titleText(
+        username,
+        fontSize: 16,
+        color: Colors.white,
+        topPadding: 4,
+        // bottomPadding: 12,
+      ),
+      Divider(
+        height: 1.h,
+        color: Colors.white,
+        // indent: 20.w,
+        endIndent: 20.w,
+      ),
+
+    ],
+  );
+}

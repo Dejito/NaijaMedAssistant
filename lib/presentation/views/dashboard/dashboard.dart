@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:naija_med_assistant/presentation/views/dashboard/widgets/main_drawer.dart';
 
-import '../../../core/constant/app_assets.dart';
 import '../../../core/constant/app_colors.dart';
 import '../widgets/titleText.dart';
-import 'dashboard_widgets.dart';
+import 'widgets/dashboard_widgets.dart';
 
 class Dashboard extends StatefulWidget {
   static const route = '/dashboard';
@@ -60,6 +59,7 @@ class _DashboardState extends State<Dashboard> {
           )
         ],
       ),
+      drawer: const MainDrawer(),
       body: Padding(
         padding: EdgeInsets.all(16.0.w),
         child: Column(
