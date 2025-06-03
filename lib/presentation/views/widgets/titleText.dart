@@ -33,7 +33,7 @@ Widget titleText(
       ),
       textAlign: textAlign,
       overflow: TextOverflow.fade,
-      // maxLines: 2,
+      maxLines: 2,
     ),
   );
 }

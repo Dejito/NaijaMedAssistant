@@ -226,14 +226,53 @@ Widget viewMoreSymptoms() {
 
 Widget symptomCheckHistoryItem() {
   return Container(
-    padding: EdgeInsets.all(8.w),
+    padding: EdgeInsets.all(12.w),
     decoration: BoxDecoration(
-      border: Border.all(color: Colors.black)
-    ),
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(12.r)),
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-
+        symptomCheckHistoryItemItem(
+          key: 'Symptom Checked',
+          value:
+              'Fever, Headache, Nausea',
+        ),
+        symptomCheckHistoryItemItem(key: 'Date', value: '13/10/2024'),
+        symptomCheckHistoryItemItem(key: 'Status Tag', value: 'AI Resolved'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            titleText(
+              "View Full Details ",
+              fontWeight: FontWeight.w600,
+              // fontSize:
+            ),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: AppColors.primaryColor,
+              size: 12,
+            )
+          ],
+        )
       ],
     ),
+  );
+}
+
+Widget symptomCheckHistoryItemItem(
+    {required String key, required String value}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Container(
+        width: 150.w,
+        child: titleText(key, fontWeight: FontWeight.w600, bottomPadding: 3),
+      ),
+      Spacer(),
+      Expanded(child: Container(
+          margin: EdgeInsets.only(right: 6),
+          child: titleText("$value    ", bottomPadding: 3))),
+    ],
   );
 }
