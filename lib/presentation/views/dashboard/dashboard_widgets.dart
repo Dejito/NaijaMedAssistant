@@ -46,122 +46,164 @@ Widget dashboardWelcomeBar() {
   );
 }
 
-Widget quickActionsCard() {
+Widget quickActionsCard({required String icon, required String label}) {
   return Container(
-    // padding: EdgeInsets,
-    height: 220,
-    decoration: const BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          AppColors.primaryColor,
-          Color(0xFF2A2A2A),
-          Color(0xFFF1F6FF),
-        ],
-        stops: [0.05, 0.15, 0.25],
-      ),
+    padding: const EdgeInsets.symmetric(vertical: 16),
+    margin: const EdgeInsets.only(top: 16),
+    width: double.infinity,
+    // height: 220,
+    decoration: BoxDecoration(
+      color: const Color(0xFFF1F6FF),
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black26,
+          blurRadius: 2,
+          offset: Offset(0, 2),
+        ),
+      ],
     ),
     child: Column(
       children: [
-        titleText("Quick Actions", color: Colors.white),
+        titleText(
+          "Quick Actions!",
+          color: AppColors.primaryColor,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          bottomPadding: 8
+        ),
         SvgPicture.asset(AppIcons.insight),
+        const SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          width: 320.w,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             color: const Color(0xFF3B61FF),
             borderRadius: BorderRadius.circular(20),
           ),
           child: titleText(
             'AI Powered Symptom Checker',
-            // style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            textAlign: TextAlign.center
             // ),
           ),
         ),
-
-
       ],
     ),
   );
 }
 
-class QuickActionsCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 220,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.topCenter,
-        children: [
-          // White card behind
-          Positioned(
-            top: 40,
-            child: Container(
-              width: 320,
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Color(0xFFF1F6FF),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 12,
-                    offset: Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Icon(Icons.psychology_alt_outlined,
-                      size: 40, color: Colors.black87),
-                  SizedBox(height: 16),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF3B61FF),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'AI Powered Symptom Checker',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+Widget quickActionsCardSlider({  required BuildContext context,
+  required PageController controller,
+  required double index,
+  required Function(int) onSwipe,
+}) {
+  return Column(
+    children: [
+      SizedBox(
+        height: MediaQuery.of(context).size.height * 0.15,
+        child: PageView(
+          controller: controller,
+          onPageChanged: onSwipe,
+          physics: const BouncingScrollPhysics(),
+          children: [
 
-          // Blue top label that appears to be embedded
-          Positioned(
-            top: 15,
-            child: Container(
-              width: 300,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Color(0xFF3B61FF),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Center(
-                child: Text(
-                  'Quick Actions!',
-                  style: TextStyle(
+          ],
+        ),
+      )
+    ],
+  )
+}
+
+Widget onboardingScreensSliderView({
+  required BuildContext context,
+  required PageController controller,
+  required double index,
+  required Function(int) onSwipe,
+}) {
+  return Column(
+    children: [
+      SizedBox(
+        height: MediaQuery.of(context).size.height * 0.72,
+        child: PageView(
+          controller: controller,
+          onPageChanged: onSwipe,
+          physics: const BouncingScrollPhysics(),
+          children: [
+            OnboardingScreenItem(
+              imageUrl: AppImages.onboardingOne,
+              clipperDirection: BottomLeftCurveClipper(),
+              positionWidget: Positioned(
+                bottom: 50.h,
+                right: 15.w,
+                child: Container(
+                  child: titleText(
+                    text: "Trade gift cards \nfast, secure, and \nstress-free.",
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 23.sp,
+                    fontWeight: FontWeight.w600,
+                    textAlign: TextAlign.end,
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+            OnboardingScreenItem(
+              imageUrl: AppImages.onboardingTwo,
+              clipperDirection: NeutralCurveClipper(),
+              positionWidget: Positioned(
+                bottom: 50.h,
+                right: 0,
+                left: 0,
+                child: Container(
+                  child: titleText(
+                    text:
+                    "Effortless Gift Card \nRedemptions with \nUnmatched Security  \nand Value.",
+                    color: Colors.white,
+                    fontSize: 23.sp,
+                    fontWeight: FontWeight.w600,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+            OnboardingScreenItem(
+              imageUrl: AppImages.onboardingThree,
+              clipperDirection: BottomRightCurveClipper(),
+              positionWidget: Positioned(
+                bottom: 50.h,
+                left: 15.w,
+                child: Container(
+                  child: titleText(
+                    text:
+                    "Your Trusted Hub \nfor Safe, Affordable, \nand Easy Gift Card \nTrades.",
+                    color: Colors.white,
+                    fontSize: 23.sp,
+                    fontWeight: FontWeight.w600,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    );
-  }
+      SizedBox(height: 15.h),
+      DotsIndicator(
+        dotsCount: 3,
+        position: index,
+        decorator: DotsDecorator(
+          color: const Color(0xFFD9D9D9),
+          activeColor: Colors.grey,
+          size: const Size.square(7.0),
+          activeSize: const Size(18, 6),
+          activeShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+        ),
+      ),
+      SizedBox(height: 30.h),
+    ],
+  );
 }
