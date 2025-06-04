@@ -1,20 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:logger/logger.dart';
-import 'package:naija_med_assistant/core/constant/decoration_styles.dart';
 import 'package:naija_med_assistant/presentation/views/ai/widgets/ai_widgets.dart';
-import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
-
 import '../../../core/constant/app_colors.dart';
 import '../../../core/constant/textfield_styles.dart';
 import '../widgets/titleText.dart';
-import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class Message {
   final String text;
