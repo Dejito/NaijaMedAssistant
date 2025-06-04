@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:naija_med_assistant/presentation/views/chat/chat.dart';
 import 'package:naija_med_assistant/presentation/views/profile/profile.dart';
 
-import '../dashboard/dashboard.dart';
+import '../dashboard/screens/dashboard.dart';
 
 
 class ApplicationPage extends StatefulWidget {

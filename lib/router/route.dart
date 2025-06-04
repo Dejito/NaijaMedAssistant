@@ -4,7 +4,7 @@ import 'package:naija_med_assistant/presentation/views/auth/login/login_screen.d
 import 'package:naija_med_assistant/presentation/views/auth/sign_up/profile_setup.dart';
 import 'package:naija_med_assistant/presentation/views/auth/sign_up/sign_up.dart';
 import 'package:naija_med_assistant/presentation/views/auth/sign_up/verify_email.dart';
-import 'package:naija_med_assistant/presentation/views/dashboard/dashboard.dart';
+import 'package:naija_med_assistant/presentation/views/dashboard/screens/dashboard.dart';
 
 class AppRoutes {
   static const initial = LoginScreen.route;

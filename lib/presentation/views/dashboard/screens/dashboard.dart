@@ -5,9 +5,9 @@ import 'package:naija_med_assistant/core/constant/app_assets.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/widgets/main_drawer.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/widgets/symptom_check_listview.dart';
 
-import '../../../core/constant/app_colors.dart';
-import '../widgets/titleText.dart';
-import 'widgets/dashboard_widgets.dart';
+import '../../../../core/constant/app_colors.dart';
+import '../../widgets/titleText.dart';
+import '../widgets/dashboard_widgets.dart';
 
 class Dashboard extends StatefulWidget {
   static const route = '/dashboard';
@@ -87,10 +87,37 @@ class _DashboardState extends State<Dashboard> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primaryColor,
-        onPressed: () {  },
-        child: SvgPicture.asset(AppIcons.logoWhite,),
+      floatingActionButton: SizedBox(
+        height: 70,
+        width: 70,
+        child: FloatingActionButton(
+          backgroundColor: AppColors.primaryColor,
+          onPressed: () {},
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40), // Make it circular again
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(AppIcons.logoWhite, height: 24, width: 24),
+              const SizedBox(height: 2),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: titleText(
+                  'CHAT WITH AI',
+                  fontSize: 9,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
