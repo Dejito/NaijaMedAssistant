@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:naija_med_assistant/core/constant/app_assets.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/widgets/main_drawer.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/widgets/symptom_check_listview.dart';
 
@@ -80,11 +82,17 @@ class _DashboardState extends State<Dashboard> {
               },
             ),
             viewMoreSymptoms(),
-            Expanded(child: const SymptomCheckListview(),)
+            const Expanded(child: SymptomCheckListview(),)
 
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.primaryColor,
+        onPressed: () {  },
+        child: SvgPicture.asset(AppIcons.logoWhite,),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

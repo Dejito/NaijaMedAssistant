@@ -174,7 +174,7 @@ Widget drawerHeader({required String username}) {
         ),
         clipBehavior: Clip.hardEdge,
         child: Image.asset(
-          AppImages.brandLogo,
+          AppImages.logoWhite,
           fit: BoxFit.cover,
         ),
       ),
