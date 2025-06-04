@@ -1,15 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/core/constant/app_assets.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/elevated_bottom_button.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
-import '../../../../core/constant/app_colors.dart';
-import '../../widgets/titleText.dart';
-import '../widgets/dashboard_widgets.dart';
+import '../../../core/constant/app_colors.dart';
+import '../widgets/titleText.dart';
+import '../dashboard/widgets/dashboard_widgets.dart';
 
 class AISymptomChecker extends StatelessWidget {
+
   static const route = '/ai-symptom-checker';
 
   const AISymptomChecker({super.key});
@@ -42,7 +45,12 @@ class AISymptomChecker extends StatelessWidget {
             symptomCheckerTextBox(),
             describeIssue(),
             const Spacer(),
-            MedBottomButton(text: "Proceed", onPressed: (){},)
+            MedBottomButton(
+              text: "Proceed",
+              onPressed: () {
+                context.go(AppRoutes.aiChatBox);
+              },
+            )
           ],
         ),
       ),

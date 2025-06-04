@@ -72,7 +72,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 Icons.chat_bubble_outline,
                 // color: selectedIndex == 1 ? const Color(0xFFFFD739) : Colors.white,
               ),
-              label: "Wallet",
+              label: "Chat",
             ),
             // BottomNavigationBarItem(
             //   icon: SvgPicture.asset(

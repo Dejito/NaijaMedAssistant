@@ -108,7 +108,7 @@ Widget quickActionsCardSlider({
   return Column(
     children: [
       SizedBox(
-        height: MediaQuery.of(context).size.height * 0.21,
+        height: MediaQuery.of(context).size.height * 0.24,
         child: PageView(
           controller: controller,
           onPageChanged: onSwipe,
@@ -127,7 +127,7 @@ Widget quickActionsCardSlider({
             ),
             quickActionsCard(
                 icon: AppIcons.emergency,
-                label: 'AI Powered Symptom Checker',
+                label: 'Emergency Service',
                 labelBackgroundColor: const Color(0xFFD83E06)),
           ],
         ),
@@ -341,7 +341,7 @@ Widget describeIssue({int maxLines = 6}) {
       children: [
         titleText(
           'Enter your symptoms',
-          fontWeight: FontWeight.w500, fontSize: 14,
+          fontWeight: FontWeight.w500, fontSize: 16,
           topPadding: 12
         ),
         SizedBox(height: 8.h),
@@ -356,6 +356,13 @@ Widget describeIssue({int maxLines = 6}) {
             ),
             contentPadding: const EdgeInsets.all(16),
           ),
+        ),
+        titleText(
+            'Please describe your symptoms in detail.',
+            color: Colors.grey,
+            fontSize: 14,
+            textAlign: TextAlign.start,
+            topPadding: 6
         ),
       ],
     );
