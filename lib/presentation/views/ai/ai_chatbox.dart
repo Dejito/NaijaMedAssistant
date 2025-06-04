@@ -5,13 +5,27 @@ import 'package:naija_med_assistant/presentation/views/ai/widgets/ai_widgets.dar
 import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
 
 import '../../../core/constant/app_colors.dart';
+import '../../../core/constant/textfield_styles.dart';
 import '../widgets/titleText.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class AiChatBox extends StatelessWidget {
+class AiChatBox extends StatefulWidget {
 
   static const route = '/ai-chat-box';
 
   const AiChatBox({super.key});
+
+  @override
+  State<AiChatBox> createState() => _AiChatBoxState();
+}
+
+class _AiChatBoxState extends State<AiChatBox> {
+
+  @override
+  void initState() {
+    late IO.Socket _socket;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,20 +54,27 @@ class AiChatBox extends StatelessWidget {
             welcomeTextCard(),
             const Spacer(),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center, // Center-align vertically
               children: [
-                const Icon(
-                  Icons.image_outlined
-                ),
-                Expanded( // 👈
-                  child: Container(
-                    decoration: AppDecorationStyle.boxDecoration,
-                    child: InputText(
-                      hint: "Type your message",
+                const Icon(Icons.image_outlined),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: "Type your message",
+                      focusedBorder: AppStyles.focusedBorder,
+                      disabledBorder: AppStyles.focusBorder,
+                      enabledBorder: AppStyles.focusBorder,
+                      border: AppStyles.focusBorder,
                     ),
-                  ),
+                  )
+                  // InputText(
+                  //   hint: "Type your message",
+                  //   bottomPadding: 0,
+                  // ),
                 ),
-                const SizedBox(width: 8), // Add spacing if needed
-                const Icon(Icons.mic_none_rounded),
+                const SizedBox(width: 8),
+                const Icon(Icons.send),
               ],
             )
           ],
