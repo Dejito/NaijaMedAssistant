@@ -47,8 +47,8 @@ final GoRouter router = GoRouter(
       builder: (_, __) => const Dashboard(),
     ),
 
-    GoRoute(path: AppRoutes,
-          builder: (_, __) => const Dashboard(),
+    GoRoute(path: AppRoutes.appPage,
+          builder: (_, __) => const ApplicationPage(),
         ),
 
 

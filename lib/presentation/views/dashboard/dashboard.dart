@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/widgets/main_drawer.dart';
+import 'package:naija_med_assistant/presentation/views/dashboard/widgets/symptom_check_listview.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../widgets/titleText.dart';
@@ -16,7 +17,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-
   late final PageController _pageController;
   int swipeIndex = 0;
 
@@ -32,7 +32,6 @@ class _DashboardState extends State<Dashboard> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +39,11 @@ class _DashboardState extends State<Dashboard> {
         centerTitle: true,
         // elevation: 1,
         backgroundColor: AppColors.white,
-        title: titleText('Profile Set-up', fontSize: 16),
+        title: titleText(
+          'Home',
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(0.0),
           child: Container(
@@ -77,7 +80,7 @@ class _DashboardState extends State<Dashboard> {
               },
             ),
             viewMoreSymptoms(),
-            symptomCheckHistoryItem(),
+            Expanded(child: const SymptomCheckListview(),)
 
           ],
         ),
