@@ -124,6 +124,7 @@ class _AiChatBoxState extends State<AiChatBox> {
       ),
       body: Column(
         children: [
+          welcomeTextCard(),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(12),

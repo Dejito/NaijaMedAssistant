@@ -33,9 +33,9 @@ Widget welcomeTextCard() {
               ),
               const SizedBox(height: 4),
               titleText(
-                'Hi Blessing',
+                'Hi Blessing, Please describe how you are feeling.',
                 fontSize: 13,
-                color: Colors.grey,
+                color: Colors.grey.shade800,
               ),
             ],
           ),
