@@ -4,6 +4,7 @@ import 'package:naija_med_assistant/presentation/views/auth/login/login_screen.d
 import 'package:naija_med_assistant/presentation/views/auth/sign_up/profile_setup.dart';
 import 'package:naija_med_assistant/presentation/views/auth/sign_up/sign_up.dart';
 import 'package:naija_med_assistant/presentation/views/auth/sign_up/verify_email.dart';
+import 'package:naija_med_assistant/presentation/views/dashboard/screens/ai_symptom_checker.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/screens/dashboard.dart';
 
 class AppRoutes {
@@ -14,6 +15,7 @@ class AppRoutes {
   static const profileSetup = ProfileSetup.route;
   static const dashboard = Dashboard.route;
   static const appPage = ApplicationPage.route;
+  static const aiSymptomChecker = AISymptomChecker.route;
 
 }
 
@@ -49,6 +51,10 @@ final GoRouter router = GoRouter(
 
     GoRoute(path: AppRoutes.appPage,
           builder: (_, __) => const ApplicationPage(),
+        ),
+
+    GoRoute(path: AppRoutes.aiSymptomChecker,
+          builder: (_, __) => const AISymptomChecker(),
         ),
 
 

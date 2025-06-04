@@ -308,3 +308,55 @@ Widget fabContent() {
     ],
   );
 }
+
+Widget symptomCheckerTextBox() {
+  return Container(
+    // width: 100,
+    height: 200,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(6.r),
+      image: const DecorationImage(
+        image: AssetImage(AppImages.aiSymptomChecker),
+        fit: BoxFit.cover,
+      ),
+    ),
+    child: Center(
+      child: titleText(
+        "Welcome to our AI-powered \nSymptom Checker",
+        fontWeight: FontWeight.bold,
+        color: Colors.black, // Ensure contrast against background
+        fontSize: 16, // Adjust to fit within the small container
+        textAlign: TextAlign.center,
+      ),
+    ),
+  );
+
+}
+
+
+Widget describeIssue({int maxLines = 6}) {
+  return
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start, // Center the label
+      children: [
+        titleText(
+          'Enter your symptoms',
+          fontWeight: FontWeight.w500, fontSize: 14,
+          topPadding: 12
+        ),
+        SizedBox(height: 8.h),
+        TextFormField(
+          // textAlign: TextAlign.center,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: 'e.g Cough, Fever',
+            hintStyle: const TextStyle(color: Colors.grey),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            contentPadding: const EdgeInsets.all(16),
+          ),
+        ),
+      ],
+    );
+}
