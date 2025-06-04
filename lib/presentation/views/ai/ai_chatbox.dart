@@ -13,6 +13,16 @@ import '../widgets/titleText.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import 'package:flutter/material.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+class Message {
+  final String text;
+  final bool isMe;
+
+  Message({required this.text, required this.isMe});
+}
+
 class AiChatBox extends StatefulWidget {
   static const route = '/ai-chat-box';
 
@@ -24,8 +34,8 @@ class AiChatBox extends StatefulWidget {
 
 class _AiChatBoxState extends State<AiChatBox> {
   late IO.Socket socket;
-  List<String> messages = [];
   final TextEditingController messageController = TextEditingController();
+  final List<Message> messages = [];
 
   @override
   void initState() {
@@ -36,30 +46,31 @@ class _AiChatBoxState extends State<AiChatBox> {
   void connectToSocket() {
     socket = IO.io('https://naijamed.onrender.com', <String, dynamic>{
       'transports': ['websocket'],
-      'autoConnect': true,
     });
 
-    socket.onConnect((_) {
+    socket.on('connect', (_) {
       print('Connected to server');
     });
 
     socket.on('response', (data) {
       print('Message from server: $data');
       setState(() {
-        messages.add(data.toString());
+        messages.add(Message(text: data.toString(), isMe: false));
       });
     });
 
-    socket.onDisconnect((_) {
+    socket.on('disconnect', (_) {
       print('Disconnected from server');
     });
   }
 
   void sendMessage() {
-    if (messageController.text.trim().isEmpty) return;
-    socket.emit('message', messageController.text.trim());
+    final message = messageController.text.trim();
+    if (message.isEmpty) return;
+
+    socket.emit('message', message);
     setState(() {
-      messages.add("You: ${messageController.text.trim()}");
+      messages.add(Message(text: message, isMe: true));
       messageController.clear();
     });
   }
@@ -69,6 +80,26 @@ class _AiChatBoxState extends State<AiChatBox> {
     socket.dispose();
     messageController.dispose();
     super.dispose();
+  }
+
+  Widget buildMessage(Message msg) {
+    return Align(
+      alignment: msg.isMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+          color: msg.isMe ? Colors.blueAccent : Colors.grey[300],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          msg.text,
+          style: TextStyle(
+            color: msg.isMe ? Colors.white : Colors.black,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -91,83 +122,68 @@ class _AiChatBoxState extends State<AiChatBox> {
           ),
         ),
       ),
-      body: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(title: Text(messages[index]));
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: messageController,
-                        decoration: InputDecoration(
-                            hintText: 'Type your message'),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: messages.length,
+              itemBuilder: (context, index) => buildMessage(messages[index]),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              // Center-align vertically
+              children: [
+                const Icon(Icons.image_outlined),
+                const SizedBox(width: 8),
+                Expanded(
+                    child: TextFormField(
+                      controller: messageController,
+                      decoration: InputDecoration(
+                        hintText: "Type your message",
+                        focusedBorder: AppStyles.focusedBorder,
+                        disabledBorder: AppStyles.focusBorder,
+                        enabledBorder: AppStyles.focusBorder,
+                        border: AppStyles.focusBorder,
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.send),
-                      onPressed: sendMessage,
-                    ),
-                  ],
+                    )
+                  // InputText(
+                  //   hint: "Type your message",
+                  //   bottomPadding: 0,
+                  // ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: sendMessage,
+                  child: const Icon(Icons.send),
+                ),
+              ],
+            ),
           )
 
-        // Column(
-        //   children: [
-        //     welcomeTextCard(),
-        //     const Spacer(),
-        //     Row(
-        //       crossAxisAlignment: CrossAxisAlignment.center,
-        //       // Center-align vertically
-        //       children: [
-        //         const Icon(Icons.image_outlined),
-        //         const SizedBox(width: 8),
-        //         Expanded(
-        //             child: TextFormField(
-        //           controller: messageController,
-        //           decoration: InputDecoration(
-        //             hintText: "Type your message",
-        //             focusedBorder: AppStyles.focusedBorder,
-        //             disabledBorder: AppStyles.focusBorder,
-        //             enabledBorder: AppStyles.focusBorder,
-        //             border: AppStyles.focusBorder,
-        //           ),
-        //         )
-        //             // InputText(
-        //             //   hint: "Type your message",
-        //             //   bottomPadding: 0,
-        //             // ),
-        //             ),
-        //         const SizedBox(width: 8),
-        //         GestureDetector(
-        //           onTap: sendMessage,
-        //           child: const Icon(Icons.send),
-        //         ),
-        //       ],
-        //     )
-        //   ],
-        // ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Row(
+          //     children: [
+          //       Expanded(
+          //         child: TextFormField(
+          //           controller: messageController,
+          //           decoration: InputDecoration(
+          //               hintText: 'Type your message'),
+          //         ),
+          //       ),
+          //       IconButton(
+          //         icon: Icon(Icons.send),
+          //         onPressed: sendMessage,
+          //       ),
+          //     ],
+          //   ),
+          // ),
+        ],
       ),
     );
   }
-}
-
-
-class Message {
-  final String text;
-  final bool isMe;
-
-  Message({required this.text, required this.isMe});
 }
