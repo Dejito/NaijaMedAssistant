@@ -21,7 +21,7 @@ class MainDrawer extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            drawerHeader(username: "Dejito"),
+            drawerHeader(username: "Blessing"),
             const SizedBox(
               height: 25,
             ),

@@ -13,7 +13,11 @@ class ProfileSetup extends StatelessWidget {
 
   static const route = '/profile-setup';
 
-  const ProfileSetup({super.key});
+  ProfileSetup({super.key});
+
+  final TextEditingController nameController = TextEditingController(text: 'Ogunrinde Blessing');
+  final TextEditingController emailController = TextEditingController(text: 'Bogunride22@gmail.com');
+  final TextEditingController phoneController = TextEditingController(text: '08102394672');
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +41,22 @@ class ProfileSetup extends StatelessWidget {
           children: [
             profileAvatar(),
             InputText(
-              hint: "Full name",
+              hint: "Ogunrinde Blessing",
+              controller: nameController,
               bottomPadding: 0,
             ),
             InputText(
-              hint: "Email Address",
+              controller: emailController,
+              hint: "Bogunride22@gmail.com",
               bottomPadding: 0,
             ),
             InputText(
-              hint: "Phone",
+              controller: phoneController,
+              hint: "08102394672",
               bottomPadding: 0,
             ),
             InputText(
+              // controller: ,
               hint: "Home Address",
               bottomPadding: 0,
             ),
@@ -83,7 +91,7 @@ class ProfileSetup extends StatelessWidget {
             MedBottomButton(
               text: "Save",
               onPressed: () {
-                context.go(AppRoutes.dashboard);
+                context.go(AppRoutes.login);
               },
               topMargin: 30,
               bottomMargin: 12,

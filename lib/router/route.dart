@@ -45,7 +45,7 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(path: AppRoutes.profileSetup,
-      builder: (_, __) => const ProfileSetup(),
+      builder: (_, __) =>  ProfileSetup(),
     ),
 
     GoRoute(path: AppRoutes.dashboard,
