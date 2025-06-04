@@ -48,7 +48,7 @@ class AISymptomChecker extends StatelessWidget {
             MedBottomButton(
               text: "Proceed",
               onPressed: () {
-                context.go(AppRoutes.aiChatBox);
+                context.push(AppRoutes.aiChatBox);
               },
             )
           ],
