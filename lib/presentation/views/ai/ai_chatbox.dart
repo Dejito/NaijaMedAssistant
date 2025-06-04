@@ -24,6 +24,8 @@ class AiChatBox extends StatefulWidget {
 
 class _AiChatBoxState extends State<AiChatBox> {
   late IO.Socket socket;
+  List<String> messages = [];
+  final TextEditingController messageController = TextEditingController();
 
   @override
   void initState() {
@@ -34,9 +36,10 @@ class _AiChatBoxState extends State<AiChatBox> {
   void connectToSocket() {
     socket = IO.io('https://naijamed.onrender.com', <String, dynamic>{
       'transports': ['websocket'],
+      'autoConnect': true,
     });
 
-    socket.on('connect', (_) {
+    socket.onConnect((_) {
       print('Connected to server');
     });
 
@@ -47,19 +50,10 @@ class _AiChatBoxState extends State<AiChatBox> {
       });
     });
 
-    socket.on('disconnect', (_) {
+    socket.onDisconnect((_) {
       print('Disconnected from server');
     });
   }
-
-  @override
-  void dispose() {
-    socket.dispose();
-    super.dispose();
-  }
-
-  final TextEditingController messageController = TextEditingController();
-
 
   void sendMessage() {
     if (messageController.text.trim().isEmpty) return;
@@ -70,7 +64,12 @@ class _AiChatBoxState extends State<AiChatBox> {
     });
   }
 
-  List<String> messages = [];
+  @override
+  void dispose() {
+    socket.dispose();
+    messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,4 +162,12 @@ class _AiChatBoxState extends State<AiChatBox> {
       ),
     );
   }
+}
+
+
+class Message {
+  final String text;
+  final bool isMe;
+
+  Message({required this.text, required this.isMe});
 }
