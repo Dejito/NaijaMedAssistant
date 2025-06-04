@@ -246,7 +246,7 @@ Widget symptomCheckHistoryItem() {
             titleText(
               "View Full Details ",
               fontWeight: FontWeight.w600,
-              // fontSize:
+              fontSize: 13,
             ),
             const Icon(
               Icons.arrow_forward_ios_rounded,
@@ -269,9 +269,8 @@ Widget symptomCheckHistoryItemItem(
         width: 150.w,
         child: titleText(key, fontWeight: FontWeight.w600, bottomPadding: 3),
       ),
-      Spacer(),
       Expanded(child: Container(
-          margin: EdgeInsets.only(right: 6),
+          margin: EdgeInsets.only(right: 6.w),
           child: titleText("$value    ", bottomPadding: 3))),
     ],
   );

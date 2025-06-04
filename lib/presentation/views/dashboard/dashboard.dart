@@ -77,7 +77,8 @@ class _DashboardState extends State<Dashboard> {
               },
             ),
             viewMoreSymptoms(),
-            symptomCheckHistoryItem()
+            symptomCheckHistoryItem(),
+
           ],
         ),
       ),
