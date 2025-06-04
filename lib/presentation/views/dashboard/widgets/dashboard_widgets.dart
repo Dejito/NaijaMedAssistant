@@ -2,8 +2,10 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/widgets/symptom_check_listview.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
 import '../../../../core/constant/app_assets.dart';
 import '../../widgets/titleText.dart';
@@ -112,9 +114,12 @@ Widget quickActionsCardSlider({
           onPageChanged: onSwipe,
           physics: const BouncingScrollPhysics(),
           children: [
-            quickActionsCard(
-              icon: AppIcons.insight,
-              label: 'AI Powered Symptom Checker',
+            GestureDetector(
+              onTap: () => context.push(AppRoutes.aiSymptomChecker),
+              child: quickActionsCard(
+                icon: AppIcons.insight,
+                label: 'AI Powered Symptom Checker',
+              ),
             ),
             quickActionsCard(
               icon: AppIcons.logoBlack,
@@ -237,11 +242,12 @@ Widget symptomCheckHistoryItem(SymptomCheckHistory symptomCheckHistory) {
       children: [
         symptomCheckHistoryItemItem(
           key: 'Symptom Checked',
-          value:
-              symptomCheckHistory.symptomChecked,
+          value: symptomCheckHistory.symptomChecked,
         ),
-        symptomCheckHistoryItemItem(key: 'Date', value: symptomCheckHistory.date),
-        symptomCheckHistoryItemItem(key: 'Status Tag', value: symptomCheckHistory.status),
+        symptomCheckHistoryItemItem(
+            key: 'Date', value: symptomCheckHistory.date),
+        symptomCheckHistoryItemItem(
+            key: 'Status Tag', value: symptomCheckHistory.status),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -271,9 +277,34 @@ Widget symptomCheckHistoryItemItem(
         width: 150.w,
         child: titleText(key, fontWeight: FontWeight.w600, bottomPadding: 3),
       ),
-      Expanded(child: Container(
-          margin: EdgeInsets.only(right: 6.w),
-          child: titleText("$value    ", bottomPadding: 3))),
+      Expanded(
+          child: Container(
+              margin: EdgeInsets.only(right: 6.w),
+              child: titleText("$value    ", bottomPadding: 3))),
+    ],
+  );
+}
+
+Widget fabContent() {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      SvgPicture.asset(AppIcons.logoWhite, height: 24, width: 24),
+      const SizedBox(height: 2),
+      Container(
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+        decoration: BoxDecoration(
+          color: AppColors.primaryColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: titleText(
+          'CHAT WITH AI',
+          fontSize: 9,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          textAlign: TextAlign.center,
+        ),
+      ),
     ],
   );
 }

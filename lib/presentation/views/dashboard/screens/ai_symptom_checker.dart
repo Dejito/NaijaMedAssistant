@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-class AiSymptomChecker extends StatelessWidget {
-  const AiSymptomChecker({super.key});
+class AISymptomChecker extends StatelessWidget {
+  static const route = '/ai-symptom-checker';
+
+  const AISymptomChecker({super.key});
 
   @override
   Widget build(BuildContext context) {
