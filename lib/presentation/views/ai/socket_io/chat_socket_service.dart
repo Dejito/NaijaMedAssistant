@@ -5,7 +5,7 @@ class ChatSocketService {
 
   void initSocketConnection() {
     _socket = IO.io(
-      'http://your-ai-microservice-url.com', // Replace with Toyin's URL
+      'https://naijamed.onrender.com', // Replace with Toyin's URL
       IO.OptionBuilder()
           .setTransports(['websocket']) // for Flutter or Dart VM
           .disableAutoConnect()         // disable auto-connection
