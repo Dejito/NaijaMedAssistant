@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
+import 'package:naija_med_assistant/presentation/views/dashboard/widgets/symptom_check_listview.dart';
 
 import '../../../../core/constant/app_assets.dart';
 import '../../widgets/titleText.dart';
@@ -224,9 +225,10 @@ Widget viewMoreSymptoms() {
   );
 }
 
-Widget symptomCheckHistoryItem() {
+Widget symptomCheckHistoryItem(SymptomCheckHistory symptomCheckHistory) {
   return Container(
     padding: EdgeInsets.all(12.w),
+    margin: EdgeInsets.only(bottom: 12.h),
     decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(12.r)),
@@ -236,10 +238,10 @@ Widget symptomCheckHistoryItem() {
         symptomCheckHistoryItemItem(
           key: 'Symptom Checked',
           value:
-              'Fever, Headache, Nausea',
+              symptomCheckHistory.symptomChecked,
         ),
-        symptomCheckHistoryItemItem(key: 'Date', value: '13/10/2024'),
-        symptomCheckHistoryItemItem(key: 'Status Tag', value: 'AI Resolved'),
+        symptomCheckHistoryItemItem(key: 'Date', value: symptomCheckHistory.date),
+        symptomCheckHistoryItemItem(key: 'Status Tag', value: symptomCheckHistory.status),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
