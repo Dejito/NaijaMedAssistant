@@ -7,7 +7,7 @@ import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
 import '../../../core/constant/app_colors.dart';
 import '../../../core/constant/textfield_styles.dart';
 import '../widgets/titleText.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 
 class AiChatBox extends StatefulWidget {
 
@@ -21,9 +21,17 @@ class AiChatBox extends StatefulWidget {
 
 class _AiChatBoxState extends State<AiChatBox> {
 
+  socket_io.Socket? socket;
+
   @override
   void initState() {
-    late IO.Socket _socket;
+
+    socket = socket_io.io('https://naijamed.onrender.com/',
+    socket_io.OptionBuilder()
+    .setTransports(['websocket'])
+        .enableAutoConnect()
+        .build()
+    );
     super.initState();
   }
 
