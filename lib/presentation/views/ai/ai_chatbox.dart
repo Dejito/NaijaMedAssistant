@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:naija_med_assistant/presentation/views/ai/widgets/ai_widgets.dart';
@@ -13,9 +12,11 @@ class Message {
   final bool isMe;
 
   Message({required this.text, required this.isMe});
+
 }
 
 class AiChatBox extends StatefulWidget {
+
   static const route = '/ai-chat-box';
 
   const AiChatBox({super.key});
@@ -25,6 +26,7 @@ class AiChatBox extends StatefulWidget {
 }
 
 class _AiChatBoxState extends State<AiChatBox> {
+
   late IO.Socket socket;
   final TextEditingController messageController = TextEditingController();
   final List<Message> messages = [];
