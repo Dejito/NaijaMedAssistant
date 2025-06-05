@@ -1,7 +1,7 @@
 # naija_med_assistant
 
-A new Flutter project.
+# A LLaMa-powered AI assistant that clerks patients, assesses symptoms, offers home care guidance and escalates
+# serious cases to health professionals. Additionally, history and reports are generated for efficient clinical decisions.
 
-## Getting Started
 
-This project is a starting point for a naija med assistant
+

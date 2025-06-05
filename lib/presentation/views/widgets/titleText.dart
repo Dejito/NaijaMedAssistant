@@ -25,7 +25,7 @@ Widget titleText(
       ),
     child: Text(
       text,
-      style: GoogleFonts.alegreya(
+      style: GoogleFonts.alegreyaSans(
         fontSize: fontSize.sp,
         fontWeight: fontWeight,
         color: color,
@@ -33,7 +33,7 @@ Widget titleText(
       ),
       textAlign: textAlign,
       overflow: TextOverflow.fade,
-      // maxLines: 2,
+      maxLines: 2,
     ),
   );
 }

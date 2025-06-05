@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       designSize: const Size(390, 884),
       child: MaterialApp.router(
         routerConfig: router,
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

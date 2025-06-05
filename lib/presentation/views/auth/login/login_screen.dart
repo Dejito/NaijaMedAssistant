@@ -60,14 +60,15 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               MedBottomButton(
                 text: "Log in",
-                onPressed: () {},
+                onPressed: () {
+                  context.go(AppRoutes.appPage);
+                },
                 topMargin: 30,
                 bottomMargin: 12,
               ),
               newHereButton(() {
                 context.go(AppRoutes.signup);
               })
-
             ],
           ),
         ),
