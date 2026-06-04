@@ -38,19 +38,26 @@ class AISymptomChecker extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            symptomCheckerTextBox(),
-            describeIssue(),
-            const Spacer(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    symptomCheckerTextBox(),
+                    describeIssue(),
+                  ],
+                ),
+              ),
+            ),
             MedBottomButton(
               text: "Proceed",
               onPressed: () {
                 context.push(AppRoutes.aiChatBox);
               },
-            )
+            ),
           ],
         ),
       ),
