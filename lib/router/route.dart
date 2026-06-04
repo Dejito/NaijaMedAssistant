@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/presentation/views/ai/ai_chatbox.dart';
-import 'package:naija_med_assistant/presentation/views/app_page/app_page.dart';
-import 'package:naija_med_assistant/presentation/views/auth/login/login_screen.dart';
-import 'package:naija_med_assistant/presentation/views/auth/sign_up/profile_setup.dart';
-import 'package:naija_med_assistant/presentation/views/auth/sign_up/sign_up.dart';
-import 'package:naija_med_assistant/presentation/views/auth/sign_up/verify_email.dart';
-import 'package:naija_med_assistant/presentation/views/ai/ai_symptom_checker.dart';
-import 'package:naija_med_assistant/presentation/views/dashboard/screens/dashboard.dart';
+import 'package:naija_med_assistant/presentation/ai/ai_chatbox.dart';
+import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
+import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
+import 'package:naija_med_assistant/presentation/auth/sign_up/profile_setup.dart';
+import 'package:naija_med_assistant/presentation/auth/sign_up/sign_up.dart';
+import 'package:naija_med_assistant/presentation/auth/sign_up/verify_email.dart';
+import 'package:naija_med_assistant/presentation/ai/ai_symptom_checker.dart';
+import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
 
 import '../presentation/onboarding/onboarding_screen.dart';
 import '../presentation/onboarding/splash_screen.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-import '../views/auth/auth_widgets.dart'; // Adjust import path
+import '../auth/auth_widgets.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
