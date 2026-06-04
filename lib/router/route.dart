@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/views/ai/ai_chatbox.dart';
 import 'package:naija_med_assistant/presentation/views/app_page/app_page.dart';
@@ -8,26 +9,40 @@ import 'package:naija_med_assistant/presentation/views/auth/sign_up/verify_email
 import 'package:naija_med_assistant/presentation/views/ai/ai_symptom_checker.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/screens/dashboard.dart';
 
-class AppRoutes {
-  
-  static const initial = LoginScreen.route;
-  static const login = LoginScreen.route;
-  static const signup = Signup.route;
-  static const verifyEmail = VerifyEmail.route;
-  static const profileSetup = ProfileSetup.route;
-  static const dashboard = Dashboard.route;
-  static const appPage = ApplicationPage.route;
-  static const aiSymptomChecker = AISymptomChecker.route;
-  static const aiChatBox = AiChatBox.route;
+import '../presentation/onboarding/onboarding_screen.dart';
+import '../presentation/onboarding/splash_screen.dart';
 
+// Import your new splash and onboarding views here
+// import 'package:naija_med_assistant/presentation/views/welcome/splash_screen.dart';
+// import 'package:naija_med_assistant/presentation/views/welcome/onboarding_screen.dart';
+
+class AppRoutes {
+  // New welcome flow paths
+  static const String splash = "/";
+  static const String onboarding = "/onboarding";
+
+  // Existing auth paths (Updated paths to keep them distinct)
+  static const String login = "/login";
+  static const String signup = "/signup";
+  static const String verifyEmail = "/verify-email";
+  static const String profileSetup = "/profile-setup";
+  static const String dashboard = "/dashboard";
+  static const String appPage = "/app-page";
+  static const String aiSymptomChecker = "/symptom-checker";
+  static const String aiChatBox = "/chatbox";
 }
 
 final GoRouter router = GoRouter(
-  initialLocation: AppRoutes.initial,
+  initialLocation: AppRoutes.splash, // The app now boots into the Splash Screen
   routes: [
     GoRoute(
-      path: AppRoutes.initial,
-      builder: (_, __) => const LoginScreen(),
+      path: AppRoutes.splash,
+      builder: (_, __) => const SplashScreen(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.onboarding,
+      builder: (_, __) => const OnboardingScreen(),
     ),
 
     GoRoute(
@@ -37,46 +52,37 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.signup,
-      builder: (_, __) => const Signup(),
+      builder: (_, __) => const Signup(), // Your modified Stateful user-role view
     ),
 
-    GoRoute(path: AppRoutes.verifyEmail,
+    GoRoute(
+      path: AppRoutes.verifyEmail,
       builder: (_, __) => const VerifyEmail(),
     ),
 
-    GoRoute(path: AppRoutes.profileSetup,
-      builder: (_, __) =>  ProfileSetup(),
+    GoRoute(
+      path: AppRoutes.profileSetup,
+      builder: (_, __) => ProfileSetup(),
     ),
 
-    GoRoute(path: AppRoutes.dashboard,
+    GoRoute(
+      path: AppRoutes.dashboard,
       builder: (_, __) => const Dashboard(),
     ),
 
-    GoRoute(path: AppRoutes.appPage,
-          builder: (_, __) => const ApplicationPage(),
-        ),
+    GoRoute(
+      path: AppRoutes.appPage,
+      builder: (_, __) => const ApplicationPage(),
+    ),
 
-    GoRoute(path: AppRoutes.aiSymptomChecker,
-          builder: (_, __) => const AISymptomChecker(),
-        ),
-  
-  GoRoute(path: AppRoutes.aiChatBox,
-          builder: (_, __) => const AiChatBox(),
-        ),
+    GoRoute(
+      path: AppRoutes.aiSymptomChecker,
+      builder: (_, __) => const AISymptomChecker(),
+    ),
 
-
-    // GoRoute(
-    //   path: '${AppRoutes.verifyEmail}/:email',
-    //   builder: (_, state) =>
-    //       VerifyEmailScreen(email: state.pathParameters['email']!),
-    // ),
-    //
-    // GoRoute(
-    //   path: AppRoutes.adminTransactionDetail,
-    //   builder: (_, state) {
-    //     final txStatus = state.extra as TransactionStatus;
-    //     return AdminTransactionDetailScreen(transactionStatus: txStatus);
-    //   },
-    // ),
+    GoRoute(
+      path: AppRoutes.aiChatBox,
+      builder: (_, __) => const AiChatBox(),
+    ),
   ],
 );

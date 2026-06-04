@@ -44,7 +44,7 @@ Container keepMeLoggedInForgotPassword(
   );
 }
 
-Widget newHereButton(Function() onClickedSignup) {
+Widget newHereButton({required String label, required Function() onClickedSignup}) {
   return Container(
     margin: EdgeInsets.only(top: 12.h),
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -54,7 +54,7 @@ Widget newHereButton(Function() onClickedSignup) {
       textBaseline: TextBaseline.alphabetic,
       children: [
         titleText(
-          "You're new here? ",
+          label,
           fontSize: 14,
           textAlign: TextAlign.start,
           fontWeight: FontWeight.w300,
@@ -102,12 +102,22 @@ Widget alreadyHaveAnAccountButton(Function() onClickedSignup) {
   );
 }
 
-Widget logoImage() {
+Widget logoImage({int height = 80}) {
   return Align(
     alignment: Alignment.center,
     child: Image.asset(
       AppImages.brandLogo,
-      height: 80.h,
+      height: height.h,
+    ),
+  );
+}
+
+Widget whiteLogoImage({int height = 80}) {
+  return Align(
+    alignment: Alignment.center,
+    child: Image.asset(
+      AppImages.logoWhite,
+      height: height.h,
     ),
   );
 }
@@ -231,3 +241,5 @@ Widget profileAvatar() {
     ),
   );
 }
+
+

@@ -66,7 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 topMargin: 30,
                 bottomMargin: 12,
               ),
-              newHereButton(() {
+              newHereButton(
+                      label: "You're new here?",
+                      onClickedSignup: () {
                 context.go(AppRoutes.signup);
               })
             ],
