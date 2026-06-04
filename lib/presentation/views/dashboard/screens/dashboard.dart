@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/widgets/main_drawer.dart';
 import 'package:naija_med_assistant/presentation/views/dashboard/widgets/symptom_check_listview.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../router/route.dart';
 import '../../widgets/titleText.dart';
 import '../widgets/dashboard_widgets.dart';
 
@@ -91,7 +93,9 @@ class _DashboardState extends State<Dashboard> {
         width: 70,
         child: FloatingActionButton(
           backgroundColor: AppColors.primaryColor,
-          onPressed: () {},
+          onPressed: () {
+            context.push(AppRoutes.aiChatBox);
+          },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40), // Make it circular again
           ),
