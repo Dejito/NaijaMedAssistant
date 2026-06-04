@@ -13,8 +13,6 @@ import '../dashboard/widgets/dashboard_widgets.dart';
 
 class AISymptomChecker extends StatelessWidget {
 
-  static const route = '/ai-symptom-checker';
-
   const AISymptomChecker({super.key});
 
   @override
@@ -55,7 +53,7 @@ class AISymptomChecker extends StatelessWidget {
             MedBottomButton(
               text: "Proceed",
               onPressed: () {
-                context.push(AppRoutes.aiChatBox);
+                context.push(AppRoutes.aiSymptomResultScreen);
               },
             ),
           ],

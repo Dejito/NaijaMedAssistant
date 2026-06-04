@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
 import 'package:naija_med_assistant/presentation/auth/user_role_selection_screen.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
@@ -16,9 +17,9 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       minTextAdapt: true,
       designSize: const Size(390, 884),
-      child: MaterialApp.router(
-      // child: MaterialApp(
-        routerConfig: router,
+      // child: MaterialApp.router(
+      child: MaterialApp(
+        // routerConfig: router,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           scaffoldBackgroundColor: Colors.white
         ),
-        // home: const UserRoleSelectionScreen(),
+        home: const LoginScreen(),
       ),
     );
   }

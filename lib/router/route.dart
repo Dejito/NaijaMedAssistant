@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/ai/ai_chatbox.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
@@ -9,12 +8,9 @@ import 'package:naija_med_assistant/presentation/auth/sign_up/verify_email.dart'
 import 'package:naija_med_assistant/presentation/ai/ai_symptom_checker.dart';
 import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
 
+import '../presentation/ai/ai_symptom_result_screen.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
 import '../presentation/onboarding/splash_screen.dart';
-
-// Import your new splash and onboarding views here
-// import 'package:naija_med_assistant/presentation/views/welcome/splash_screen.dart';
-// import 'package:naija_med_assistant/presentation/views/welcome/onboarding_screen.dart';
 
 class AppRoutes {
   // New welcome flow paths
@@ -29,6 +25,7 @@ class AppRoutes {
   static const String dashboard = "/dashboard";
   static const String appPage = "/app-page";
   static const String aiSymptomChecker = "/symptom-checker";
+  static const String aiSymptomResultScreen = "/symptom-result";
   static const String aiChatBox = "/chatbox";
 }
 
@@ -78,6 +75,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutes.aiSymptomChecker,
       builder: (_, __) => const AISymptomChecker(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.aiSymptomResultScreen,
+      builder: (_, __) => const AISymptomResultScreen(),
     ),
 
     GoRoute(
