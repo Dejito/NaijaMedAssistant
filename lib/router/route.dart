@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/ai/ai_health_chatbox.dart';
+import 'package:naija_med_assistant/presentation/ai/doctor_connection_screen.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
 import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
 import 'package:naija_med_assistant/presentation/auth/sign_up/profile_setup.dart';
@@ -8,8 +9,10 @@ import 'package:naija_med_assistant/presentation/auth/sign_up/verify_email.dart'
 import 'package:naija_med_assistant/presentation/ai/ai_symptom_checker.dart';
 import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
 
+import '../presentation/ai/ai_health_chatbox_new.dart';
 import '../presentation/ai/ai_symptom_result_screen.dart';
 import '../presentation/ai/chat_with_ai_screen.dart';
+import '../presentation/ai/doctor_chat_bot_patient.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
 import '../presentation/onboarding/splash_screen.dart';
 
@@ -29,6 +32,9 @@ class AppRoutes {
   static const String aiSymptomResultScreen = "/symptom-result";
   static const String aiChatBox = "/chatbox";
   static const String chatWithAi = '/chat-with-ai';
+  static const String doctorConnectionScreen = '/doctor-connection-screen';
+  static const String doctorChatBoxPatient = '/doctor-chatbot-patient';
+
 }
 
 final GoRouter router = GoRouter(
@@ -36,7 +42,7 @@ final GoRouter router = GoRouter(
   routes: [
     GoRoute(
       path: AppRoutes.splash,
-      builder: (_, __) => const SplashScreen(),
+      builder: (_, __) => const LoginScreen(),
     ),
 
     GoRoute(
@@ -93,5 +99,17 @@ final GoRouter router = GoRouter(
       path: AppRoutes.chatWithAi,
       builder: (_, __) => ChatWithAiScreen(),
     ),
+
+    GoRoute(
+      path: AppRoutes.doctorConnectionScreen,
+      builder: (_, __) => const DoctorConnectionScreen(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.doctorChatBoxPatient,
+      builder: (_, __) => const DoctorsChatBoxPatient(),
+    ),
+
+
   ],
 );
