@@ -7,6 +7,7 @@ class AppImages {
   static const onboardingThree = 'assets/drawables/onboarding_three.jpg';
   static const logoWhite = 'assets/drawables/logo_white.webp';
   static const aiSymptomChecker = 'assets/drawables/ai_symptom_checker.webp';
+  static const userImage = 'assets/drawables/pp.jpeg';
 
 }
 

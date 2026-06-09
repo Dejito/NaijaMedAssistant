@@ -16,17 +16,17 @@ class Message {
 
 }
 
-class AiChatBox extends StatefulWidget {
+class AiHealthChatBox extends StatefulWidget {
 
   static const route = '/ai-chat-box';
 
-  const AiChatBox({super.key});
+  const AiHealthChatBox({super.key});
 
   @override
-  State<AiChatBox> createState() => _AiChatBoxState();
+  State<AiHealthChatBox> createState() => _AiHealthChatBoxState();
 }
 
-class _AiChatBoxState extends State<AiChatBox> {
+class _AiHealthChatBoxState extends State<AiHealthChatBox> {
 
   late IO.Socket socket;
   final TextEditingController messageController = TextEditingController();

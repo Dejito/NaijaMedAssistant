@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       minTextAdapt: true,
       designSize: const Size(390, 884),
-      // child: MaterialApp.router(
-      child: MaterialApp(
-        // routerConfig: router,
+      child: MaterialApp.router(
+      // child: MaterialApp(
+        routerConfig: router,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           scaffoldBackgroundColor: Colors.white
         ),
-        home: const LoginScreen(),
+        // home: const LoginScreen(),
       ),
     );
   }

@@ -61,7 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
               MedBottomButton(
                 text: "Log in",
                 onPressed: () {
-                  context.go(AppRoutes.appPage);
+                  context.
+                  go(AppRoutes.appPage);
                 },
                 topMargin: 30,
                 bottomMargin: 12,

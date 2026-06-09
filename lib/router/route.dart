@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/presentation/ai/ai_chatbox.dart';
+import 'package:naija_med_assistant/presentation/ai/ai_health_chatbox.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
 import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
 import 'package:naija_med_assistant/presentation/auth/sign_up/profile_setup.dart';
@@ -9,6 +9,7 @@ import 'package:naija_med_assistant/presentation/ai/ai_symptom_checker.dart';
 import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
 
 import '../presentation/ai/ai_symptom_result_screen.dart';
+import '../presentation/ai/chat_with_ai_screen.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
 import '../presentation/onboarding/splash_screen.dart';
 
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String aiSymptomChecker = "/symptom-checker";
   static const String aiSymptomResultScreen = "/symptom-result";
   static const String aiChatBox = "/chatbox";
+  static const String chatWithAi = '/chat-with-ai';
 }
 
 final GoRouter router = GoRouter(
@@ -84,7 +86,12 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.aiChatBox,
-      builder: (_, __) => const AiChatBox(),
+      builder: (_, __) => const AiHealthChatBox(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.chatWithAi,
+      builder: (_, __) => ChatWithAiScreen(),
     ),
   ],
 );

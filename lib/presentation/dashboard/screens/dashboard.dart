@@ -94,10 +94,10 @@ class _DashboardState extends State<Dashboard> {
         child: FloatingActionButton(
           backgroundColor: AppColors.primaryColor,
           onPressed: () {
-            context.push(AppRoutes.aiChatBox);
+            context.push(AppRoutes.chatWithAi);
           },
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40), // Make it circular again
+            borderRadius: BorderRadius.circular(40),
           ),
           child: fabContent()
         ),
