@@ -1,5 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/presentation/ai/ai_health_chatbox.dart';
 import 'package:naija_med_assistant/presentation/ai/doctor_connection_screen.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
 import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
@@ -14,8 +13,8 @@ import '../presentation/ai/ai_health_chatbox_new.dart';
 import '../presentation/ai/ai_symptom_result_screen.dart';
 import '../presentation/ai/chat_with_ai_screen.dart';
 import '../presentation/ai/doctor_chat_bot_patient.dart';
+import '../presentation/auth/sign_up/profile_setup_doctor.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
-import '../presentation/onboarding/splash_screen.dart';
 
 class AppRoutes {
   // New welcome flow paths
@@ -27,6 +26,7 @@ class AppRoutes {
   static const String signup = "/signup";
   static const String verifyEmail = "/verify-email";
   static const String profileSetup = "/profile-setup";
+  static const String profileSetupDoctor = "/profile-setup-doctor";
   static const String dashboard = "/dashboard";
   static const String appPage = "/app-page";
   static const String aiSymptomChecker = "/symptom-checker";
@@ -59,7 +59,7 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.signup,
-      builder: (_, __) => const Signup(), // Your modified Stateful user-role view
+      builder: (_, __) => const Signup(),
     ),
 
     GoRoute(
@@ -70,6 +70,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutes.profileSetup,
       builder: (_, __) => ProfileSetup(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.profileSetupDoctor,
+      builder: (_, __) => ProfileSetupDoctor(),
     ),
 
     GoRoute(

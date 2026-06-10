@@ -73,6 +73,7 @@ class ProfileSetup extends StatelessWidget {
               bottomPadding: 0,
             ),
             InputText(
+
               hint: "Blood Group",
               bottomPadding: 0,
             ),
