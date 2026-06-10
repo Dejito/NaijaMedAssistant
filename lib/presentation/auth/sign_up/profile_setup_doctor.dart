@@ -10,15 +10,6 @@ import '../../views/widgets/text_input.dart';
 import '../../views/widgets/titleText.dart';
 import '../auth_widgets.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/router/route.dart'; // Adjust path as needed
-
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/router/route.dart';
 
 class ProfileSetupDoctor extends StatelessWidget {
   static const route = '/profile-setup-doctor';

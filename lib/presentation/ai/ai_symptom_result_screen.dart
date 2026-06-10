@@ -83,7 +83,7 @@ class AISymptomResultScreen extends StatelessWidget {
                     MedBottomButton(
                       text: "Chat With Our AI Health Assistant",
                       onPressed: () {
-                        context.push(AppRoutes.aiHealthChatBox);
+                        context.push(AppRoutes.doctorChatBoxPatient);
                       },
                     ),
                   ],
