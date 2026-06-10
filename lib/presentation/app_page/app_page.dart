@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:naija_med_assistant/presentation/views/profile/profile.dart';
 
+import '../ai/patient_doctor_history_screen.dart';
 import '../chat/chat.dart';
 import '../dashboard/screens/dashboard.dart';
 
@@ -18,7 +19,7 @@ class ApplicationPage extends StatefulWidget {
 class _ApplicationPageState extends State<ApplicationPage> {
   final List<Widget> _pages = [
     const Dashboard(),
-    const Chat(),
+    const PatientDoctorHistoryScreen(),
     const Profile(),
   ];
 

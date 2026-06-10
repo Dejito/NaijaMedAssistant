@@ -125,10 +125,13 @@ Widget quickActionsCardSlider({
               icon: AppIcons.logoBlack,
               label: 'Chat with AI',
             ),
-            quickActionsCard(
-                icon: AppIcons.emergency,
-                label: 'Emergency Service',
-                labelBackgroundColor: const Color(0xFFD83E06)),
+            InkWell(
+              onTap: () => context.push(AppRoutes.emergencyServices),
+              child: quickActionsCard(
+                  icon: AppIcons.emergency,
+                  label: 'Emergency Service',
+                  labelBackgroundColor: const Color(0xFFD83E06)),
+            ),
           ],
         ),
       ),

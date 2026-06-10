@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:naija_med_assistant/presentation/ai/patient_history_details_screen.dart';
 
-class HistoryScreen extends StatefulWidget {
+class PatientDoctorHistoryScreen extends StatefulWidget {
   static const route = '/history-list';
 
-  const HistoryScreen({super.key});
+  const PatientDoctorHistoryScreen({super.key});
 
   @override
-  State<HistoryScreen> createState() => _HistoryScreenState();
+  State<PatientDoctorHistoryScreen> createState() => _PatientDoctorHistoryScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class _PatientDoctorHistoryScreenState extends State<PatientDoctorHistoryScreen> {
   // Mock dataset structured exactly like your interface mockups
   final List<DiagnosticHistoryItem> _historyItems = [
     DiagnosticHistoryItem(
@@ -63,10 +63,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back, color: Colors.black),
+        //   onPressed: () => Navigator.pop(context),
+        // ),
         title: const Text(
           'History',
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),

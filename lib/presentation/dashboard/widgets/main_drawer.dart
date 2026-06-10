@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
 import 'dashboard_widgets.dart';
 
@@ -32,6 +34,12 @@ class MainDrawer extends StatelessWidget {
                 txType: "Home",
             ),
             drawerListTile(
+                onTap: (){
+                  context.go(AppRoutes.emergencyServices);
+                },
+                txType: "Emergency",
+            ),
+            drawerListTile(
                 onTap: (){},
                 txType: "View Previous Chats",
             ),
@@ -40,7 +48,9 @@ class MainDrawer extends StatelessWidget {
                 txType: "Settings",
             ),
             drawerListTile(
-                onTap: (){},
+                onTap: (){
+                  context.go(AppRoutes.login);
+                },
                 txType: "Log Out",
             ),
 
