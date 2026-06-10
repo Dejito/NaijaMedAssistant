@@ -1,12 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
 import '../views/widgets/titleText.dart'; // Adjust path based on your design project setup
 
 class DoctorCaseSummaryScreen extends StatelessWidget {
-
   const DoctorCaseSummaryScreen({super.key});
 
   @override
@@ -46,9 +45,11 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               // --- Status Badge ---
               Center(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 24.w, vertical: 6.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFDC3545), // Match exactly the red layout hex
+                    color: const Color(0xFFDC3545),
+                    // Match exactly the red layout hex
                     borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Text(
@@ -108,10 +109,12 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               _buildProfileFieldRow("Age", "34"),
               _buildProfileFieldRow("Occupation", "Accountant"),
               _buildProfileFieldRow("Marital Status", "Married"),
-              _buildProfileFieldRow("Address", "No. 1, Latona road, Agege, Lagos State"),
+              _buildProfileFieldRow(
+                  "Address", "No. 1, Latona road, Agege, Lagos State"),
               _buildProfileFieldRow("Religion", "Muslim"),
               _buildProfileFieldRow("Tribe", "Yoruba"),
-              _buildProfileFieldRow("Presenting Complaint", "Fever, Headache, Nausea * 3"),
+              _buildProfileFieldRow(
+                  "Presenting Complaint", "Fever, Headache, Nausea * 3"),
 
               SizedBox(height: 20.h),
               const Divider(color: Color(0xFFF1F1F1), thickness: 1.5),
@@ -142,7 +145,8 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               SizedBox(height: 12.h),
 
               // --- Diagnostics Breakdown ---
-              _buildClinicalHighlightBlock("Suggested Home Remedies", "Stay Hydrated, Rest, Steam Inhalation"),
+              _buildClinicalHighlightBlock("Suggested Home Remedies",
+                  "Stay Hydrated, Rest, Steam Inhalation"),
               SizedBox(height: 10.h),
               _buildClinicalHighlightBlock("AI Assesment", "Malaria"),
 
@@ -158,12 +162,22 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               SizedBox(height: 12.h),
 
               // --- Operational Action Buttons Pipeline ---
-              _buildActionButton("START CHAT", const Color(0xFF4D2CFA), () {}),
-              _buildActionButton("SCHEDULE FOR LATER", const Color(0xFF4D2CFA), () {}),
-              _buildActionButton("FLAG TO ANOTHER DOCTOR", const Color(0xFF4D2CFA), () {}),
+              _buildActionButton("START CHAT", const Color(0xFF4D2CFA), () {
+                context.push(AppRoutes.doctorChatBoxPatient);
+              },),
+              _buildActionButton(
+                  "SCHEDULE FOR LATER", const Color(0xFF4D2CFA), () {}),
+              _buildActionButton(
+                  "FLAG TO ANOTHER DOCTOR", const Color(0xFF4D2CFA), () {}),
 
               SizedBox(height: 12.h),
-              _buildActionButton("VIEW PREVIOUS DOCUMENTATION", const Color(0xFF1E7E34), () {}),
+              _buildActionButton(
+                "VIEW PREVIOUS DOCUMENTATION",
+                const Color(0xFF1E7E34),
+                () {
+                  context.push(AppRoutes.previousDocumentationScreen);
+                },
+              ),
               SizedBox(height: 16.h),
             ],
           ),
@@ -223,7 +237,10 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               if (boldHeader.contains("Assesment")) ...[
                 Text(
                   "AI Assesment :  ",
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black54),
+                  style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black54),
                 ),
               ],
               Text(
@@ -242,7 +259,8 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
   }
 
   // Custom rounded actionable pills
-  Widget _buildActionButton(String label, Color backgroundFill, VoidCallback onTapAction) {
+  Widget _buildActionButton(
+      String label, Color backgroundFill, VoidCallback onTapAction) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.h),
       child: InkWell(

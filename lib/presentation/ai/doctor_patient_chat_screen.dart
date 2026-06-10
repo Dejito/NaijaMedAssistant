@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -35,21 +34,23 @@ class Message {
 }
 
 // --- Main Chat Widget Class ---
-class AiHealthChatBox extends StatefulWidget {
-  const AiHealthChatBox({super.key});
+class DoctorPatientChatScreen extends StatefulWidget {
+  // Pass the role context when navigating to this screen
+  final bool isDoctor;
+
+  const DoctorPatientChatScreen({
+    super.key,
+    required this.isDoctor,
+  });
 
   @override
-  State<AiHealthChatBox> createState() => _AiHealthChatBoxState();
+  State<DoctorPatientChatScreen> createState() => _DoctorPatientChatScreenState();
 }
 
-class _AiHealthChatBoxState extends State<AiHealthChatBox> {
+class _DoctorPatientChatScreenState extends State<DoctorPatientChatScreen> {
   late IO.Socket socket;
   final TextEditingController messageController = TextEditingController();
   final List<Message> messages = [];
-
-  // --- Conditional Access Control Flag ---
-  // Set to true for Doctor view (shows popup menu), false for Patient view (hides popup menu)
-  final bool isDoctor = true;
 
   @override
   void initState() {
@@ -143,7 +144,7 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 12.w),
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F1F1), // Matches popup item tint exactly
+          color: const Color(0xFFF1F1F1), // Matches popup item tint
           borderRadius: BorderRadius.circular(6.r),
           border: Border.all(color: Colors.grey.shade300, width: 0.5),
         ),
@@ -416,15 +417,15 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
           'AI Health ChatBox',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
         ),
-        // --- PopUp Menu Action Pipeline Controlled via isDoctor Flag ---
+        // --- Access Controlled PopUp Menu Actions Block ---
         actions: [
-          if (isDoctor) ...[
+          if (widget.isDoctor) ...[
             PopupMenuButton<String>(
               icon: const Icon(Icons.more_horiz, color: Colors.black87),
               color: Colors.white,
               surfaceTintColor: Colors.white,
               elevation: 3,
-              offset: Offset(0, 44.h), // Places options row cleanly below AppBar threshold
+              offset: Offset(0, 44.h), // Drops menu layer below AppBar boundary line
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
                 side: BorderSide(color: Colors.grey.shade200),
@@ -449,8 +450,6 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
               ],
             ),
             SizedBox(width: 8.w),
-          ] else ...[
-            const SizedBox.shrink(), // Gracefully falls back to nothing for standard patients
           ],
         ],
         bottom: PreferredSize(
@@ -468,7 +467,7 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
             ),
           ),
 
-          // --- Bottom Input Accessory Section Layout ---
+          // --- Bottom Custom Input Accessory Box Layout Pipeline ---
           Container(
             color: Colors.white,
             padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),

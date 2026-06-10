@@ -16,7 +16,7 @@ import 'package:naija_med_assistant/presentation/emergency/emergency_support_scr
 import '../presentation/ai/ai_health_chatbox_new.dart';
 import '../presentation/ai/ai_symptom_result_screen.dart';
 import '../presentation/ai/chat_with_ai_screen.dart';
-import '../presentation/ai/doctor_chat_bot_patient.dart';
+import '../presentation/ai/doctor_patient_chat_screen.dart';
 import '../presentation/auth/sign_up/profile_setup_doctor.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
 
@@ -36,7 +36,7 @@ class AppRoutes {
   static const String doctorAppPage = "/doctor-app-page";
   static const String aiSymptomChecker = "/symptom-checker";
   static const String aiSymptomResultScreen = "/symptom-result";
-  static const String aiChatBox = "/chatbox";
+  static const String aiHealthChatBox = "/chatbox";
   static const String chatWithAi = '/chat-with-ai';
   static const String doctorConnectionScreen = '/doctor-connection-screen';
   static const String doctorChatBoxPatient = '/doctor-chatbot-patient';
@@ -111,7 +111,7 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
-      path: AppRoutes.aiChatBox,
+      path: AppRoutes.aiHealthChatBox,
       builder: (_, __) => const AiHealthChatBox(),
     ),
 
@@ -127,7 +127,7 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.doctorChatBoxPatient,
-      builder: (_, __) => const DoctorsChatBoxPatient(),
+      builder: (_, __) => const DoctorPatientChatScreen(isDoctor: true,),
     ),
 
   GoRoute(

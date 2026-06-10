@@ -188,7 +188,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 ),
                 InkWell(
                   onTap: (){
-                    context.go(AppRoutes.doctorCases);
+                    context.push(AppRoutes.doctorCases);
                   },
                   child: Text(
                     "View more",
