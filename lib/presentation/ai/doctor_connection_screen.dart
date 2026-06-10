@@ -149,7 +149,6 @@ class _DoctorConnectionScreenState extends State<DoctorConnectionScreen> {
               height: 48,
               child: ElevatedButton(
                 onPressed: () {
-                  context.go(AppRoutes.doctorChatBoxPatient);
                   // Direct user forward to secondary direct interaction screen
                 },
                 style: ElevatedButton.styleFrom(
