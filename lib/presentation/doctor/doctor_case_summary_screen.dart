@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../views/widgets/titleText.dart'; // Adjust path based on your design project setup
 
 class DoctorCaseSummaryScreen extends StatelessWidget {
-  static const route = '/case-summary';
 
   const DoctorCaseSummaryScreen({super.key});
 

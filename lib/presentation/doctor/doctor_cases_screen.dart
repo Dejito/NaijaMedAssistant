@@ -6,7 +6,6 @@ import 'package:naija_med_assistant/router/route.dart';
 import '../views/widgets/titleText.dart';
 
 class DoctorCasesScreen extends StatefulWidget {
-  static const route = '/doctor-cases';
 
   const DoctorCasesScreen({super.key});
 
@@ -108,10 +107,12 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => context.pop(),
-        ),
+        )
+            : null,
         centerTitle: true,
         title: titleText(
           'Cases',

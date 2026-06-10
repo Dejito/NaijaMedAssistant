@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/ai/doctor_connection_screen.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
+import 'package:naija_med_assistant/presentation/app_page/app_page_doctor.dart';
 import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
 import 'package:naija_med_assistant/presentation/auth/sign_up/profile_setup.dart';
 import 'package:naija_med_assistant/presentation/auth/sign_up/sign_up.dart';
@@ -32,6 +33,7 @@ class AppRoutes {
   static const String profileSetupDoctor = "/profile-setup-doctor";
   static const String dashboard = "/dashboard";
   static const String appPage = "/app-page";
+  static const String doctorAppPage = "/doctor-app-page";
   static const String aiSymptomChecker = "/symptom-checker";
   static const String aiSymptomResultScreen = "/symptom-result";
   static const String aiChatBox = "/chatbox";
@@ -91,6 +93,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutes.appPage,
       builder: (_, __) => const ApplicationPage(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.doctorAppPage,
+      builder: (_, __) => const DoctorApplicationPage(),
     ),
 
     GoRoute(

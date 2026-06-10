@@ -7,16 +7,15 @@ import 'package:naija_med_assistant/router/route.dart';
 import '../../core/constant/app_assets.dart';
 import '../views/widgets/titleText.dart'; // Adjust path based on your layout
 
-class DoctorHomePage extends StatefulWidget {
-  static const route = '/doctor-home';
+class DoctorDashboard extends StatefulWidget {
 
-  const DoctorHomePage({super.key});
+  const DoctorDashboard({super.key});
 
   @override
-  State<DoctorHomePage> createState() => _DoctorHomePageState();
+  State<DoctorDashboard> createState() => _DoctorDashboardState();
 }
 
-class _DoctorHomePageState extends State<DoctorHomePage> {
+class _DoctorDashboardState extends State<DoctorDashboard> {
   // Mock listing matching the layout items exactly
   final List<PatientCase> _cases = const [
     PatientCase(
@@ -271,7 +270,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                           ),
                           InkWell(
                             onTap: () {
-                              context.go(AppRoutes.doctorCases);
+                              context.push(AppRoutes.doctorCases);
                             },
                             child: Row(
                               children: [

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../ai/patient_doctor_history_screen.dart';
 import '../dashboard/screens/dashboard.dart';
-import '../doctor/doctor_homepage.dart';
+import '../doctor/doctor_cases_screen.dart';
+import '../doctor/doctor_dashboard.dart';
 import '../views/profile/profile.dart';
 
 class DoctorApplicationPage extends StatefulWidget {
@@ -18,8 +19,8 @@ class DoctorApplicationPage extends StatefulWidget {
 
 class _DoctorApplicationPageState extends State<DoctorApplicationPage> {
   final List<Widget> _pages = [
-    const DoctorHomePage(),
-    const PatientDoctorHistoryScreen(),
+    const DoctorDashboard(),
+    const DoctorCasesScreen(),
     const PatientDoctorHistoryScreen(),
     const Profile(),
   ];

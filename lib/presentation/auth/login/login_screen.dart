@@ -62,7 +62,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 text: "Log in",
                 onPressed: () {
                   context.
-                  go(AppRoutes.appPage);
+                  go(AppRoutes.doctorAppPage);
+                  // context.
+                  // go(AppRoutes.appPage);
                 },
                 topMargin: 30,
                 bottomMargin: 12,
