@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../ai/patient_doctor_history_screen.dart';
 import '../dashboard/screens/dashboard.dart';
+import '../doctor/doctor_homepage.dart';
 import '../views/profile/profile.dart';
 
 class DoctorApplicationPage extends StatefulWidget {
@@ -17,7 +18,8 @@ class DoctorApplicationPage extends StatefulWidget {
 
 class _DoctorApplicationPageState extends State<DoctorApplicationPage> {
   final List<Widget> _pages = [
-    const Dashboard(),
+    const DoctorHomePage(),
+    const PatientDoctorHistoryScreen(),
     const PatientDoctorHistoryScreen(),
     const Profile(),
   ];
@@ -62,33 +64,34 @@ class _DoctorApplicationPageState extends State<DoctorApplicationPage> {
           // Optional, to let gradient show better
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home_outlined,
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 3.0),
+                child: Icon(Icons.home_outlined),
               ),
-              label: "Home",
+              label: "HOME",
             ),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.chat_bubble_outline,
-                // color: selectedIndex == 1 ? const Color(0xFFFFD739) : Colors.white,
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 3.0),
+                child: Icon(Icons.assignment_outlined), // Matches the "CASES" clipboard medical history outline icon
               ),
-              label: "Chat",
+              label: "CASES",
             ),
-            // BottomNavigationBarItem(
-            //   icon: SvgPicture.asset(
-            //     AppIcons.transaction,
-            //     color: selectedIndex == 2 ? const Color(0xFFFFD739) : Colors.white,
-            //   ),
-            //   label: "Transactions",
-            // ),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 3.0),
+                child: Icon(Icons.chat_bubble_outline), // Swap with your custom brand icon asset if using SVG
               ),
-              label: "Account",
+              label: "AI ASSISTANT",
             ),
-          ],
-        ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 3.0),
+                child: Icon(Icons.person_outline),
+              ),
+              label: "PROFILE",
+            ),
+          ],        ),
       ),
     );
   }
