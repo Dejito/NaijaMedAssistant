@@ -1,33 +1,65 @@
 import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/presentation/views/ai/ai_chatbox.dart';
-import 'package:naija_med_assistant/presentation/views/app_page/app_page.dart';
-import 'package:naija_med_assistant/presentation/views/auth/login/login_screen.dart';
-import 'package:naija_med_assistant/presentation/views/auth/sign_up/profile_setup.dart';
-import 'package:naija_med_assistant/presentation/views/auth/sign_up/sign_up.dart';
-import 'package:naija_med_assistant/presentation/views/auth/sign_up/verify_email.dart';
-import 'package:naija_med_assistant/presentation/views/ai/ai_symptom_checker.dart';
-import 'package:naija_med_assistant/presentation/views/dashboard/screens/dashboard.dart';
+import 'package:naija_med_assistant/presentation/ai/doctor_connection_screen.dart';
+import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
+import 'package:naija_med_assistant/presentation/app_page/app_page_doctor.dart';
+import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
+import 'package:naija_med_assistant/presentation/auth/sign_up/profile_setup.dart';
+import 'package:naija_med_assistant/presentation/auth/sign_up/sign_up.dart';
+import 'package:naija_med_assistant/presentation/auth/sign_up/verify_email.dart';
+import 'package:naija_med_assistant/presentation/ai/ai_symptom_checker.dart';
+import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
+import 'package:naija_med_assistant/presentation/doctor/create_prescription_screen.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_case_summary_screen.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_cases_screen.dart';
+import 'package:naija_med_assistant/presentation/doctor/previous_documentation_screen.dart';
+import 'package:naija_med_assistant/presentation/emergency/emergency_support_screen.dart';
+
+import '../presentation/ai/ai_health_chatbox_new.dart';
+import '../presentation/ai/ai_symptom_result_screen.dart';
+import '../presentation/ai/chat_with_ai_screen.dart';
+import '../presentation/ai/doctor_patient_chat_screen.dart';
+import '../presentation/auth/sign_up/profile_setup_doctor.dart';
+import '../presentation/onboarding/onboarding_screen.dart';
 
 class AppRoutes {
-  
-  static const initial = LoginScreen.route;
-  static const login = LoginScreen.route;
-  static const signup = Signup.route;
-  static const verifyEmail = VerifyEmail.route;
-  static const profileSetup = ProfileSetup.route;
-  static const dashboard = Dashboard.route;
-  static const appPage = ApplicationPage.route;
-  static const aiSymptomChecker = AISymptomChecker.route;
-  static const aiChatBox = AiChatBox.route;
+  // New welcome flow paths
+  static const String splash = "/";
+  static const String onboarding = "/onboarding";
+
+  // Existing auth paths (Updated paths to keep them distinct)
+  static const String login = "/login";
+  static const String signup = "/signup";
+  static const String verifyEmail = "/verify-email";
+  static const String profileSetup = "/profile-setup";
+  static const String profileSetupDoctor = "/profile-setup-doctor";
+  static const String dashboard = "/dashboard";
+  static const String appPage = "/app-page";
+  static const String doctorAppPage = "/doctor-app-page";
+  static const String aiSymptomChecker = "/symptom-checker";
+  static const String aiSymptomResultScreen = "/symptom-result";
+  static const String aiHealthChatBox = "/chatbox";
+  static const String chatWithAi = '/chat-with-ai';
+  static const String doctorConnectionScreen = '/doctor-connection-screen';
+  static const String doctorChatBoxPatient = '/doctor-patient-chatbot';
+  static const String emergencyServices = '/emergency-services';
+  static const String doctorCases = '/doctor-cases-screen';
+  static const String doctorCaseSummary = '/doctor-cases-summary-screen';
+  static const String previousDocumentationScreen = '/previous-documentation';
+  static const String createPrescriptionScreen = '/create-prescription';
 
 }
 
 final GoRouter router = GoRouter(
-  initialLocation: AppRoutes.initial,
+  initialLocation: AppRoutes.splash, // The app now boots into the Splash Screen
   routes: [
     GoRoute(
-      path: AppRoutes.initial,
+      path: AppRoutes.splash,
       builder: (_, __) => const LoginScreen(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.onboarding,
+      builder: (_, __) => const OnboardingScreen(),
     ),
 
     GoRoute(
@@ -40,43 +72,90 @@ final GoRouter router = GoRouter(
       builder: (_, __) => const Signup(),
     ),
 
-    GoRoute(path: AppRoutes.verifyEmail,
+    GoRoute(
+      path: AppRoutes.verifyEmail,
       builder: (_, __) => const VerifyEmail(),
     ),
 
-    GoRoute(path: AppRoutes.profileSetup,
-      builder: (_, __) =>  ProfileSetup(),
+    GoRoute(
+      path: AppRoutes.profileSetup,
+      builder: (_, __) => ProfileSetup(),
     ),
 
-    GoRoute(path: AppRoutes.dashboard,
+    GoRoute(
+      path: AppRoutes.profileSetupDoctor,
+      builder: (_, __) => ProfileSetupDoctor(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.dashboard,
       builder: (_, __) => const Dashboard(),
     ),
 
-    GoRoute(path: AppRoutes.appPage,
-          builder: (_, __) => const ApplicationPage(),
-        ),
+    GoRoute(
+      path: AppRoutes.appPage,
+      builder: (_, __) => const ApplicationPage(),
+    ),
 
-    GoRoute(path: AppRoutes.aiSymptomChecker,
-          builder: (_, __) => const AISymptomChecker(),
-        ),
-  
-  GoRoute(path: AppRoutes.aiChatBox,
-          builder: (_, __) => const AiChatBox(),
-        ),
+    GoRoute(
+      path: AppRoutes.doctorAppPage,
+      builder: (_, __) => const DoctorApplicationPage(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.aiSymptomChecker,
+      builder: (_, __) => const AISymptomChecker(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.aiSymptomResultScreen,
+      builder: (_, __) => const AISymptomResultScreen(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.aiHealthChatBox,
+      builder: (_, __) => const AiHealthChatBox(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.chatWithAi,
+      builder: (_, __) => ChatWithAiScreen(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.doctorConnectionScreen,
+      builder: (_, __) => const DoctorConnectionScreen(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.doctorChatBoxPatient,
+      builder: (_, __) => const DoctorsChatBoxPatient(isDoctor: true,),
+    ),
+
+  GoRoute(
+      path: AppRoutes.emergencyServices,
+      builder: (_, __) => const EmergencySupportScreen(),
+    ),
+
+  GoRoute(
+      path: AppRoutes.doctorCases,
+      builder: (_, __) => const DoctorCasesScreen(),
+    ),
+
+  GoRoute(
+      path: AppRoutes.doctorCaseSummary,
+      builder: (_, __) => const DoctorCaseSummaryScreen(),
+    ),
+
+  GoRoute(
+      path: AppRoutes.previousDocumentationScreen,
+      builder: (_, __) => const PreviousDocumentationScreen(),
+    ),
+  GoRoute(
+      path: AppRoutes.createPrescriptionScreen,
+      builder: (_, __) => const CreatePrescriptionScreen(),
+    ),
 
 
-    // GoRoute(
-    //   path: '${AppRoutes.verifyEmail}/:email',
-    //   builder: (_, state) =>
-    //       VerifyEmailScreen(email: state.pathParameters['email']!),
-    // ),
-    //
-    // GoRoute(
-    //   path: AppRoutes.adminTransactionDetail,
-    //   builder: (_, state) {
-    //     final txStatus = state.extra as TransactionStatus;
-    //     return AdminTransactionDetailScreen(transactionStatus: txStatus);
-    //   },
-    // ),
   ],
 );
