@@ -13,8 +13,9 @@ import '../auth_widgets.dart';
 
 class VerifyEmail extends StatefulWidget {
   static const route = "/verify-email";
+  final String email;
 
-  const VerifyEmail({super.key});
+  const VerifyEmail({super.key, required this.email});
 
   @override
   State<VerifyEmail> createState() => _VerifyEmailState();
@@ -91,7 +92,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 textAlign: TextAlign.center,
               ),
               titleText(
-                "We sent a verification code to your email,\n please enter it here",
+                "We sent a verification code to:\n${widget.email}",
                 color: Colors.grey.shade700,
                 fontSize: 14,
                 textAlign: TextAlign.center,

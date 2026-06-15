@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/app_launch.dart';
+import 'package:naija_med_assistant/presentation/auth/auth_viewmodel/auth_cubit.dart';
 import 'package:naija_med_assistant/presentation/auth/auth_widgets.dart';
 import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
+import 'package:naija_med_assistant/presentation/views/widgets/flutter_toast.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
+import '../../../data/models/request/auth/sign_up_req.dart';
 import '../../views/widgets/elevated_bottom_button.dart';
 import '../../views/widgets/text_input.dart';
 import '../../views/widgets/titleText.dart';
@@ -54,14 +58,19 @@ class _SignupState extends State<Signup> {
     return Scaffold(
       body: SafeArea(
         child: BlocConsumer(
+          bloc: getIt<AuthCubit>(),
           listener: (context, state) {
             if (state is SignUpLoading) {
               showEaseLoadingIndicator();
             } else if (state is SignUpError) {
               dismissEaseLoadingIndicator();
+              showToast(message: state.error);
             } else if (state is SignUpSuccessful) {
               dismissEaseLoadingIndicator();
-              context.go(AppRoutes.verifyEmail, extra: {'email': _emailController.text});
+              context.push(AppRoutes.verifyEmail,
+                  extra: {'email': _emailController.text.trim()});
+              // context.go(AppRoutes.verifyEmail,
+              //     extra: {'email': _emailController.text.trim()});
               // NavHelper.navToVerifyEmail(email: _emailController.text);
             }
           },
@@ -140,8 +149,18 @@ class _SignupState extends State<Signup> {
           MedBottomButton(
             text: "Sign up",
             onPressed: () {
-              // You can now enforce validation here (e.g., if selectedRole == null)
-              context.push(AppRoutes.verifyEmail);
+              final signUpReqBody = SignUpReqBody(
+                firstName: _firstNameController.text.trim(),
+                lastName: _lastNameController.text.trim(),
+                email: _emailController.text.trim(),
+                phoneNumber: _phoneController.text.trim(),
+                password: _passwordController.text.trim(),
+                confirmPassword: _confirmPasswordController.text.trim(),
+                role: selectedRole ?? '',
+              );
+
+              getIt<AuthCubit>().signUp(signUpReqBody);
+
             },
             topMargin: 20,
           ),

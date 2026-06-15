@@ -74,7 +74,22 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.verifyEmail,
-      builder: (_, __) => const VerifyEmail(),
+      builder: (_, state) {
+        final extra = state.extra;
+        String? email;
+
+        if (extra is Map<String, dynamic>) {
+          email = extra['email'] as String?;
+        } else if (extra is Map) {
+          email = extra['email']?.toString();
+        }
+
+        if (email == null || email.trim().isEmpty) {
+          return const Signup();
+        }
+
+        return VerifyEmail(email: email.trim());
+      },
     ),
 
     GoRoute(

@@ -2,17 +2,17 @@
 
 class VerifyEmailReqEntity {
   final String email;
-  final int verificationCode;
+  final int otp;
 
   VerifyEmailReqEntity({
     required this.email,
-    required this.verificationCode,
+    required this.otp,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'email': email,
-      'verification_code': verificationCode,
+      'otp': otp,
     };
   }
 }
