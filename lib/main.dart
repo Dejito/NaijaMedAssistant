@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:naija_med_assistant/app_launch.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page_doctor.dart';
 import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
 import 'package:naija_med_assistant/presentation/auth/sign_up/profile_setup_doctor.dart';
@@ -8,7 +9,8 @@ import 'package:naija_med_assistant/presentation/doctor/doctor_case_summary_scre
 import 'package:naija_med_assistant/presentation/doctor/doctor_cases_screen.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-void main() {
+void main() async {
+  await AppLaunch().init();
   runApp(const MyApp());
 }
 
