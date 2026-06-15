@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:naija_med_assistant/app_launch.dart';
-import 'package:naija_med_assistant/presentation/app_page/app_page_doctor.dart';
-import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
-import 'package:naija_med_assistant/presentation/auth/sign_up/profile_setup_doctor.dart';
-import 'package:naija_med_assistant/presentation/auth/user_role_selection_screen.dart';
-import 'package:naija_med_assistant/presentation/doctor/doctor_case_summary_screen.dart';
-import 'package:naija_med_assistant/presentation/doctor/doctor_cases_screen.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
 void main() async {
@@ -25,6 +20,7 @@ class MyApp extends StatelessWidget {
       designSize: const Size(390, 884),
       child: MaterialApp.router(
       // child: MaterialApp(
+        builder: EasyLoading.init(),
         routerConfig: router,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',

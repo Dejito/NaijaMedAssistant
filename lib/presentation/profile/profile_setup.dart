@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-import '../../views/widgets/elevated_bottom_button.dart';
-import '../../views/widgets/text_input.dart';
-import '../../views/widgets/titleText.dart';
-import '../auth_widgets.dart';
+import '../views/widgets/elevated_bottom_button.dart';
+import '../views/widgets/text_input.dart';
+import '../views/widgets/titleText.dart';
+import '../auth/auth_widgets.dart';
 
 class ProfileSetup extends StatelessWidget {
 
