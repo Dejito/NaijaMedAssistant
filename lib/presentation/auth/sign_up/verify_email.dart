@@ -72,57 +72,61 @@ class _VerifyEmailState extends State<VerifyEmail> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
         // title: titleText(text: ""),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(height: 20.h,),
-            titleText(
-              "Verify your Email",
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              textAlign: TextAlign.center,
-            ),
-            titleText(
-              "We sent a verification code to your email,\n please enter it here",
-              color: Colors.grey.shade700,
-              fontSize: 14,
-              textAlign: TextAlign.center,
-            ),
-            PinTextField(
-              pinLength: 4,
-              pinController: _pinController,
-              onTextChanged: (val) {
-                if (val.length >= 4) {
-                  // _isValidated = true;
-                }
-              },
-              onDone: (val) {
-                if (val.length >= 4) {
-                  // _isValidated = true;
-                }
-              },
-              focusNode: _pinFocusNode,
-            ),
-            otpResendTime(
-              _timerText,
-            ),
-            MedBottomButton(
-              text: "Confirm",
-              onPressed: () {
-                context.push(AppRoutes.profileSetup);
-              },
-              topMargin: 12,
-              bottomMargin: 6,
-            ),
-            didNotReceiveOTP((){
-              _startTimer();
-            })
-          ],
+      body: PopScope(
+        canPop: false,
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 20.h,),
+              titleText(
+                "Verify your Email",
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                textAlign: TextAlign.center,
+              ),
+              titleText(
+                "We sent a verification code to your email,\n please enter it here",
+                color: Colors.grey.shade700,
+                fontSize: 14,
+                textAlign: TextAlign.center,
+              ),
+              PinTextField(
+                pinLength: 4,
+                pinController: _pinController,
+                onTextChanged: (val) {
+                  if (val.length >= 4) {
+                    // _isValidated = true;
+                  }
+                },
+                onDone: (val) {
+                  if (val.length >= 4) {
+                    // _isValidated = true;
+                  }
+                },
+                focusNode: _pinFocusNode,
+              ),
+              otpResendTime(
+                _timerText,
+              ),
+              MedBottomButton(
+                text: "Confirm",
+                onPressed: () {
+                  context.push(AppRoutes.profileSetup);
+                },
+                topMargin: 12,
+                bottomMargin: 6,
+              ),
+              didNotReceiveOTP((){
+                _startTimer();
+              })
+            ],
+          ),
         ),
       ),
     );
