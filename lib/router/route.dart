@@ -2,10 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/ai/doctor_connection_screen.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page_doctor.dart';
-import 'package:naija_med_assistant/presentation/auth/login/login_screen.dart';
-import 'package:naija_med_assistant/presentation/auth/sign_up/profile_setup.dart';
-import 'package:naija_med_assistant/presentation/auth/sign_up/sign_up.dart';
-import 'package:naija_med_assistant/presentation/auth/sign_up/verify_email.dart';
+import 'package:naija_med_assistant/presentation/profile/profile_setup.dart';
 import 'package:naija_med_assistant/presentation/ai/ai_symptom_checker.dart';
 import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
 import 'package:naija_med_assistant/presentation/doctor/create_prescription_screen.dart';
@@ -18,7 +15,10 @@ import '../presentation/ai/ai_health_chatbox_new.dart';
 import '../presentation/ai/ai_symptom_result_screen.dart';
 import '../presentation/ai/chat_with_ai_screen.dart';
 import '../presentation/ai/doctor_patient_chat_screen.dart';
-import '../presentation/auth/sign_up/profile_setup_doctor.dart';
+import '../presentation/auth/auth_views/login/login_screen.dart';
+import '../presentation/auth/auth_views/sign_up/sign_up.dart';
+import '../presentation/auth/auth_views/sign_up/verify_email.dart';
+import '../presentation/profile/profile_setup_doctor.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
 
 class AppRoutes {
@@ -74,7 +74,22 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.verifyEmail,
-      builder: (_, __) => const VerifyEmail(),
+      builder: (_, state) {
+        final extra = state.extra;
+        String? email;
+
+        if (extra is Map<String, dynamic>) {
+          email = extra['email'] as String?;
+        } else if (extra is Map) {
+          email = extra['email']?.toString();
+        }
+
+        if (email == null || email.trim().isEmpty) {
+          return const Signup();
+        }
+
+        return VerifyEmail(email: email.trim());
+      },
     ),
 
     GoRoute(

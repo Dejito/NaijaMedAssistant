@@ -3,7 +3,7 @@
 import 'package:get_it/get_it.dart';
 
 import '../../app_launch.dart';
-import '../../data/models/response/auth/auth_token.dart';
+import '../auth/auth_service/response/auth_token.dart';
 import '../../data/service/user_api.dart';
 import '../auth/auth_viewmodel/auth_cubit.dart';
 

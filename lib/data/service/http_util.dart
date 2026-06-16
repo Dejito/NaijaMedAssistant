@@ -1,13 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../app_launch.dart';
 import '../../core/constant/app_url.dart';
 import '../../presentation/views/widgets/flutter_toast.dart';
-import '../models/response/auth/auth_token.dart';
-import '../models/response/auth/login_response.dart';
+import '../../presentation/auth/auth_service/response/auth_token.dart';
+import '../../presentation/auth/auth_service/response/login_response.dart';
 
 class HttpUtil {
   static final HttpUtil _instance = HttpUtil._internal();
@@ -44,6 +46,9 @@ class HttpUtil {
         handler.next(error);
       },
     ));
+
+    _setupCertificate();
+
 
     if (kDebugMode) {
       _dio.interceptors.add(LogInterceptor(
@@ -125,6 +130,26 @@ class HttpUtil {
       rethrow;
     }
   }
+
+  void _setupCertificate() {
+    final adapter = _dio!.httpClientAdapter as IOHttpClientAdapter;
+
+    adapter.createHttpClient = () {
+      final client = HttpClient();
+
+      final allowedHost = Uri.parse(AppUrl.baseUrl);
+
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
+        return host == allowedHost;
+      };
+
+      return client;
+    };
+
+  }
+
+
 }
 
 extension ResponseExt on Response {
