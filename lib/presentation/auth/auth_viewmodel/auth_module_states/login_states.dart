@@ -1,4 +1,5 @@
 
+import '../../auth_service/response/login_response.dart';
 import '../auth_cubit.dart';
 
 class LoginLoading extends AuthState {
@@ -11,4 +12,9 @@ class LoginError extends AuthState {
   LoginError({this.error});
 }
 
-class LoginSuccessful extends AuthState {}
+class LoginSuccessful extends AuthState {
+  final LoginResponse loginResponse;
+  // final String role;
+
+  LoginSuccessful({required this.loginResponse});
+}

@@ -6,7 +6,6 @@ import 'package:naija_med_assistant/app_launch.dart';
 import 'package:naija_med_assistant/presentation/auth/auth_viewmodel/auth_cubit.dart';
 import 'package:naija_med_assistant/presentation/auth/auth_views/auth_widgets.dart';
 import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
-import 'package:naija_med_assistant/presentation/views/widgets/flutter_toast.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
 import '../../../views/widgets/elevated_bottom_button.dart';
@@ -58,14 +57,13 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: BlocConsumer(
+        child: BlocConsumer<AuthCubit, AuthState>(
           bloc: getIt<AuthCubit>(),
           listener: (context, state) {
             if (state is SignUpLoading) {
               showEaseLoadingIndicator();
             } else if (state is SignUpError) {
               dismissEaseLoadingIndicator();
-              showToast(message: state.error);
             } else if (state is SignUpSuccessful) {
               dismissEaseLoadingIndicator();
               context.push(AppRoutes.verifyEmail,
@@ -157,7 +155,7 @@ class _SignupState extends State<Signup> {
                 phoneNumber: _phoneController.text.trim(),
                 password: _passwordController.text.trim(),
                 confirmPassword: _confirmPasswordController.text.trim(),
-                role: selectedRole ?? '',
+                role: selectedRole?.toLowerCase() ?? '',
               );
 
               getIt<AuthCubit>().signUp(signUpReqBody);
