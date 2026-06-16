@@ -6,6 +6,7 @@ import 'package:naija_med_assistant/presentation/dashboard/widgets/symptom_check
 
 import '../../../../core/constant/app_colors.dart';
 import '../../../../router/route.dart';
+import '../../../data/models/response/users/get_user_response.dart';
 import '../../views/widgets/titleText.dart';
 import '../widgets/dashboard_widgets.dart';
 
@@ -18,8 +19,12 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+
   late final PageController _pageController;
   int swipeIndex = 0;
+
+  PatientUserResponse userResponse = PatientUserResponse();
+
 
   @override
   void initState() {

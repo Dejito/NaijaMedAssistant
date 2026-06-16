@@ -45,7 +45,7 @@ class AppUrl {
   static String fetchNotifications = 'users/notifications';
 
   ///Users
-  static String getUser = 'users/profile';
+  static String getPatient = 'users/profile';
   static String getAllUsers = 'users/profile';
   static String getBankDetails = 'users/profile/getbankdetails';
   static String getUsers = 'users';

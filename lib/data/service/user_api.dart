@@ -52,6 +52,12 @@ class ApiService {
     return response;
   }
 
+  static Future<Response> getPatient() async {
+    var response = await HttpUtil()
+        .get(AppUrl.getPatient);
+    return response;
+  }
+
 
 
 

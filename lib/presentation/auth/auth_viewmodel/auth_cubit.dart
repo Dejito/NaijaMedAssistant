@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:naija_med_assistant/data/models/response/users/get_user_response.dart';
 
 import '../../../app_launch.dart';
 import '../../../core/constant/app_keys.dart';
 import '../../../core/storage/local_storage_utils.dart';
+import '../../user/users_viewmodel/users_cubit.dart';
 import '../../views/widgets/flutter_toast.dart';
 import '../auth_service/req_body/forgot_password_req.dart';
 import '../auth_service/req_body/login_req_body.dart';
@@ -141,23 +143,50 @@ class AuthCubit extends Cubit<AuthState> {
               : Map<String, dynamic>.from(responseData as Map),
         );
 
-        await LocalStorageUtils().setString(AppKeys.email, loginRequestEntity.email);
+        await LocalStorageUtils().setString(
+            AppKeys.email, loginRequestEntity.email);
 
         if (getIt.isRegistered<AuthToken>()) {
           getIt.unregister<AuthToken>();
         }
 
-        getIt.registerSingleton<LoginResponse>(loginResponse);
-
         getIt.registerSingleton<AuthToken>(
           AuthToken.fromJson(loginResponse.token ?? ''),
         );
 
-        emit(
-          LoginSuccessful(
-           loginResponse: loginResponse
-          ),
-        );
+        if (loginResponse.user?.role == 'patient') {
+          await Future.wait([
+            getIt<UsersCubit>().getPatientProfile(),
+            // getIt<WithdrawalCubit>().getWithdrawalsBySeller(),
+            // getIt<TransactionsCubit>().fetchTransactionsHistoryShared(),
+            // getIt<GiftCardCubit>().getAvailableCardTypes(),
+            // getIt<UsersCubit>().getUserBankDetails(),
+            // getIt<NotificationCubit>().fetchNotificationsShared(),
+          ]);
+
+          emit(
+              LoginSuccessful(
+                  loginResponse: loginResponse
+              )
+          );
+          // NavHelper.navToAppPage();
+
+        } else if (loginResponse.user?.role == 'doctor') {
+          await Future.wait([
+            // getIt<UsersCubit>().getUserShared(),
+            // getIt<TransactionsCubit>().fetchTransactionsHistoryShared(),
+            // getIt<WithdrawalCubit>().getUserWithdrawalsByAdmin(),
+            // getIt<GiftCardCubit>().getAvailableCardTypes(),
+            // getIt<NotificationCubit>().fetchNotificationsShared(),
+          ]);
+
+          // emit(LoginSuccessful());
+          // NavHelper.navToAdminDashboard();
+
+        } else {
+          showToast(message: "Unrecognized user type");
+        }
+
       }
     } catch (e) {
       handleError(e, onEmit: (msg) => emit(LoginError(error: msg)));
