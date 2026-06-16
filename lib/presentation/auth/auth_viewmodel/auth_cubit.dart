@@ -147,6 +147,8 @@ class AuthCubit extends Cubit<AuthState> {
           getIt.unregister<AuthToken>();
         }
 
+        getIt.registerSingleton<LoginResponse>(loginResponse);
+
         getIt.registerSingleton<AuthToken>(
           AuthToken.fromJson(loginResponse.token ?? ''),
         );

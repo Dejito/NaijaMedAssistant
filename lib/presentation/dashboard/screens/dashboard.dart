@@ -11,8 +11,6 @@ import '../widgets/dashboard_widgets.dart';
 
 class Dashboard extends StatefulWidget {
 
-  static const route = '/dashboard';
-
   const Dashboard({super.key});
 
   @override
