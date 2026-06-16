@@ -155,6 +155,7 @@ class AuthCubit extends Cubit<AuthState> {
         );
 
         if (loginResponse.user?.role == 'patient') {
+          print("got to patient role from cubit ${loginResponse.user?.role}");
           await Future.wait([
             getIt<UsersCubit>().getPatientProfile(),
             // getIt<WithdrawalCubit>().getWithdrawalsBySeller(),

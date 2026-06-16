@@ -6,6 +6,7 @@ import 'package:naija_med_assistant/presentation/dashboard/widgets/symptom_check
 
 import '../../../../core/constant/app_colors.dart';
 import '../../../../router/route.dart';
+import '../../../app_launch.dart';
 import '../../../data/models/response/users/get_user_response.dart';
 import '../../views/widgets/titleText.dart';
 import '../widgets/dashboard_widgets.dart';
@@ -29,6 +30,9 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
+    userResponse = getIt.isRegistered<PatientUserResponse>()
+        ? getIt<PatientUserResponse>()
+        : PatientUserResponse();
     _pageController = PageController();
   }
 

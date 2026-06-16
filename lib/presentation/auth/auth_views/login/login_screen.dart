@@ -47,9 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
               dismissEaseLoadingIndicator();
             } else if (state is LoginSuccessful) {
               dismissEaseLoadingIndicator();
-              final normalizedRole = state.loginResponse.user?.role?.toUpperCase();
-              context.go(
-                normalizedRole == 'DOCTOR'
+              final role = state.loginResponse.user?.role?.toLowerCase();
+              context.push(
+                role == 'doctor'
                     ? AppRoutes.doctorAppPage
                     : AppRoutes.appPage,
               );
