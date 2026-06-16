@@ -1,17 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/presentation/auth/auth_service/response/login_response.dart';
 import 'package:naija_med_assistant/presentation/dashboard/widgets/main_drawer.dart';
 import 'package:naija_med_assistant/presentation/dashboard/widgets/symptom_check_listview.dart';
+import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_cubit.dart';
+import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_patient_states.dart';
 
 import '../../../../core/constant/app_colors.dart';
 import '../../../../router/route.dart';
+import '../../../app_launch.dart';
+import '../../../data/models/response/users/get_user_response.dart';
 import '../../views/widgets/titleText.dart';
 import '../widgets/dashboard_widgets.dart';
 
 class Dashboard extends StatefulWidget {
-
-  static const route = '/dashboard';
 
   const Dashboard({super.key});
 
@@ -20,17 +25,38 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+
   late final PageController _pageController;
+  late final StreamSubscription<UsersState> _usersSubscription;
   int swipeIndex = 0;
+
+  PatientUserResponse userResponse = PatientUserResponse();
+  LoginResponse loginResponse = LoginResponse();
 
   @override
   void initState() {
     super.initState();
+
+    userResponse = getIt.isRegistered<PatientUserResponse>()
+        ? getIt<PatientUserResponse>()
+        : PatientUserResponse();
+
+    _usersSubscription = getIt<UsersCubit>().stream.listen((state) {
+      if (state is GetPatientStateSuccessful && mounted) {
+        setState(() {
+          userResponse = state.user;
+        });
+      }
+    });
+
+    getIt<UsersCubit>().getPatientProfile();
+
     _pageController = PageController();
   }
 
   @override
   void dispose() {
+    _usersSubscription.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -71,7 +97,7 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            dashboardWelcomeBar(),
+            dashboardWelcomeBar(userResponse.patient?.user?.firstName ?? ""),
             quickActionsCardSlider(
               context: context,
               controller: _pageController,

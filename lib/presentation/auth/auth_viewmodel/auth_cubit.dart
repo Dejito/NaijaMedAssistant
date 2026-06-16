@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import '../../../app_launch.dart';
 import '../../../core/constant/app_keys.dart';
 import '../../../core/storage/local_storage_utils.dart';
+import '../../user/users_viewmodel/users_cubit.dart';
 import '../../views/widgets/flutter_toast.dart';
 import '../auth_service/req_body/forgot_password_req.dart';
 import '../auth_service/req_body/login_req_body.dart';
@@ -141,7 +142,8 @@ class AuthCubit extends Cubit<AuthState> {
               : Map<String, dynamic>.from(responseData as Map),
         );
 
-        await LocalStorageUtils().setString(AppKeys.email, loginRequestEntity.email);
+        await LocalStorageUtils().setString(
+            AppKeys.email, loginRequestEntity.email);
 
         if (getIt.isRegistered<AuthToken>()) {
           getIt.unregister<AuthToken>();
@@ -151,11 +153,35 @@ class AuthCubit extends Cubit<AuthState> {
           AuthToken.fromJson(loginResponse.token ?? ''),
         );
 
-        emit(
-          LoginSuccessful(
-           loginResponse: loginResponse
-          ),
-        );
+        if (loginResponse.user?.role == 'patient') {
+          emit(LoginSuccessful(loginResponse: loginResponse));
+
+          // Profile hydration should not block successful authentication.
+          if (getIt.isRegistered<UsersCubit>()) {
+            try {
+              await getIt<UsersCubit>().getPatientProfile();
+            } catch (_) {}
+          } else {
+            debugPrint('UsersCubit is not registered; skipping patient profile fetch.');
+          }
+          // NavHelper.navToAppPage();
+
+        } else if (loginResponse.user?.role == 'doctor') {
+          await Future.wait([
+            // getIt<UsersCubit>().getUserShared(),
+            // getIt<TransactionsCubit>().fetchTransactionsHistoryShared(),
+            // getIt<WithdrawalCubit>().getUserWithdrawalsByAdmin(),
+            // getIt<GiftCardCubit>().getAvailableCardTypes(),
+            // getIt<NotificationCubit>().fetchNotificationsShared(),
+          ]);
+
+          emit(LoginSuccessful(loginResponse: loginResponse));
+          // NavHelper.navToAdminDashboard();
+
+        } else {
+          showToast(message: "Unrecognized user type");
+        }
+
       }
     } catch (e) {
       handleError(e, onEmit: (msg) => emit(LoginError(error: msg)));

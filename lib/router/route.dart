@@ -2,7 +2,6 @@ import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/ai/doctor_connection_screen.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page_doctor.dart';
-import 'package:naija_med_assistant/presentation/profile/profile_setup.dart';
 import 'package:naija_med_assistant/presentation/ai/ai_symptom_checker.dart';
 import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
 import 'package:naija_med_assistant/presentation/doctor/create_prescription_screen.dart';
@@ -18,8 +17,9 @@ import '../presentation/ai/doctor_patient_chat_screen.dart';
 import '../presentation/auth/auth_views/login/login_screen.dart';
 import '../presentation/auth/auth_views/sign_up/sign_up.dart';
 import '../presentation/auth/auth_views/sign_up/verify_email.dart';
-import '../presentation/profile/profile_setup_doctor.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
+import '../presentation/user/profile_setup.dart';
+import '../presentation/user/profile_setup_doctor.dart';
 
 class AppRoutes {
   // New welcome flow paths
