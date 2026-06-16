@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../views/widgets/elevated_bottom_button.dart';
-import '../views/widgets/titleText.dart';
-import 'auth_widgets.dart';
+import '../../views/widgets/elevated_bottom_button.dart';
+import '../../views/widgets/titleText.dart';
+import './auth_widgets.dart';
 
 enum UserRole {
   patient('PATIENT'),

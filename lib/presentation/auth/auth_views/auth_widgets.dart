@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/elevated_bottom_button.dart';
 
-import '../../../core/constant/app_assets.dart';
-import '../../../core/constant/app_colors.dart';
-import '../../../core/constant/decoration_styles.dart';
-import '../views/widgets/titleText.dart';
+import '../../../../core/constant/app_assets.dart';
+import '../../../../core/constant/app_colors.dart';
+import '../../../../core/constant/decoration_styles.dart';
+import '../../views/widgets/titleText.dart';
 
 Container keepMeLoggedInForgotPassword(
     {required bool value, required Function(bool?) onClickedChanged}) {

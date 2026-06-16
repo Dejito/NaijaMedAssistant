@@ -6,8 +6,8 @@ import 'package:flutter/foundation.dart';
 import '../../app_launch.dart';
 import '../../core/constant/app_url.dart';
 import '../../presentation/views/widgets/flutter_toast.dart';
-import '../models/response/auth/auth_token.dart';
-import '../models/response/auth/login_response.dart';
+import '../../presentation/auth/auth_service/response/auth_token.dart';
+import '../../presentation/auth/auth_service/response/login_response.dart';
 
 class HttpUtil {
   static final HttpUtil _instance = HttpUtil._internal();

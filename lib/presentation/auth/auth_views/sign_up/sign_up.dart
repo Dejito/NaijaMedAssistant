@@ -4,16 +4,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/app_launch.dart';
 import 'package:naija_med_assistant/presentation/auth/auth_viewmodel/auth_cubit.dart';
-import 'package:naija_med_assistant/presentation/auth/auth_widgets.dart';
+import 'package:naija_med_assistant/presentation/auth/auth_views/auth_widgets.dart';
 import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/flutter_toast.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-import '../../../data/models/request/auth/sign_up_req.dart';
-import '../../views/widgets/elevated_bottom_button.dart';
-import '../../views/widgets/text_input.dart';
-import '../../views/widgets/titleText.dart';
-import '../auth_viewmodel/auth_module_states/sign_up_states.dart';
+import '../../../views/widgets/elevated_bottom_button.dart';
+import '../../../views/widgets/text_input.dart';
+import '../../../views/widgets/titleText.dart';
+import '../../auth_service/req_body/sign_up_req.dart';
+import '../../auth_viewmodel/auth_module_states/sign_up_states.dart';
+
 
 class Signup extends StatefulWidget {
   static const route = '/sign-up';

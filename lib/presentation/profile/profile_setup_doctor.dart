@@ -8,7 +8,7 @@ import 'package:naija_med_assistant/router/route.dart';
 import '../views/widgets/elevated_bottom_button.dart';
 import '../views/widgets/text_input.dart';
 import '../views/widgets/titleText.dart';
-import '../auth/auth_widgets.dart';
+import '../auth/auth_views/auth_widgets.dart';
 
 
 class ProfileSetupDoctor extends StatelessWidget {

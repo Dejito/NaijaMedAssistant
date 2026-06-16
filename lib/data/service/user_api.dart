@@ -2,12 +2,12 @@
 import 'package:dio/dio.dart';
 
 import '../../core/constant/app_url.dart';
-import '../models/request/auth/forgot_password_req.dart';
-import '../models/request/auth/login_req_body.dart';
-import '../models/request/auth/resend_verification_code_req.dart';
-import '../models/request/auth/reset_password_req.dart';
-import '../models/request/auth/sign_up_req.dart';
-import '../models/request/auth/verify_email_req.dart';
+import '../../presentation/auth/auth_service/req_body/forgot_password_req.dart';
+import '../../presentation/auth/auth_service/req_body/login_req_body.dart';
+import '../../presentation/auth/auth_service/req_body/resend_verification_code_req.dart';
+import '../../presentation/auth/auth_service/req_body/reset_password_req.dart';
+import '../../presentation/auth/auth_service/req_body/sign_up_req.dart';
+import '../../presentation/auth/auth_service/req_body/verify_email_req.dart';
 import 'http_util.dart';
 
 class ApiService {

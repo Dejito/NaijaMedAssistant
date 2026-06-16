@@ -4,7 +4,7 @@ import 'package:naija_med_assistant/presentation/views/widgets/text_input.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/titleText.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-import '../../views/widgets/elevated_bottom_button.dart';
+import '../../../views/widgets/elevated_bottom_button.dart';
 import '../auth_widgets.dart';
 
 class LoginScreen extends StatefulWidget {

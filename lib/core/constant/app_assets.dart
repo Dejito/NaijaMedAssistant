@@ -9,6 +9,18 @@ class AppImages {
   static const aiSymptomChecker = 'assets/drawables/ai_symptom_checker.webp';
   static const userImage = 'assets/drawables/pp.jpeg';
 
+
+  static const logo2 = 'assets/drawables/logo2.png';
+  static const emailIllustration = 'assets/drawables/email_illustration.webp';
+  static const successCheckmark = 'assets/drawables/successful_checkmark.webp';
+  static const forgotPassword = 'assets/drawables/forgot_password.webp';
+  static const playVideo = 'assets/drawables/play_video.webp';
+  static const steam = 'assets/drawables/steam.jpg';
+  static const pp = 'assets/drawables/pp.jpeg';
+  static const giftCard = 'assets/drawables/giftcard.jpeg';
+  static const logoutImage = 'assets/drawables/logout_image.png';
+  static const questionMark = 'assets/drawables/question_mark.webp';
+
 }
 
 class AppIcons {

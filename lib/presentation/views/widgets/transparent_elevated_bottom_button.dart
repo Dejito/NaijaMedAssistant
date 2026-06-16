@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TransparentBlackchinxBottomButton extends StatelessWidget {
+class TransparentMedBottomButton extends StatelessWidget {
 
   final VoidCallback? onPressed;
   final String text;
@@ -13,7 +13,7 @@ class TransparentBlackchinxBottomButton extends StatelessWidget {
   final double? topMargin;
   final double? bottomMargin;
 
-  const TransparentBlackchinxBottomButton({
+  const TransparentMedBottomButton({
     super.key,
     this.onPressed,
     required this.text,
