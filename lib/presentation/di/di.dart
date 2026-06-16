@@ -6,6 +6,7 @@ import '../../app_launch.dart';
 import '../auth/auth_service/response/auth_token.dart';
 import '../../data/service/user_api.dart';
 import '../auth/auth_viewmodel/auth_cubit.dart';
+import '../user/users_viewmodel/users_cubit.dart';
 
 void setUpEndpointCalls() {
 
@@ -14,26 +15,14 @@ void setUpEndpointCalls() {
       apiService: ApiService(),
     ),
   );
- //
- //  getIt.registerSingleton<GiftCardCubit>(
- //    GiftCardCubit(apiService: ApiService(),)
- //  );
- //
- //  getIt.registerSingleton<TransactionsCubit>(
- //    TransactionsCubit(ApiService())
- //  );
- //
- //  getIt.registerSingleton<WithdrawalCubit>(
- //      WithdrawalCubit(ApiService())
- //  );
- //
+
  //  getIt.registerSingleton<NotificationCubit>(
  //      NotificationCubit(ApiService())
  //  );
  //
- // getIt.registerSingleton<UsersCubit>(
- //      UsersCubit(ApiService())
- //  );
+ getIt.registerSingleton<UsersCubit>(
+      UsersCubit(ApiService())
+  );
  //
  // getIt.registerSingleton<ReportIssueCubit>(
  //      ReportIssueCubit(ApiService())

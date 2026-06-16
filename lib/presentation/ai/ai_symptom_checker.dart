@@ -33,7 +33,7 @@ class _AISymptomCheckerState extends State<AISymptomChecker> {
   final List<SymptomItem> _selectedSymptoms = [];
 
   // Pool of medical/expressive emojis to pull from randomly
-  final List<String> _emojiPool = ['🤒', '🤢', '🤮', '🤕', '😴', '🥵', '🥶', '😷', '💩', '🧠', '🫁', '🫀'];
+  final List<String> _emojiPool = ['🤒', '🤢', '🤮', '🤕', '😴', '🥵', '🥶', '😷',];
 
   @override
   void dispose() {

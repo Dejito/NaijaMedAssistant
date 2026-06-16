@@ -10,7 +10,7 @@ import 'package:naija_med_assistant/router/route.dart';
 import '../../../../core/constant/app_assets.dart';
 import '../../views/widgets/titleText.dart';
 
-Widget dashboardWelcomeBar() {
+Widget dashboardWelcomeBar(String name) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -22,7 +22,7 @@ Widget dashboardWelcomeBar() {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                titleText("Hi, Blessing",
+                titleText("Hi, $name",
                     fontSize: 17, fontWeight: FontWeight.w600),
                 titleText("Your health is our priority",
                     fontSize: 13, color: Colors.grey.shade700)

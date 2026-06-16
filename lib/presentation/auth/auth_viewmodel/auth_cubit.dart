@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:naija_med_assistant/data/models/response/users/get_user_response.dart';
 
 import '../../../app_launch.dart';
 import '../../../core/constant/app_keys.dart';
@@ -155,21 +154,16 @@ class AuthCubit extends Cubit<AuthState> {
         );
 
         if (loginResponse.user?.role == 'patient') {
-          print("got to patient role from cubit ${loginResponse.user?.role}");
-          await Future.wait([
-            getIt<UsersCubit>().getPatientProfile(),
-            // getIt<WithdrawalCubit>().getWithdrawalsBySeller(),
-            // getIt<TransactionsCubit>().fetchTransactionsHistoryShared(),
-            // getIt<GiftCardCubit>().getAvailableCardTypes(),
-            // getIt<UsersCubit>().getUserBankDetails(),
-            // getIt<NotificationCubit>().fetchNotificationsShared(),
-          ]);
+          emit(LoginSuccessful(loginResponse: loginResponse));
 
-          emit(
-              LoginSuccessful(
-                  loginResponse: loginResponse
-              )
-          );
+          // Profile hydration should not block successful authentication.
+          if (getIt.isRegistered<UsersCubit>()) {
+            try {
+              await getIt<UsersCubit>().getPatientProfile();
+            } catch (_) {}
+          } else {
+            debugPrint('UsersCubit is not registered; skipping patient profile fetch.');
+          }
           // NavHelper.navToAppPage();
 
         } else if (loginResponse.user?.role == 'doctor') {
@@ -181,7 +175,7 @@ class AuthCubit extends Cubit<AuthState> {
             // getIt<NotificationCubit>().fetchNotificationsShared(),
           ]);
 
-          // emit(LoginSuccessful());
+          emit(LoginSuccessful(loginResponse: loginResponse));
           // NavHelper.navToAdminDashboard();
 
         } else {
