@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:naija_med_assistant/core/constant/app_assets.dart';
+import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
 
-class ChatWithAiScreen extends StatelessWidget {
+class ChatWithAiScreen extends StatefulWidget {
   static const route = '/chat-with-ai';
 
-  ChatWithAiScreen({super.key});
+  const ChatWithAiScreen({super.key});
 
-  // Mock data representing the exact sequence from "Screenshot 2026-06-05 at 00.57.33.png"
+  @override
+  State<ChatWithAiScreen> createState() => _ChatWithAiScreenState();
+}
+
+class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
+  final SocketManager _socketManager = SocketManager();
+  final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  // Seed with mock data matching the original conversation log
   final List<ChatUiModel> conversationLog = [
     ChatUiModel(text: "Hi Blessing! How may i help you?", isUser: false, time: "9:30 AM"),
     ChatUiModel(text: "Can you suggest home remedies for catarrh and cough", isUser: true, time: "9:30 AM"),
@@ -15,10 +25,100 @@ class ChatWithAiScreen extends StatelessWidget {
     ChatUiModel(
         text: "Alright Blessing. Below are some home remedies that will help:\n1. Stay Hydrated\n2. Take enough time to rest\n3. Steam inhalation will give you some relieve\nHowever, if symptoms persists, kindly reach out to me again.",
         isUser: false,
-        time: "9:30 AM"
-    ),
+        time: "9:30 AM"),
     ChatUiModel(text: "I will do that. Thank you very much", isUser: true, time: "9:30 AM"),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeSocket();
+  }
+
+  void _initializeSocket() {
+    _socketManager.onConnect(() {
+      if (mounted) debugPrint('[ChatWithAiScreen] Connected to server');
+    });
+
+    _socketManager.onDisconnect(() {
+      if (mounted) debugPrint('[ChatWithAiScreen] Disconnected from server');
+    });
+
+    _socketManager.onMessage((message) {
+      if (mounted) {
+        setState(() {
+          _socketManager.emit('message', message);
+          conversationLog.add(ChatUiModel(
+            text: message,
+            isUser: false,
+            time: _formattedTime(),
+          ));
+        });
+        _scrollToBottom();
+      }
+    });
+
+    _socketManager.initialize(
+      url: 'https://naijamed.onrender.com',
+      options: <String, dynamic>{
+        'transports': ['websocket'],
+      },
+    );
+  }
+
+  void _sendMessage() {
+    final text = _messageController.text.trim();
+    if (text.isEmpty) return;
+
+    if (!_socketManager.isConnected) {
+      _socketManager.reconnect();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Connecting... Please try sending again.')),
+        );
+      }
+      return;
+    }
+
+
+    setState(() {
+      conversationLog.add(ChatUiModel(
+        text: text,
+        isUser: true,
+        time: _formattedTime(),
+      ));
+      _messageController.clear();
+    });
+    _scrollToBottom();
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  String _formattedTime() {
+    final now = DateTime.now();
+    final hour = now.hour % 12 == 0 ? 12 : now.hour % 12;
+    final minute = now.minute.toString().padLeft(2, '0');
+    final period = now.hour < 12 ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    _socketManager.disconnect();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +188,7 @@ class ChatWithAiScreen extends StatelessWidget {
                   // Chat Message Stream
                   Expanded(
                     child: ListView.builder(
+                      controller: _scrollController,
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                       itemCount: conversationLog.length + 1, // +1 to add the custom typing indicator bubble at the end
                       itemBuilder: (context, index) {
@@ -237,16 +338,18 @@ class ChatWithAiScreen extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    )
-                  ]
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  )
+                ],
               ),
               child: TextFormField(
+                controller: _messageController,
                 style: const TextStyle(fontSize: 13),
+                onFieldSubmitted: (_) => _sendMessage(),
                 decoration: InputDecoration(
                   hintText: "Type your message",
                   hintStyle: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.w400),
@@ -268,6 +371,20 @@ class ChatWithAiScreen extends StatelessWidget {
 
           const SizedBox(width: 10),
           Icon(Icons.mic_none_outlined, color: Colors.grey.shade700, size: 24),
+          const SizedBox(width: 10),
+
+          // Send button
+          GestureDetector(
+            onTap: _sendMessage,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: const BoxDecoration(
+                color: Color(0xFF4D2CFA),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.arrow_upward, color: Colors.white, size: 16),
+            ),
+          ),
         ],
       ),
     );
