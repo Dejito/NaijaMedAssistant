@@ -38,14 +38,19 @@ class Message {
 }
 
 // --- Main Chat Widget Class ---
-class AiHealthChatBox extends StatefulWidget {
-  const AiHealthChatBox({super.key});
+class AiSymptomsClerkScreen extends StatefulWidget {
+  final List<String> symptoms;
+
+  const AiSymptomsClerkScreen({
+    super.key,
+    this.symptoms = const [],
+  });
 
   @override
-  State<AiHealthChatBox> createState() => _AiHealthChatBoxState();
+  State<AiSymptomsClerkScreen> createState() => _AiSymptomsClerkScreenState();
 }
 
-class _AiHealthChatBoxState extends State<AiHealthChatBox> {
+class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
 
   late SocketManager socketManager;
   final TextEditingController messageController = TextEditingController();
@@ -61,7 +66,7 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
     socketManager = SocketManager();
     token = getIt<AuthToken>().authToken ?? "";
     _initializeSocket();
-    _loadMockData();
+    _loadInitialMessages();
   }
 
   void _initializeSocket() {
@@ -97,6 +102,44 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
         });
       }
     });
+  }
+
+  void _loadInitialMessages() {
+    final symptoms = widget.symptoms;
+
+    if (symptoms.isNotEmpty) {
+      // Build a symptom summary text and seed mock questionnaire items from real symptoms
+      final symptomText = symptoms.join(', ');
+      setState(() {
+        messages.add(
+          Message(
+            text: "Below are your symptoms: $symptomText",
+            isMe: false,
+            time: "Now",
+            type: MessageType.symptomCheck,
+            symptomQuestions: symptoms
+                .take(5)
+                .map(
+                  (s) => SymptomQuestionnaire(
+                    title: s,
+                    subtitle: "When did it start? How severe is it? Is it constant?",
+                    emoji: "🤒",
+                  ),
+                )
+                .toList(),
+          ),
+        );
+        messages.add(
+          const Message(
+            text: "Do you have any other symptom(s)? Describe Below",
+            isMe: false,
+            time: "Now",
+          ),
+        );
+      });
+    } else {
+      _loadMockData();
+    }
   }
 
   void _loadMockData() {
