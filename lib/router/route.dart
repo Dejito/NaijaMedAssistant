@@ -10,7 +10,7 @@ import 'package:naija_med_assistant/presentation/doctor/doctor_cases_screen.dart
 import 'package:naija_med_assistant/presentation/doctor/previous_documentation_screen.dart';
 import 'package:naija_med_assistant/presentation/emergency/emergency_support_screen.dart';
 
-import '../presentation/ai/ai_health_chatbox_new.dart';
+import '../presentation/ai/ai_health_chatbox.dart';
 import '../presentation/ai/ai_symptom_result_screen.dart';
 import '../presentation/ai/chat_with_ai_screen.dart';
 import '../presentation/ai/doctor_patient_chat_screen.dart';

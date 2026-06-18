@@ -13,6 +13,8 @@ import '../../../../core/constant/app_colors.dart';
 import '../../../../router/route.dart';
 import '../../../app_launch.dart';
 import '../../../data/models/response/users/get_user_response.dart';
+import '../../../socket_manager/socket_manager.dart';
+import '../../auth/auth_service/response/auth_token.dart';
 import '../../views/widgets/titleText.dart';
 import '../widgets/dashboard_widgets.dart';
 
@@ -26,8 +28,12 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
 
+  late SocketManager _socketManager = SocketManager();
+
   late final PageController _pageController;
   late final StreamSubscription<UsersState> _usersSubscription;
+  String token = "";
+
   int swipeIndex = 0;
 
   PatientUserResponse userResponse = PatientUserResponse();
@@ -35,7 +41,13 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
+
     super.initState();
+
+    _socketManager = SocketManager();
+    token = getIt<AuthToken>().authToken ?? "";
+
+    _socketManager.initialize(token: token);
 
     userResponse = getIt.isRegistered<PatientUserResponse>()
         ? getIt<PatientUserResponse>()
@@ -50,6 +62,7 @@ class _DashboardState extends State<Dashboard> {
     });
 
     getIt<UsersCubit>().getPatientProfile();
+
 
     _pageController = PageController();
   }
