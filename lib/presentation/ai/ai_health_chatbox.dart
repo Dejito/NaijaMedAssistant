@@ -71,7 +71,7 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
     }
 
     // Initialize socket connection
-    socketManager.initialize(token: token);
+    socketManager.initialize();
 
     // Set up callbacks for socket events
     socketManager.onConnect(() {

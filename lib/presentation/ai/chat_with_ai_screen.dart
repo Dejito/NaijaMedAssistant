@@ -7,7 +7,6 @@ import '../../app_launch.dart';
 import '../auth/auth_service/response/auth_token.dart';
 
 class ChatWithAiScreen extends StatefulWidget {
-  static const route = '/chat-with-ai';
 
   const ChatWithAiScreen({super.key});
 
@@ -20,7 +19,6 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final Set<String> _seenMessageIds = <String>{};
-  String token = "";
   bool _isAiTyping = false;
 
   // Seed with mock data matching the original conversation log
@@ -29,7 +27,6 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
   @override
   void initState() {
     super.initState();
-    token = getIt<AuthToken>().authToken ?? "";
     _initializeSocket();
   }
 
@@ -67,6 +64,9 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
       _appendIncomingMessage(message: message, isUser: isUser);
     });
 
+
+
+
     _socketManager.onTyping((payload) {
       if (!mounted) return;
       // AI typing payload does not include user_id.
@@ -94,7 +94,7 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
     });
 
 
-    _socketManager.initialize(token: token);
+    _socketManager.initialize();
   }
 
   String _normalizeIncomingMessage(String rawMessage) {

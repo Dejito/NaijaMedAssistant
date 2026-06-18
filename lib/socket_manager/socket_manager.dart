@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
+import '../app_launch.dart';
+import '../presentation/auth/auth_service/response/auth_token.dart';
+
 typedef OnMessageCallback = void Function(String message);
 typedef OnConnectionCallback = void Function();
 typedef OnDisconnectionCallback = void Function();
@@ -56,7 +59,8 @@ class SocketManager {
   /// Getter to check if socket is connected
   bool get isConnected => _isConnected;
 
-  void initialize({required String token}) {
+  void initialize() {
+    var token = getIt<AuthToken>().authToken ?? "";
     if (token.isEmpty) {
       debugPrint('[SocketManager] Cannot initialize socket without a token');
       return;
