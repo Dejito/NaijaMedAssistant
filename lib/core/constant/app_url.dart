@@ -26,7 +26,7 @@ class AppUrl {
 
 
   ///Symptom Checker
-  static const symptomChecker = 'symptom-checks';
+  static const checkSymptom = 'symptom-checks';
 
   ///Notifications
   static const sendNotification = 'notifications';

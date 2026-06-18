@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/service/user_api.dart';
 import '../../../socket_manager/socket_manager.dart';
 import '../ai_chat_service/response/chat_model.dart';
 
@@ -11,7 +12,9 @@ class AiChatCubit extends Cubit<AiChatState> {
   final SocketManager _socketManager;
   final Set<String> _seenMessageIds = <String>{};
 
-  AiChatCubit({SocketManager? socketManager})
+  final ApiService? apiService;
+
+  AiChatCubit({SocketManager? socketManager, this.apiService})
       : _socketManager = socketManager ?? SocketManager(),
         super(const AiChatInitial());
 
@@ -141,4 +144,8 @@ class AiChatCubit extends Cubit<AiChatState> {
       ),
     );
   }
+
+  Future
+
+
 }
