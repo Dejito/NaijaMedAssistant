@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:naija_med_assistant/presentation/auth/auth_service/response/auth_token.dart';
 import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
+
+import '../../app_launch.dart';
 
 // --- Mock Model Types to Keep Your Project Compiling ---
 enum MessageType { text, symptomCheck, typingIndicator, statusUpdate }
@@ -47,7 +50,7 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
   late SocketManager socketManager;
   final TextEditingController messageController = TextEditingController();
   final List<Message> messages = [];
-
+  String token = "";
   // --- Conditional Access Control Flag ---
   // Set to true for Doctor view (shows popup menu), false for Patient view (hides popup menu)
   final bool isDoctor = true;
@@ -56,18 +59,19 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
   void initState() {
     super.initState();
     socketManager = SocketManager();
+    token = getIt<AuthToken>().authToken ?? "";
     _initializeSocket();
     _loadMockData();
   }
 
   void _initializeSocket() {
+    if (token.isEmpty) {
+      debugPrint('[AiHealthChatBox] Missing auth token; socket will not initialize');
+      return;
+    }
+
     // Initialize socket connection
-    socketManager.initialize(
-      url: 'https://naijamed.onrender.com',
-      options: <String, dynamic>{
-        'transports': ['websocket'],
-      },
-    );
+    socketManager.initialize(token: token);
 
     // Set up callbacks for socket events
     socketManager.onConnect(() {

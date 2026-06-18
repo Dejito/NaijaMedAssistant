@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:naija_med_assistant/presentation/di/di.dart';
+import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
 
 import 'dart:async';
 
@@ -13,6 +16,7 @@ import 'core/storage/local_storage_utils.dart';
 GetIt getIt = GetIt.instance;
 
 class AppLaunch {
+
 
   Future init() async {
     WidgetsFlutterBinding.ensureInitialized();

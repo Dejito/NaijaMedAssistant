@@ -8,9 +8,9 @@ typedef OnDisconnectionCallback = Function();
 /// A singleton service to manage Socket.IO connections
 /// Handles connection, disconnection, message sending/receiving, and event management
 class SocketManager {
-  static final SocketManager _instance = SocketManager._internal();
 
-  late IO.Socket socket;
+  static final SocketManager _instance = SocketManager._internal();
+  IO.Socket? _socket;
   bool _isConnected = false;
 
   // Callbacks for UI updates
@@ -33,25 +33,38 @@ class SocketManager {
   ///
   /// [url] - The server URL to connect to
   /// [options] - Optional socket configuration options
-  void initialize({
-    required String url,
-    Map<String, dynamic>? options,
-  }) {
+  void initialize({required String token}) {
+
+    const url = 'https://naijamed.onrender.com';
+
+    if (token.isEmpty) {
+      debugPrint('[SocketManager] Cannot initialize socket without a token');
+      return;
+    }
+    print("init'ing web socket with token $token");
     if (_isConnected) {
       debugPrint('Socket already connected');
       return;
     }
 
-    final socketOptions = options ?? <String, dynamic>{
+    _socket?.dispose();
+    _socket = null;
+
+    final socketOptions = <String, dynamic>{
       'transports': ['websocket'],
+      'auth': {'token': token},
     };
 
-    socket = IO.io(url, socketOptions);
+    _socket = IO.io(url, socketOptions);
+
     _setupListeners();
   }
 
   /// Set up event listeners for socket events
   void _setupListeners() {
+    final socket = _socket;
+    if (socket == null) return;
+
     socket.on('connect', (_) {
       _isConnected = true;
       debugPrint('[SocketManager] Connected to server');
@@ -62,6 +75,10 @@ class SocketManager {
       _isConnected = false;
       debugPrint('[SocketManager] Disconnected from server');
       _onDisconnect?.call();
+    });
+
+    socket.on('connect_error', (error) {
+      debugPrint('[SocketManager] Connect error: $error');
     });
 
     socket.on('response', (data) {
@@ -94,7 +111,8 @@ class SocketManager {
   /// [event] - The event name
   /// [data] - The data to send
   void emit(String event, dynamic data) {
-    if (_isConnected) {
+    final socket = _socket;
+    if (_isConnected && socket != null) {
       socket.emit(event, data);
       debugPrint('[SocketManager] Emitted event: $event with data: $data');
     } else {
@@ -107,19 +125,20 @@ class SocketManager {
   /// [event] - The event name to listen for
   /// [callback] - The callback to execute when event is received
   void on(String event, Function(dynamic) callback) {
-    socket.on(event, callback);
+    _socket?.on(event, callback);
   }
 
   /// Remove a specific event listener
   ///
   /// [event] - The event name to stop listening for
   void off(String event) {
-    socket.off(event);
+    _socket?.off(event);
   }
 
   /// Disconnect from the server
   void disconnect() {
-    if (_isConnected) {
+    final socket = _socket;
+    if (_isConnected && socket != null) {
       socket.disconnect();
       _isConnected = false;
       debugPrint('[SocketManager] Manually disconnected from server');
@@ -128,7 +147,8 @@ class SocketManager {
 
   /// Reconnect to the server
   void reconnect() {
-    if (!_isConnected) {
+    final socket = _socket;
+    if (!_isConnected && socket != null) {
       socket.connect();
       debugPrint('[SocketManager] Attempting to reconnect to server');
     }
@@ -137,8 +157,8 @@ class SocketManager {
   /// Clean up resources and disconnect
   void dispose() {
     disconnect();
-    socket.dispose();
+    _socket?.dispose();
+    _socket = null;
     debugPrint('[SocketManager] Disposed socket manager');
   }
 }
-

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:naija_med_assistant/core/constant/app_assets.dart';
 import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
 
+import '../../app_launch.dart';
+import '../auth/auth_service/response/auth_token.dart';
+
 class ChatWithAiScreen extends StatefulWidget {
   static const route = '/chat-with-ai';
 
@@ -15,6 +18,7 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
   final SocketManager _socketManager = SocketManager();
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  String token = "";
 
   // Seed with mock data matching the original conversation log
   final List<ChatUiModel> conversationLog = [
@@ -32,16 +36,19 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
   @override
   void initState() {
     super.initState();
+    token = getIt<AuthToken>().authToken ?? "";
     _initializeSocket();
+
+    print("token is $token");
   }
 
   void _initializeSocket() {
     _socketManager.onConnect(() {
-      if (mounted) debugPrint('[ChatWithAiScreen] Connected to server');
+      // if (mounted) debugPrint('[ChatWithAiScreen] Connected to server');
     });
 
     _socketManager.onDisconnect(() {
-      if (mounted) debugPrint('[ChatWithAiScreen] Disconnected from server');
+      // if (mounted) debugPrint('[ChatWithAiScreen] Disconnected from server');
     });
 
     _socketManager.onMessage((message) {
@@ -58,12 +65,7 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
       }
     });
 
-    _socketManager.initialize(
-      url: 'https://naijamed.onrender.com',
-      options: <String, dynamic>{
-        'transports': ['websocket'],
-      },
-    );
+    _socketManager.initialize(token: token);
   }
 
   void _sendMessage() {
