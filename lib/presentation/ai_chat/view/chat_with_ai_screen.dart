@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:naija_med_assistant/app_launch.dart';
 import 'package:naija_med_assistant/core/constant/app_assets.dart';
-import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
-
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_cubit.dart';
 
 import '../ai_chat_service/response/chat_model.dart';
 
@@ -15,133 +16,29 @@ class ChatWithAiScreen extends StatefulWidget {
 }
 
 class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
-  final SocketManager _socketManager = SocketManager();
+
+  final AiChatCubit _chatCubit = getIt<AiChatCubit>();
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final Set<String> _seenMessageIds = <String>{};
-  bool _isAiTyping = false;
-
-  // Seed with mock data matching the original conversation log
-  final List<ChatUiModel> conversationLog = [];
 
   @override
   void initState() {
     super.initState();
-    _initializeSocket();
-  }
-
-  void _initializeSocket() {
-    _socketManager.onConnect(() {
-      if (mounted) debugPrint('[ChatWithAiScreen] Connected to server');
-    });
-
-    _socketManager.onDisconnect(() {
-      if (!mounted) return;
-      setState(() {
-        _isAiTyping = false;
-      });
-      debugPrint('[ChatWithAiScreen] Disconnected from server');
-    });
-
-    // Structured message payload from backend with metadata.
-    _socketManager.onNewMessage((payload) {
-      if (!mounted) return;
-
-      final messageId = payload['message_id']?.toString();
-      if (messageId != null && messageId.isNotEmpty) {
-        if (_seenMessageIds.contains(messageId)) return;
-        _seenMessageIds.add(messageId);
-      }
-
-      final identifier = payload['identifier']?.toString();
-      final message = _normalizeIncomingMessage(
-        payload['message']?.toString() ?? '',
-      );
-      if (message.trim().isEmpty) return;
-
-      // Backend emits: human (user) | agent (AI)
-      final isUser = identifier == 'human';
-      _appendIncomingMessage(message: message, isUser: isUser);
-    });
-
-
-
-
-    _socketManager.onTyping((payload) {
-      if (!mounted) return;
-      // AI typing payload does not include user_id.
-      if (payload['user_id'] == null) {
-        setState(() {
-          _isAiTyping = true;
-        });
-      }
-    });
-
-    _socketManager.onTypingStopped((payload) {
-      if (!mounted) return;
-      if (payload['user_id'] == null) {
-        setState(() {
-          _isAiTyping = false;
-        });
-      }
-    });
-
-    _socketManager.onError((message) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
-    });
-
-
-    _socketManager.initialize();
-  }
-
-  String _normalizeIncomingMessage(String rawMessage) {
-    final lines = rawMessage
-        .split('\n')
-        .map((line) => line.replaceFirst(RegExp(r'^I\/flutter\s*\([^)]*\):\s*'), ''))
-        .toList();
-    return lines.join('\n').trim();
+    _chatCubit.initializeSocket();
   }
 
   void _sendMessage() {
-    final text = _messageController.text.trim();
-    if (text.isEmpty) return;
-
-    if (!_socketManager.isConnected) {
-      _socketManager.reconnect();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Connecting... Please try sending again.')),
-        );
-      }
-      return;
-    }
-
-    _socketManager.sendMessage(message: text);
-    setState(() {
-      _isAiTyping = true;
+    final sent = _chatCubit.sendMessage(_messageController.text);
+    if (sent) {
       _messageController.clear();
-    });
-    _scrollToBottom();
-  }
-
-  void _appendIncomingMessage({required String message, required bool isUser}) {
-    setState(() {
-      _isAiTyping = false;
-      conversationLog.add(
-        ChatUiModel(
-          text: message,
-          isUser: isUser,
-          time: _formattedTime(),
-        ),
-      );
-    });
-    _scrollToBottom();
+      _scrollToBottom();
+    }
   }
 
   void _scrollToBottom() {
+
+    FocusManager.instance.primaryFocus?.unfocus();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -153,20 +50,11 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
     });
   }
 
-
-  String _formattedTime() {
-    final now = DateTime.now();
-    final hour = now.hour % 12 == 0 ? 12 : now.hour % 12;
-    final minute = now.minute.toString().padLeft(2, '0');
-    final period = now.hour < 12 ? 'AM' : 'PM';
-    return '$hour:$minute $period';
-  }
-
   @override
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
-    _socketManager.disconnect();
+    _chatCubit.disposeChat();
     super.dispose();
   }
 
@@ -202,72 +90,91 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
           child: Container(color: Colors.grey.shade300, height: 1.5),
         ),
       ),
-      body: Column(
-        children: [
-          // The floating card body container housing the chat window
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(14, 16, 14, 0),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
+      body: BlocConsumer<AiChatCubit, AiChatState>(
+        bloc: _chatCubit,
+        listenWhen: (previous, current) {
+          return previous.errorMessage != current.errorMessage ||
+              previous.messages.length != current.messages.length;
+        },
+        listener: (context, state) {
+          final error = state.errorMessage;
+          if (error != null && error.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error)),
+            );
+            _chatCubit.clearError();
+          }
 
-                  // Top Status Subheader Pill
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black87, width: 1),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Text(
-                      "AI Health Assistant",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                        letterSpacing: 0.3,
+          _scrollToBottom();
+        },
+        builder: (context, state) {
+          return Column(
+            children: [
+              // The floating card body container housing the chat window
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(14, 16, 14, 0),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+
+                      // Top Status Subheader Pill
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black87, width: 1),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Text(
+                          "AI Health Assistant",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                  // Chat Message Stream
-                  Expanded(
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      itemCount: conversationLog.length + (_isAiTyping ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (_isAiTyping && index == conversationLog.length) {
-                          return _buildTypingIndicator();
-                        }
-                        return _buildChatBubble(conversationLog[index]);
-                      },
-                    ),
-                  ),
+                      // Chat Message Stream
+                      Expanded(
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          itemCount: state.messages.length + (state.isAiTyping ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (state.isAiTyping && index == state.messages.length) {
+                              return _buildTypingIndicator();
+                            }
+                            return _buildChatBubble(state.messages[index]);
+                          },
+                        ),
+                      ),
 
-                  // Fixed Bottom Input Section dock frame
-                  _buildInputDock(),
-                ],
+                      // Fixed Bottom Input Section dock frame
+                      _buildInputDock(),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
 
-          // Outer bottom structural spacing to complement safe areas nicely
-          Container(
-            color: const Color(0xFF4D2CFA),
-            height: MediaQuery.of(context).padding.bottom + 8,
-          ),
-        ],
+              // Outer bottom structural spacing to complement safe areas nicely
+              Container(
+                color: const Color(0xFF4D2CFA),
+                height: MediaQuery.of(context).padding.bottom + 8,
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  // --- ITEM WIDGET COMPONENT BUILDERS ---
 
   Widget _buildChatBubble(ChatUiModel item) {
     return Padding(
@@ -454,16 +361,3 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
     );
   }
 }
-
-
-// class ChatUiModel {
-//   final String text;
-//   final bool isUser;
-//   final String time;
-//
-//   ChatUiModel({
-//     required this.text,
-//     required this.isUser,
-//     required this.time,
-//   });
-// }
