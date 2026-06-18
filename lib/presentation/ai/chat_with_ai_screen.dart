@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:naija_med_assistant/core/constant/app_assets.dart';
 import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
 
