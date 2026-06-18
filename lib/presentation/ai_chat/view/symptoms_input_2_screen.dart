@@ -6,9 +6,9 @@ import '../../auth/auth_views/auth_widgets.dart';
 import '../../views/widgets/elevated_bottom_button.dart';
 import '../../views/widgets/titleText.dart'; // Adjust based on your actual path
 
-class AISymptomResultScreen extends StatelessWidget {
+class SymptomsInput2Screen extends StatelessWidget {
 
-  const AISymptomResultScreen({super.key});
+  const SymptomsInput2Screen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class AISymptomResultScreen extends StatelessWidget {
                     MedBottomButton(
                       text: "Chat With Our AI Health Assistant",
                       onPressed: () {
-                        context.push(AppRoutes.doctorChatBoxPatient);
+                        context.push(AppRoutes.aiHealthChatBox);
                       },
                     ),
                   ],

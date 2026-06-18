@@ -19,18 +19,18 @@ class SymptomItem {
   });
 }
 
-class AISymptomChecker extends StatefulWidget {
-  static const route = '/ai-symptom-checker';
+class SymptomsInputScreen extends StatefulWidget {
 
-  const AISymptomChecker({super.key});
+  const SymptomsInputScreen({super.key});
 
   @override
-  State<AISymptomChecker> createState() => _AISymptomCheckerState();
+  State<SymptomsInputScreen> createState() => _SymptomsInputScreenState();
 }
 
-class _AISymptomCheckerState extends State<AISymptomChecker> {
+class _SymptomsInputScreenState extends State<SymptomsInputScreen> {
   final TextEditingController _symptomController = TextEditingController();
   final List<SymptomItem> _selectedSymptoms = [];
+  final List<String> _inputtedSymptoms = [];
 
   // Pool of medical/expressive emojis to pull from randomly
   final List<String> _emojiPool = ['🤒', '🤢', '🤮', '🤕', '😴', '🥵', '🥶', '😷',];
