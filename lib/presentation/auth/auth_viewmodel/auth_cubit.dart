@@ -110,24 +110,6 @@ class AuthCubit extends Cubit<AuthState> {
       );
     }
   }
-  //
-  // Future<void> editPassword(EditPasswordRequestBody editPasswordRequestBody) async {
-  //   try {
-  //     emit(EditPasswordLoading());
-  //     final response = await ApiService.editPassword(editPasswordRequestBody);
-  //     if (response.statusCode == 200 || response.statusCode == 201) {
-  //       var responseMessage = ResponseMessage.fromJson(response.data).message;
-  //       showToast(message: responseMessage);
-  //       emit(EditPasswordSuccessful());
-  //     }
-  //   }
-  //   catch (e) {
-  //     handleError(e,
-  //       onEmit: (msg) => emit(EditPasswordError(error: msg)),
-  //     );
-  //   }
-  // }
-  //
 
   Future<void> login(LoginRequestEntity loginRequestEntity) async {
     try {
@@ -167,13 +149,6 @@ class AuthCubit extends Cubit<AuthState> {
           // NavHelper.navToAppPage();
 
         } else if (loginResponse.user?.role == 'doctor') {
-          await Future.wait([
-            // getIt<UsersCubit>().getUserShared(),
-            // getIt<TransactionsCubit>().fetchTransactionsHistoryShared(),
-            // getIt<WithdrawalCubit>().getUserWithdrawalsByAdmin(),
-            // getIt<GiftCardCubit>().getAvailableCardTypes(),
-            // getIt<NotificationCubit>().fetchNotificationsShared(),
-          ]);
 
           emit(LoginSuccessful(loginResponse: loginResponse));
           // NavHelper.navToAdminDashboard();
@@ -187,6 +162,27 @@ class AuthCubit extends Cubit<AuthState> {
       handleError(e, onEmit: (msg) => emit(LoginError(error: msg)));
     }
   }
+
+
+//
+// Future<void> editPassword(EditPasswordRequestBody editPasswordRequestBody) async {
+//   try {
+//     emit(EditPasswordLoading());
+//     final response = await ApiService.editPassword(editPasswordRequestBody);
+//     if (response.statusCode == 200 || response.statusCode == 201) {
+//       var responseMessage = ResponseMessage.fromJson(response.data).message;
+//       showToast(message: responseMessage);
+//       emit(EditPasswordSuccessful());
+//     }
+//   }
+//   catch (e) {
+//     handleError(e,
+//       onEmit: (msg) => emit(EditPasswordError(error: msg)),
+//     );
+//   }
+// }
+//
+
 
 }
 

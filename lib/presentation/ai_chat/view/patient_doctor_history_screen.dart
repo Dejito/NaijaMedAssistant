@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:naija_med_assistant/presentation/ai/view/patient_history_details_screen.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/view/patient_history_details_screen.dart';
 
 class PatientDoctorHistoryScreen extends StatefulWidget {
   static const route = '/history-list';

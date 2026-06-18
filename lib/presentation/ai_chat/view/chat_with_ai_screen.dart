@@ -3,8 +3,8 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:naija_med_assistant/core/constant/app_assets.dart';
 import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
 
-import '../../../app_launch.dart';
-import '../../auth/auth_service/response/auth_token.dart';
+
+import '../ai_chat_service/response/chat_model.dart';
 
 class ChatWithAiScreen extends StatefulWidget {
 
@@ -191,12 +191,12 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.more_horiz, color: Colors.black),
-        //     onPressed: () {},
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_horiz, color: Colors.black),
+            onPressed: () {},
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Container(color: Colors.grey.shade300, height: 1.5),
@@ -456,14 +456,14 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
 }
 
 
-class ChatUiModel {
-  final String text;
-  final bool isUser;
-  final String time;
-
-  ChatUiModel({
-    required this.text,
-    required this.isUser,
-    required this.time,
-  });
-}
+// class ChatUiModel {
+//   final String text;
+//   final bool isUser;
+//   final String time;
+//
+//   ChatUiModel({
+//     required this.text,
+//     required this.isUser,
+//     required this.time,
+//   });
+// }
