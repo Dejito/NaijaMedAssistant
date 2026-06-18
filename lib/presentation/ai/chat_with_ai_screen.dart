@@ -47,23 +47,10 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
       // if (mounted) debugPrint('[ChatWithAiScreen] Connected to server');
     });
 
-    _socketManager.onDisconnect(() {
+    // _socketManager.onDisconnect(() {
       // if (mounted) debugPrint('[ChatWithAiScreen] Disconnected from server');
-    });
+    // });
 
-    _socketManager.onMessage((message) {
-      if (mounted) {
-        setState(() {
-          _socketManager.emit('message', message);
-          conversationLog.add(ChatUiModel(
-            text: message,
-            isUser: false,
-            time: _formattedTime(),
-          ));
-        });
-        _scrollToBottom();
-      }
-    });
 
     _socketManager.initialize(token: token);
   }
@@ -82,15 +69,31 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
       return;
     }
 
+    _socketManager.sendMessage(message: text);
 
-    setState(() {
-      conversationLog.add(ChatUiModel(
-        text: text,
-        isUser: true,
-        time: _formattedTime(),
-      ));
-      _messageController.clear();
+    _socketManager.onMessage((message) {
+      if (mounted) {
+        setState(() {
+          _socketManager.emit('message', message);
+          conversationLog.add(ChatUiModel(
+            text: message,
+            isUser: false,
+            time: _formattedTime(),
+          ));
+        });
+        _scrollToBottom();
+      }
     });
+
+    // setState(() {
+    //   conversationLog.add(ChatUiModel(
+    //     text: text,
+    //     isUser: true,
+    //     time: _formattedTime(),
+    //   ));
+    //   _messageController.clear();
+    // });
+
     _scrollToBottom();
   }
 
@@ -105,6 +108,7 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
       }
     });
   }
+
 
   String _formattedTime() {
     final now = DateTime.now();
