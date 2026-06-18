@@ -1,8 +1,6 @@
 import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/presentation/ai/doctor_connection_screen.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page_doctor.dart';
-import 'package:naija_med_assistant/presentation/ai/ai_symptom_checker.dart';
 import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
 import 'package:naija_med_assistant/presentation/doctor/create_prescription_screen.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_case_summary_screen.dart';
@@ -10,10 +8,12 @@ import 'package:naija_med_assistant/presentation/doctor/doctor_cases_screen.dart
 import 'package:naija_med_assistant/presentation/doctor/previous_documentation_screen.dart';
 import 'package:naija_med_assistant/presentation/emergency/emergency_support_screen.dart';
 
-import '../presentation/ai/ai_health_chatbox.dart';
-import '../presentation/ai/ai_symptom_result_screen.dart';
-import '../presentation/ai/chat_with_ai_screen.dart';
-import '../presentation/ai/doctor_patient_chat_screen.dart';
+import '../presentation/ai_chat/view/ai_health_chatbox.dart';
+import '../presentation/ai_chat/view/ai_symptom_checker.dart';
+import '../presentation/ai_chat/view/ai_symptom_result_screen.dart';
+import '../presentation/ai_chat/view/chat_with_ai_screen.dart';
+import '../presentation/ai_chat/view/doctor_connection_screen.dart';
+import '../presentation/ai_chat/view/doctor_patient_chat_screen.dart';
 import '../presentation/auth/auth_views/login/login_screen.dart';
 import '../presentation/auth/auth_views/sign_up/sign_up.dart';
 import '../presentation/auth/auth_views/sign_up/verify_email.dart';
@@ -50,7 +50,7 @@ class AppRoutes {
 }
 
 final GoRouter router = GoRouter(
-  initialLocation: AppRoutes.splash, // The app now boots into the Splash Screen
+  initialLocation: AppRoutes.splash,
   routes: [
     GoRoute(
       path: AppRoutes.splash,

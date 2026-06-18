@@ -32,7 +32,6 @@ class _DashboardState extends State<Dashboard> {
 
   late final PageController _pageController;
   late final StreamSubscription<UsersState> _usersSubscription;
-  String token = "";
 
   int swipeIndex = 0;
 
@@ -45,9 +44,8 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
 
     _socketManager = SocketManager();
-    token = getIt<AuthToken>().authToken ?? "";
 
-    _socketManager.initialize(token: token);
+    _socketManager.initialize();
 
     userResponse = getIt.isRegistered<PatientUserResponse>()
         ? getIt<PatientUserResponse>()

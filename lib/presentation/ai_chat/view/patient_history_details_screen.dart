@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:naija_med_assistant/presentation/ai/patient_doctor_history_screen.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/view/patient_doctor_history_screen.dart';
 
 class DetailedSummaryScreen extends StatelessWidget {
 

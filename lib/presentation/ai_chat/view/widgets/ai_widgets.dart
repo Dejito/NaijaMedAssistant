@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constant/app_assets.dart';
-import '../../views/widgets/titleText.dart';
+import '../../../views/widgets/titleText.dart';
 
 Widget welcomeTextCard() {
   return Column(

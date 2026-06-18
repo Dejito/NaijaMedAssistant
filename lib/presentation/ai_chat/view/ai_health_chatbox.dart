@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:naija_med_assistant/presentation/auth/auth_service/response/auth_token.dart';
 import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
 
-import '../../app_launch.dart';
+import '../../../app_launch.dart';
 
 // --- Mock Model Types to Keep Your Project Compiling ---
 enum MessageType { text, symptomCheck, typingIndicator, statusUpdate }
@@ -71,7 +71,7 @@ class _AiHealthChatBoxState extends State<AiHealthChatBox> {
     }
 
     // Initialize socket connection
-    socketManager.initialize(token: token);
+    socketManager.initialize();
 
     // Set up callbacks for socket events
     socketManager.onConnect(() {
