@@ -1,7 +1,6 @@
 
 class AppUrl {
 
-  // static const baseUrl = 'https://blackchinx-app-be.onrender.com/api/v1/';
   static const baseUrl = 'https://naijamed.onrender.com/api/';
 
   ///Auth
@@ -25,17 +24,9 @@ class AppUrl {
   static String updateGiftCard(String id) => 'giftcards/updateType/$id';
   static String deleteGiftcard(String id) => 'giftcards/deleteType/$id';
 
-  ///Transactions
-  static const transactions = 'transactions';
-  static String adminCompletesTransaction(String id) => 'transactions/$id/complete';
-  static String adminDeclinesWithdrawal(String id) => 'transactions/$id/fail';
 
-  ///Withdrawals
-  static const adminWithdrawals = 'withdrawals';
-  static const sellerWithdrawals = 'withdrawals/user';
-  static String getUserWithdrawalsByAdmin = 'withdrawals';
-  static String adminCompletesWithdrawal(String id) => 'withdrawals/$id/complete';
-  static String adminRejectsWithdrawal(String id) => 'withdrawals/$id/reject';
+  ///Symptom Checker
+  static const symptomChecker = 'symptom-checks';
 
   ///Notifications
   static const sendNotification = 'notifications';
@@ -56,15 +47,7 @@ class AppUrl {
   static String updateBankDetails = 'users/profile/updatebankdetails';
   static String withdraw = 'users/wallet/withdraw';
 
-  ///Admin
-  static String deposit(String id) => 'users/wallet/$id/deposit';
-  static String deleteUser(String id) => 'users/profile/$id';
 
-  ///Report-Issues
-  static String reportIssue = 'report-issues';
-  static String updateIssueStatus(String id) => 'report-issues/$id';
-  static String deleteIssue(String id) => 'report-issues/$id';
-  
 
 
 

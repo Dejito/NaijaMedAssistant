@@ -4,11 +4,15 @@ import 'package:naija_med_assistant/router/route.dart';
 
 import '../../auth/auth_views/auth_widgets.dart';
 import '../../views/widgets/elevated_bottom_button.dart';
-import '../../views/widgets/titleText.dart'; // Adjust based on your actual path
+import '../../views/widgets/titleText.dart';
 
-class AISymptomResultScreen extends StatelessWidget {
+class SymptomsInput2Screen extends StatelessWidget {
+  final List<String> symptoms;
 
-  const AISymptomResultScreen({super.key});
+  const SymptomsInput2Screen({
+    super.key,
+    this.symptoms = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +47,10 @@ class AISymptomResultScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
 
-              // Personalized Header Text
               const Text(
                 "Dear Blessing Jones,",
                 style: TextStyle(
-                  color: Color(0xFF0A2568), // Deep navy blue tone from layout
+                  color: Color(0xFF0A2568),
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.3,
@@ -56,7 +59,6 @@ class AISymptomResultScreen extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              // Recommendation Subtitle Description
               const Text(
                 "Based on your symptoms, we recommend you take further action",
                 style: TextStyle(
@@ -67,10 +69,28 @@ class AISymptomResultScreen extends StatelessWidget {
                 ),
               ),
 
-              // Spacing to vertically center the focal graphics
+              if (symptoms.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: symptoms
+                      .map(
+                        (s) => Chip(
+                          label: Text(
+                            s,
+                            style: const TextStyle(fontSize: 12, color: Colors.black87),
+                          ),
+                          backgroundColor: const Color(0xFFC5C0F6).withValues(alpha: 0.4),
+                          side: BorderSide.none,
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+
               const Spacer(flex: 2),
 
-              // Center Illustration Image/Icon Content
               Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -79,11 +99,13 @@ class AISymptomResultScreen extends StatelessWidget {
 
                     const SizedBox(height: 35),
 
-                    // Main Action CTA Button mapped to navigate to ChatBox
                     MedBottomButton(
                       text: "Chat With Our AI Health Assistant",
                       onPressed: () {
-                        context.push(AppRoutes.doctorChatBoxPatient);
+                        context.push(
+                          AppRoutes.aiHealthChatBox,
+                          extra: symptoms,
+                        );
                       },
                     ),
                   ],

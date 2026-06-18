@@ -8,9 +8,9 @@ import 'package:naija_med_assistant/presentation/doctor/doctor_cases_screen.dart
 import 'package:naija_med_assistant/presentation/doctor/previous_documentation_screen.dart';
 import 'package:naija_med_assistant/presentation/emergency/emergency_support_screen.dart';
 
-import '../presentation/ai_chat/view/ai_health_chatbox.dart';
-import '../presentation/ai_chat/view/ai_symptom_checker.dart';
-import '../presentation/ai_chat/view/ai_symptom_result_screen.dart';
+import '../presentation/ai_chat/view/ai_symptom_clerk_screen.dart';
+import '../presentation/ai_chat/view/symptoms_input_screen.dart';
+import '../presentation/ai_chat/view/symptoms_input_2_screen.dart';
 import '../presentation/ai_chat/view/chat_with_ai_screen.dart';
 import '../presentation/ai_chat/view/doctor_connection_screen.dart';
 import '../presentation/ai_chat/view/doctor_patient_chat_screen.dart';
@@ -119,22 +119,38 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.aiSymptomChecker,
-      builder: (_, __) => const AISymptomChecker(),
+      builder: (_, __) => const SymptomsInputScreen(),
     ),
 
     GoRoute(
       path: AppRoutes.aiSymptomResultScreen,
-      builder: (_, __) => const AISymptomResultScreen(),
+      builder: (_, state) {
+        final extra = state.extra;
+        final symptoms = extra is List<String>
+            ? extra
+            : extra is List
+                ? List<String>.from(extra.map((e) => e.toString()))
+                : <String>[];
+        return SymptomsInput2Screen(symptoms: symptoms);
+      },
     ),
 
     GoRoute(
       path: AppRoutes.aiHealthChatBox,
-      builder: (_, __) => const AiHealthChatBox(),
+      builder: (_, state) {
+        final extra = state.extra;
+        final symptoms = extra is List<String>
+            ? extra
+            : extra is List
+                ? List<String>.from(extra.map((e) => e.toString()))
+                : <String>[];
+        return AiSymptomsClerkScreen(symptoms: symptoms);
+      },
     ),
 
     GoRoute(
       path: AppRoutes.chatWithAi,
-      builder: (_, __) => ChatWithAiScreen(),
+      builder: (_, __) => const ChatWithAiScreen(),
     ),
 
     GoRoute(

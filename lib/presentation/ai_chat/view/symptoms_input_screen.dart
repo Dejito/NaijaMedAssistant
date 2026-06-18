@@ -19,16 +19,15 @@ class SymptomItem {
   });
 }
 
-class AISymptomChecker extends StatefulWidget {
-  static const route = '/ai-symptom-checker';
+class SymptomsInputScreen extends StatefulWidget {
 
-  const AISymptomChecker({super.key});
+  const SymptomsInputScreen({super.key});
 
   @override
-  State<AISymptomChecker> createState() => _AISymptomCheckerState();
+  State<SymptomsInputScreen> createState() => _SymptomsInputScreenState();
 }
 
-class _AISymptomCheckerState extends State<AISymptomChecker> {
+class _SymptomsInputScreenState extends State<SymptomsInputScreen> {
   final TextEditingController _symptomController = TextEditingController();
   final List<SymptomItem> _selectedSymptoms = [];
 
@@ -131,7 +130,7 @@ class _AISymptomCheckerState extends State<AISymptomChecker> {
                       "Welcome to our AI-powered Symptom\nChecker",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.black.withOpacity(0.85),
+                        color: Colors.black.withValues(alpha: 0.85),
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                         height: 1.4,
@@ -254,7 +253,11 @@ class _AISymptomCheckerState extends State<AISymptomChecker> {
             Center(
               child: InkWell(
                 onTap: () {
-                  context.push(AppRoutes.aiSymptomResultScreen);
+                  if (_selectedSymptoms.isEmpty) return;
+                  context.push(
+                    AppRoutes.aiSymptomResultScreen,
+                    extra: _selectedSymptoms.map((s) => s.name).toList(),
+                  );
                 },
                 borderRadius: BorderRadius.circular(24),
                 child: Padding(
