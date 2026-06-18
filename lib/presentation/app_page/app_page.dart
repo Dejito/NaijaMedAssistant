@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:naija_med_assistant/presentation/views/profile/profile.dart';
-import '../ai/patient_doctor_history_screen.dart';
+import '../ai/view/patient_doctor_history_screen.dart';
 import '../dashboard/screens/dashboard.dart';
 
 

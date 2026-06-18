@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-import '../auth/auth_views/auth_widgets.dart';
-import '../views/widgets/elevated_bottom_button.dart';
-import '../views/widgets/titleText.dart'; // Adjust based on your actual path
+import '../../auth/auth_views/auth_widgets.dart';
+import '../../views/widgets/elevated_bottom_button.dart';
+import '../../views/widgets/titleText.dart'; // Adjust based on your actual path
 
 class AISymptomResultScreen extends StatelessWidget {
 

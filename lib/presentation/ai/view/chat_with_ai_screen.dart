@@ -3,8 +3,8 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:naija_med_assistant/core/constant/app_assets.dart';
 import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
 
-import '../../app_launch.dart';
-import '../auth/auth_service/response/auth_token.dart';
+import '../../../app_launch.dart';
+import '../../auth/auth_service/response/auth_token.dart';
 
 class ChatWithAiScreen extends StatefulWidget {
 
