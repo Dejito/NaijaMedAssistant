@@ -1,5 +1,5 @@
 
-class SymptomCheckResponse {
+class CheckSymptomsResponse {
   final String symptomCheckId;
   final String status;
   final bool escalationRequired;
@@ -12,7 +12,7 @@ class SymptomCheckResponse {
   final String? caseId;
   final String? conversationId;
 
-  SymptomCheckResponse({
+  CheckSymptomsResponse({
     required this.symptomCheckId,
     required this.status,
     required this.escalationRequired,
@@ -26,8 +26,8 @@ class SymptomCheckResponse {
     this.conversationId,
   });
 
-  factory SymptomCheckResponse.fromJson(Map<String, dynamic> json) {
-    return SymptomCheckResponse(
+  factory CheckSymptomsResponse.fromJson(Map<String, dynamic> json) {
+    return CheckSymptomsResponse(
       symptomCheckId: json['symptom_check_id'] ?? '',
       status: json['status'] ?? '',
       escalationRequired: json['escalation_required'] ?? false,
