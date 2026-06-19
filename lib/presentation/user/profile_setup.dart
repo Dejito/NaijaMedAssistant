@@ -41,18 +41,18 @@ class ProfileSetup extends StatelessWidget {
           children: [
             profileAvatar(),
             InputText(
-              hint: "Ogunrinde Blessing",
+              hint: "",
               controller: nameController,
               bottomPadding: 0,
             ),
             InputText(
               controller: emailController,
-              hint: "Bogunride22@gmail.com",
+              hint: "",
               bottomPadding: 0,
             ),
             InputText(
               controller: phoneController,
-              hint: "08102394672",
+              hint: "",
               bottomPadding: 0,
             ),
             InputText(
@@ -92,7 +92,7 @@ class ProfileSetup extends StatelessWidget {
             MedBottomButton(
               text: "Save",
               onPressed: () {
-                context.go(AppRoutes.login);
+                context.pop();
               },
               topMargin: 30,
               bottomMargin: 12,
