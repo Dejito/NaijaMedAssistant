@@ -33,6 +33,7 @@ class AppUrl {
 
   ///Users
   static String getPatient = 'users/profile';
+  static String getDoctor = 'users/profile';
 
 
 

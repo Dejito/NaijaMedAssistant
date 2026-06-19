@@ -36,7 +36,7 @@ class AppRoutes {
   static const String profileSetup = "/profile-setup";
   static const String profileSetupDoctor = "/profile-setup-doctor";
   static const String dashboard = "/dashboard";
-  static const String appPage = "/app-page";
+  static const String patientAppPage = "/app-page";
   static const String doctorAppPage = "/doctor-app-page";
   static const String aiSymptomChecker = "/symptom-checker";
   static const String aiSymptomResultScreen = "/symptom-result";
@@ -111,7 +111,7 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
-      path: AppRoutes.appPage,
+      path: AppRoutes.patientAppPage,
       builder: (_, __) => const ApplicationPage(),
     ),
 

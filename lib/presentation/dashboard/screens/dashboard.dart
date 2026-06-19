@@ -12,7 +12,7 @@ import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_modu
 import '../../../../core/constant/app_colors.dart';
 import '../../../../router/route.dart';
 import '../../../app_launch.dart';
-import '../../../data/models/response/users/get_user_response.dart';
+import '../../user/user_service/response/get_patient_response.dart';
 import '../../../socket_manager/socket_manager.dart';
 import '../../auth/auth_service/response/auth_token.dart';
 import '../../views/widgets/titleText.dart';

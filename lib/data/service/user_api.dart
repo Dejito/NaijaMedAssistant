@@ -60,6 +60,12 @@ class ApiService {
     return response;
   }
 
+  static Future<Response> getDoctor() async {
+    var response = await HttpUtil()
+        .get(AppUrl.getDoctor);
+    return response;
+  }
+
   static Future<Response> checkSymptoms(CheckSymptomsReqBody checkSymptomsReqBody) async {
     var response = await HttpUtil()
         .post(AppUrl.checkSymptom, data: checkSymptomsReqBody.toJson());

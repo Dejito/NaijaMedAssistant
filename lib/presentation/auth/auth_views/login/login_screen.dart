@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
               context.push(
                 role == 'doctor'
                     ? AppRoutes.doctorAppPage
-                    : AppRoutes.appPage,
+                    : AppRoutes.patientAppPage,
               );
             }
           },
