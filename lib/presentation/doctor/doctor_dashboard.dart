@@ -1,10 +1,17 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/presentation/user/user_service/response/get_doctor_response.dart';
+import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_doctor_states.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
+import '../../app_launch.dart';
 import '../../core/constant/app_assets.dart';
+import '../../socket_manager/socket_manager.dart';
+import '../user/users_viewmodel/users_cubit.dart';
 import '../views/widgets/titleText.dart'; // Adjust path based on your layout
 
 class DoctorDashboard extends StatefulWidget {
@@ -16,7 +23,11 @@ class DoctorDashboard extends StatefulWidget {
 }
 
 class _DoctorDashboardState extends State<DoctorDashboard> {
-  // Mock listing matching the layout items exactly
+
+  late SocketManager _socketManager = SocketManager();
+  DoctorProfileResponse doctorProfile = DoctorProfileResponse();
+  late final StreamSubscription<UsersState> _usersSubscription;
+
   final List<PatientCase> _cases = const [
     PatientCase(
       name: "Jane Smith",
@@ -49,6 +60,32 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
       status: "MODERATE",
     ),
   ];
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    _socketManager = SocketManager();
+
+    _socketManager.initialize();
+
+    doctorProfile = getIt.isRegistered<DoctorProfileResponse>()
+        ? getIt<DoctorProfileResponse>()
+        : DoctorProfileResponse();
+
+    _usersSubscription = getIt<UsersCubit>().stream.listen((state) {
+      if (state is GetDoctorStateSuccessful && mounted) {
+        setState(() {
+          doctorProfile = state.user;
+        });
+      }
+    });
+
+    getIt<UsersCubit>().getPatientProfile();
+
+
+  }
 
   @override
   Widget build(BuildContext context) {

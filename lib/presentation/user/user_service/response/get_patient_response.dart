@@ -143,7 +143,7 @@ class User {
       profileUrl: json['profile_url'],
       isVerified: json['is_verified'] ?? false,
       isOnline: json['is_online'] ?? false,
-      profileCompleted: json['profile_completed'] ?? false,
+      profileCompleted: json['profile_completed'] ?? true,
       isActive: json['is_active'] ?? false,
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'])

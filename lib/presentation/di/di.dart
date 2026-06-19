@@ -18,7 +18,8 @@ void setUpEndpointCalls() {
   );
 
   getIt.registerSingleton<AiChatCubit>(
-    AiChatCubit(),
+    AiChatCubit(apiService: ApiService(),
+    ),
   );
 
  //  getIt.registerSingleton<NotificationCubit>(

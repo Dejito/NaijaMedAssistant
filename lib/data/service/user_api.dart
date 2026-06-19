@@ -1,5 +1,7 @@
 
 import 'package:dio/dio.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/check_symptoms__req_body.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/initiate_chat_req_body.dart';
 
 import '../../core/constant/app_url.dart';
 import '../../presentation/auth/auth_service/req_body/forgot_password_req.dart';
@@ -55,6 +57,24 @@ class ApiService {
   static Future<Response> getPatient() async {
     var response = await HttpUtil()
         .get(AppUrl.getPatient);
+    return response;
+  }
+
+  static Future<Response> getDoctor() async {
+    var response = await HttpUtil()
+        .get(AppUrl.getDoctor);
+    return response;
+  }
+
+  static Future<Response> checkSymptoms(CheckSymptomsReqBody checkSymptomsReqBody) async {
+    var response = await HttpUtil()
+        .post(AppUrl.checkSymptom, data: checkSymptomsReqBody.toJson());
+    return response;
+  }
+
+  static Future<Response> initiateChat(InitiateChatReqBody initiateChatReqBody) async {
+    var response = await HttpUtil()
+        .post(AppUrl.checkSymptom, data: initiateChatReqBody.toJson());
     return response;
   }
 

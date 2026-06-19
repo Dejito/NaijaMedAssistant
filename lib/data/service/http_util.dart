@@ -20,8 +20,8 @@ class HttpUtil {
   HttpUtil._internal() {
     _dio = Dio(BaseOptions(
       baseUrl: AppUrl.baseUrl,
-      connectTimeout: const Duration(seconds: 40),
-      receiveTimeout: const Duration(seconds: 45),
+      connectTimeout: const Duration(seconds: 60),
+      receiveTimeout: const Duration(seconds: 60),
       headers: {
         // 'Accept': '*/*',
         'Accept-Charset': 'UTF-8',

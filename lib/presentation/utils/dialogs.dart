@@ -89,6 +89,84 @@ class DialogUtil {
     ).whenComplete(() => _isDialogShowing = false);
   }
 
+  static Future<void> showUpdateProfileDialog({
+    required BuildContext context,
+    required Function() onClick,
+  }) async {
+    if (_isDialogShowing) return;
+    _isDialogShowing = true;
+    await showGeneralDialog(
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierDismissible: false,
+      transitionDuration: const Duration(milliseconds: 200),
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return PopScope(
+          canPop: false,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 50.w),
+            child: AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12.r)),
+              ),
+              content: Container(
+                padding: EdgeInsets.only(top: 25.h, bottom: 24.h),
+                margin: EdgeInsets.symmetric(horizontal: 20.w),
+                width: 350.w,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      AppImages.questionMark,
+                      height: 60.h,
+                      width: 60.w,
+                      fit: BoxFit.scaleDown,
+                    ),
+                    titleText(
+                      "Profile update",
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      bottomPadding: 15,
+                      topPadding: 25,
+                    ),
+                    titleText(
+                      "Profile update is needed to have full access to the app",
+                      fontSize: 13,
+                      bottomPadding: 25,
+                      textAlign: TextAlign.center,
+                    ),
+                    MedBottomButton(
+                      text: "Update Now",
+                      onPressed: () {
+                        DialogUtil.dismissDialog(context);
+                        onClick();
+                      },
+                      height: 45,
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        return SlideTransition(
+          position: Tween(
+            begin: const Offset(1, 0),
+            end: const Offset(0, 0),
+          ).animate(anim),
+          child: child,
+        );
+      },
+    ).whenComplete(() => _isDialogShowing = false);
+  }
+
   static Future<void> showSuccessfulDialogRichText({
     required BuildContext context,
     required String title,

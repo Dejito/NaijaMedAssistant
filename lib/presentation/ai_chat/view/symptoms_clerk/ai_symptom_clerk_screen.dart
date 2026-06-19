@@ -1,12 +1,13 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:naija_med_assistant/presentation/auth/auth_service/response/auth_token.dart';
-import 'package:naija_med_assistant/socket_manager/socket_manager.dart';
+import 'package:naija_med_assistant/app_launch.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/check_symptoms__req_body.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_cubit.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/check_symptoms_state.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/view/symptoms_clerk/ai_symptom_clerk_feedback_screen.dart';
+import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
 
-import '../../../app_launch.dart';
-
-// --- Mock Model Types to Keep Your Project Compiling ---
 enum MessageType { text, symptomCheck, typingIndicator, statusUpdate }
 
 class SymptomQuestionnaire {
@@ -51,60 +52,108 @@ class AiSymptomsClerkScreen extends StatefulWidget {
 }
 
 class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
-
-  late SocketManager socketManager;
   final TextEditingController messageController = TextEditingController();
   final List<Message> messages = [];
-  String token = "";
+  final AiChatCubit _aiChatCubit = getIt<AiChatCubit>();
+
   // --- Conditional Access Control Flag ---
   // Set to true for Doctor view (shows popup menu), false for Patient view (hides popup menu)
   final bool isDoctor = true;
 
+  final List<CheckSymptomsReqBody> checkSymptomsReqBody = [
+    CheckSymptomsReqBody(
+      symptoms: [
+        // Symptom(
+        //   name: 'Healthy',
+        //   answers: [
+        //     SymptomAnswer(
+        //       key: 'start_date',
+        //       question: 'When did it start?',
+        //       answer: 'Yesterday',
+        //     ),
+        //     SymptomAnswer(
+        //       key: 'temperature',
+        //       question: 'How high is your fever?',
+        //       answer: '36C, I have normal temperature',
+        //     ),
+        //     SymptomAnswer(
+        //       key: 'is_constant',
+        //       question: 'Is it constant?',
+        //       answer: true,
+        //     ),
+        //   ],
+        // ),
+        Symptom(
+          name: 'Fever',
+          answers: [
+            SymptomAnswer(
+              key: 'start_date',
+              question: 'When did it start?',
+              answer: 'Yesterday',
+            ),
+            SymptomAnswer(
+              key: 'temperature',
+              question: 'How high is your fever?',
+              answer: '39C',
+            ),
+            SymptomAnswer(
+              key: 'is_constant',
+              question: 'Is it constant?',
+              answer: true,
+            ),
+          ],
+        ),
+        Symptom(
+          name: 'Fever',
+          answers: [
+            SymptomAnswer(
+              key: 'start_date',
+              question: 'When did it start?',
+              answer: 'Yesterday',
+            ),
+            SymptomAnswer(
+              key: 'temperature',
+              question: 'How high is your fever?',
+              answer: '39C',
+            ),
+            SymptomAnswer(
+              key: 'is_constant',
+              question: 'Is it constant?',
+              answer: true,
+            ),
+          ],
+        ),
+        Symptom(
+          name: 'Headache',
+          answers: [
+            SymptomAnswer(
+              key: 'start_date',
+              question: 'When did it start?',
+              answer: 'Today',
+            ),
+            SymptomAnswer(
+              key: 'intensity',
+              question: 'How intense is the headache?',
+              answer: 'Moderate',
+            ),
+            SymptomAnswer(
+              key: 'is_constant',
+              question: 'Is it constant?',
+              answer: false,
+            ),
+          ],
+        ),
+      ],
+    ),
+  ];
+
   @override
   void initState() {
+    _renderSymptoms();
     super.initState();
-    socketManager = SocketManager();
-    token = getIt<AuthToken>().authToken ?? "";
-    _initializeSocket();
-    _loadInitialMessages();
   }
 
-  void _initializeSocket() {
-    if (token.isEmpty) {
-      debugPrint('[AiHealthChatBox] Missing auth token; socket will not initialize');
-      return;
-    }
-
-    // Initialize socket connection
-    socketManager.initialize();
-
-    // Set up callbacks for socket events
-    socketManager.onConnect(() {
-      if (mounted) {
-        debugPrint('Connected to AI Health Chat server');
-      }
-    });
-
-    socketManager.onDisconnect(() {
-      if (mounted) {
-        debugPrint('Disconnected from AI Health Chat server');
-      }
-    });
-
-    socketManager.onMessage((message) {
-      if (mounted) {
-        setState(() {
-          messages.add(Message(
-            text: message,
-            isMe: false,
-            time: "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')} AM",
-          ));
-        });
-      }
-    });
-  }
-
-  void _loadInitialMessages() {
+  void _renderSymptoms() {
     final symptoms = widget.symptoms;
 
     if (symptoms.isNotEmpty) {
@@ -118,7 +167,7 @@ class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
             time: "Now",
             type: MessageType.symptomCheck,
             symptomQuestions: symptoms
-                .take(5)
+                // .take(5)
                 .map(
                   (s) => SymptomQuestionnaire(
                     title: s,
@@ -129,73 +178,40 @@ class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
                 .toList(),
           ),
         );
-        messages.add(
-          const Message(
-            text: "Do you have any other symptom(s)? Describe Below",
-            isMe: false,
-            time: "Now",
-          ),
-        );
+        // messages.add(
+        //   const Message(
+        //     text: "Do you have any other symptom(s)? Describe Below",
+        //     isMe: false,
+        //     time: "Now",
+        //   ),
+        // );
       });
-    } else {
-      _loadMockData();
     }
   }
 
-  void _loadMockData() {
-    setState(() {
-      messages.add(
-        const Message(
-          text: "Below are your symptoms:",
-          isMe: false,
-          time: "9:30 AM",
-          type: MessageType.symptomCheck,
-          symptomQuestions: [
-            SymptomQuestionnaire(title: "Fever", subtitle: "When did it start? How high is your fever? Is it constant?", emoji: "🌡️"),
-            SymptomQuestionnaire(title: "Headache", subtitle: "When did it start? How high is your fever? Is it constant?", emoji: "🤕"),
-            SymptomQuestionnaire(title: "Nausea", subtitle: "When did it start? Are you experiencing vomiting? Is it...", emoji: "🤢"),
-          ],
-        ),
-      );
-      messages.add(
-        const Message(text: "Do you have any other symptom(s)? Describe Below", isMe: false, time: "9:30 AM"),
-      );
-      messages.add(
-        const Message(text: "...", isMe: true, type: MessageType.typingIndicator, time: "9:30 AM"),
-      );
-      messages.add(
-        const Message(text: "Have you used any medication since onset of symptoms?", isMe: false, time: "9:30 AM"),
-      );
-      messages.add(
-        const Message(text: "...", isMe: true, type: MessageType.typingIndicator, time: "9:30 AM"),
-      );
-      messages.add(
-        const Message(text: "Please hold on while we process your Diagnosis", isMe: false, type: MessageType.statusUpdate, time: "9:30 AM"),
-      );
-    });
-  }
-
   void sendMessage() {
-    final message = messageController.text.trim();
-    if (message.isEmpty) return;
+    final text = messageController.text.trim();
 
-    // Emit message through socket manager
-    socketManager.emit('message', message);
-
-    setState(() {
-      messages.add(Message(
-        text: message,
-        isMe: true,
-        time: "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')} AM",
-      ));
+    if (text.isNotEmpty) {
+      setState(() {
+        messages.add(
+          Message(
+            text: text,
+            isMe: true,
+            time: 'Now',
+          ),
+        );
+      });
       messageController.clear();
-    });
+    }
+
+    // For endpoint testing: send the prepared sample payload.
+    _aiChatCubit.checkSymptoms(checkSymptomsReqBody.first);
   }
 
   @override
   void dispose() {
     messageController.dispose();
-    socketManager.disconnect();
     super.dispose();
   }
 
@@ -467,124 +483,155 @@ class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'AI Health ChatBox',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
-        ),
-        // --- PopUp Menu Action Pipeline Controlled via isDoctor Flag ---
-        actions: [
-          if (isDoctor) ...[
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_horiz, color: Colors.black87),
-              color: Colors.white,
-              surfaceTintColor: Colors.white,
-              elevation: 3,
-              offset: Offset(0, 44.h), // Places options row cleanly below AppBar threshold
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-                side: BorderSide(color: Colors.grey.shade200),
-              ),
-              onSelected: (value) {
-                switch (value) {
-                  case 'voice':
-                    break;
-                  case 'video':
-                    break;
-                  case 'profile':
-                    break;
-                  case 'prescription':
-                    break;
-                }
-              },
-              itemBuilder: (context) => [
-                _buildContextMenuItem('Voice Call', 'voice'),
-                _buildContextMenuItem('Video Call', 'video'),
-                _buildContextMenuItem('View Patient Profile', 'profile'),
-                _buildContextMenuItem('Create Prescription', 'prescription'),
-              ],
-            ),
-            SizedBox(width: 8.w),
-          ] else ...[
-            const SizedBox.shrink(), // Gracefully falls back to nothing for standard patients
-          ],
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.5),
-          child: Container(color: Colors.grey.shade200, height: 1.5),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-              itemCount: messages.length,
-              itemBuilder: (context, index) => buildMessage(messages[index]),
-            ),
-          ),
+    return BlocConsumer<AiChatCubit, AiChatState>(
+      bloc: _aiChatCubit,
+      listener: (context, state) {
+        if (state is CheckSymptomsError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error ?? 'Failed to check symptoms')),
+          );
+          return;
+        }
 
-          // --- Bottom Input Accessory Section Layout ---
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Colors.grey.shade300, width: 1.5),
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.image_outlined, color: Colors.grey.shade600),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.description_outlined, color: Colors.grey.shade600),
-                    onPressed: () {},
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: messageController,
-                      style: TextStyle(fontSize: 14.sp),
-                      decoration: InputDecoration(
-                        hintText: "Type your message",
-                        hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14.sp),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.mic_none_outlined, color: Colors.black),
-                    onPressed: () {},
-                  ),
-                  GestureDetector(
-                    onTap: sendMessage,
-                    child: Container(
-                      padding: EdgeInsets.all(6.w),
-                      decoration: const BoxDecoration(color: Color(0xFF4D2CFA), shape: BoxShape.circle),
-                      child: Icon(Icons.arrow_upward, color: Colors.white, size: 16.w),
-                    ),
-                  ),
-                ],
+        if (state is CheckSymptomsSuccessful) {
+          debugPrint(
+            '[AiSymptomsClerkScreen] checkSymptoms response: ${state.checkSymptomsResponse.toJson()}',
+          );
+
+          // Navigate to feedback screen with the response
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => AiSymptomClerkFeedbackScreen(
+                checkSymptomsResponse: state.checkSymptomsResponse,
               ),
             ),
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is CheckSymptomsLoading;
+        return Scaffold(
+          backgroundColor: const Color(0xFFFAFAFA),
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: const Text(
+              'AI Health ChatBox',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
+            ),
+            actions: [
+              if (isDoctor) ...[
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_horiz, color: Colors.black87),
+                  color: Colors.white,
+                  surfaceTintColor: Colors.white,
+                  elevation: 3,
+                  offset: Offset(0, 44.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                    side: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'voice':
+                        break;
+                      case 'video':
+                        break;
+                      case 'profile':
+                        break;
+                      case 'prescription':
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    _buildContextMenuItem('Voice Call', 'voice'),
+                    _buildContextMenuItem('Video Call', 'video'),
+                    _buildContextMenuItem('View Patient Profile', 'profile'),
+                    _buildContextMenuItem('Create Prescription', 'prescription'),
+                  ],
+                ),
+                SizedBox(width: 8.w),
+              ] else ...[
+                const SizedBox.shrink(),
+              ],
+            ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(1.5),
+              child: Container(color: Colors.grey.shade200, height: 1.5),
+            ),
           ),
-        ],
-      ),
+          body: Column(
+            children: [
+              if (isLoading) const LinearProgressIndicator(minHeight: 2),
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) => buildMessage(messages[index]),
+                ),
+              ),
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.image_outlined, color: Colors.grey.shade600),
+                        onPressed: isLoading ? null : () {},
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.description_outlined, color: Colors.grey.shade600),
+                        onPressed: isLoading ? null : () {},
+                      ),
+                      Expanded(
+                        child: TextFormField(
+                          controller: messageController,
+                          enabled: !isLoading,
+                          style: TextStyle(fontSize: 14.sp),
+                          decoration: InputDecoration(
+                            hintText: 'Type your message',
+                            hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14.sp),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.mic_none_outlined, color: Colors.black),
+                        onPressed: isLoading ? null : () {},
+                      ),
+                      GestureDetector(
+                        onTap: isLoading ? null : sendMessage,
+                        child: Container(
+                          padding: EdgeInsets.all(6.w),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF4D2CFA),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.arrow_upward, color: Colors.white, size: 16.w),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

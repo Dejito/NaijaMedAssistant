@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-import '../../views/widgets/titleText.dart';
+import '../../../views/widgets/titleText.dart';
 
 // Simple model to hold individual symptom chips dynamically
 class SymptomItem {

@@ -1,17 +1,24 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/check_symptoms_response.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/check_symptoms_state.dart';
 
+import '../../../app_launch.dart';
+import '../../../data/service/http_util.dart';
+import '../../../data/service/user_api.dart';
 import '../../../socket_manager/socket_manager.dart';
+import '../ai_chat_service/request_body/check_symptoms__req_body.dart';
 import '../ai_chat_service/response/chat_model.dart';
 
 part 'ai_chat_state.dart';
 
 class AiChatCubit extends Cubit<AiChatState> {
-
   final SocketManager _socketManager;
   final Set<String> _seenMessageIds = <String>{};
 
-  AiChatCubit({SocketManager? socketManager})
+  final ApiService? apiService;
+
+  AiChatCubit({SocketManager? socketManager, this.apiService})
       : _socketManager = socketManager ?? SocketManager(),
         super(const AiChatInitial());
 
@@ -140,5 +147,24 @@ class AiChatCubit extends Cubit<AiChatState> {
         isInitializing: false,
       ),
     );
+  }
+
+  Future<void> checkSymptoms(CheckSymptomsReqBody checkSymptomsReqBody) async {
+    try {
+      emit(const CheckSymptomsLoading(message: ""));
+      final response = await ApiService.checkSymptoms(checkSymptomsReqBody);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = response.data;
+        final checkSymptomsResponse = CheckSymptomsResponse.fromJson(responseData);
+        emit(CheckSymptomsSuccessful(
+            checkSymptomsResponse: checkSymptomsResponse));
+        getIt.registerSingleton<CheckSymptomsResponse>(checkSymptomsResponse);
+      }
+    } catch (e) {
+      handleError(
+        e,
+        onEmit: (msg) => emit(CheckSymptomsError(error: msg)),
+      );
+    }
   }
 }

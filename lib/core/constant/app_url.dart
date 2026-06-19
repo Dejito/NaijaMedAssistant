@@ -3,6 +3,8 @@ class AppUrl {
 
   static const baseUrl = 'https://naijamed.onrender.com/api/';
 
+  // static String updateBySeller(String id) => 'giftcards/$id';
+
   ///Auth
   static const signup = 'auth/signup';
   static const login = 'auth/login';
@@ -10,42 +12,29 @@ class AppUrl {
   static const resendVerificationCode = 'auth/resend-verification-code';
   static const forgotPassword = 'auth/forgot-password';
   static const resetPassword = 'auth/reset-password';
-  // static const editPassword = 'auth/edit-password';
-  // static const updateDeviceToken = 'auth/update-device-token';
+
 
 
   ///Cases
   static const createCases = 'case';
   static const getCases = 'case';
-  static const createType = 'giftcards/createType';
-  static String updateBySeller(String id) => 'giftcards/$id';
-  static String approve(String id) => 'giftcards/$id/approve';
-  static String reject(String id) => 'giftcards/$id/reject';
-  static String updateGiftCard(String id) => 'giftcards/updateType/$id';
-  static String deleteGiftcard(String id) => 'giftcards/deleteType/$id';
+
 
 
   ///Symptom Checker
-  static const symptomChecker = 'symptom-checks';
+  static const checkSymptom = 'symptom-checks';
+
+
+  ///Chats
+  static const getChats = 'chats';
+  static const initiateChat = 'chats/initiate';
 
   ///Notifications
-  static const sendNotification = 'notifications';
-  static String readNotification(String id) => 'notifications/$id/read';
-  static String unreadNotification(String id) => 'notifications/$id/unread';
-  static String deleteNotification(String id) => 'notifications/$id';
-  static String fetchNotifications = 'users/notifications';
 
   ///Users
   static String getPatient = 'users/profile';
-  static String getAllUsers = 'users/profile';
-  static String getBankDetails = 'users/profile/getbankdetails';
-  static String getUsers = 'users';
-  static String getAllSellers = 'users/sellers';
-  static String getAllStaff = 'users/staff';
-  static String updateUser = 'users/profile/update';
-  static String addBankDetails = 'users/profile/addbankdetails';
-  static String updateBankDetails = 'users/profile/updatebankdetails';
-  static String withdraw = 'users/wallet/withdraw';
+  static String getDoctor = 'users/profile';
+
 
 
 

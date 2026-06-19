@@ -1,6 +1,6 @@
 
 
-import '../../../../data/models/response/users/get_user_response.dart';
+import '../../user_service/response/get_patient_response.dart';
 import '../users_cubit.dart';
 
 class GetPatientStateLoading extends UsersState {

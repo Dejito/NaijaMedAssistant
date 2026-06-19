@@ -139,20 +139,23 @@ class AuthCubit extends Cubit<AuthState> {
           emit(LoginSuccessful(loginResponse: loginResponse));
 
           // Profile hydration should not block successful authentication.
-          if (getIt.isRegistered<UsersCubit>()) {
-            try {
+          // if (getIt.isRegistered<UsersCubit>()) {
+          //   try {
               await getIt<UsersCubit>().getPatientProfile();
-            } catch (_) {}
-          } else {
-            debugPrint('UsersCubit is not registered; skipping patient profile fetch.');
-          }
-          // NavHelper.navToAppPage();
+            // } catch (_) {}
+          // } else {
+          //   debugPrint('UsersCubit is not registered; skipping patient profile fetch.');
+          // }
 
         } else if (loginResponse.user?.role == 'doctor') {
-
           emit(LoginSuccessful(loginResponse: loginResponse));
-          // NavHelper.navToAdminDashboard();
-
+          // if (getIt.isRegistered<UsersCubit>()) {
+          //   try {
+              await getIt<UsersCubit>().getDoctorProfile();
+            // } catch (_) {}
+          // } else {
+          //   debugPrint('UsersCubit is not registered; skipping patient profile fetch.');
+          // }
         } else {
           showToast(message: "Unrecognized user type");
         }

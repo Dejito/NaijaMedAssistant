@@ -3,18 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/presentation/auth/auth_service/response/login_response.dart';
 import 'package:naija_med_assistant/presentation/dashboard/widgets/main_drawer.dart';
 import 'package:naija_med_assistant/presentation/dashboard/widgets/symptom_check_listview.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_cubit.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_patient_states.dart';
+import 'package:naija_med_assistant/presentation/utils/dialogs.dart';
 
 import '../../../../core/constant/app_colors.dart';
 import '../../../../router/route.dart';
 import '../../../app_launch.dart';
-import '../../../data/models/response/users/get_user_response.dart';
+import '../../user/user_service/response/get_patient_response.dart';
 import '../../../socket_manager/socket_manager.dart';
-import '../../auth/auth_service/response/auth_token.dart';
 import '../../views/widgets/titleText.dart';
 import '../widgets/dashboard_widgets.dart';
 
@@ -36,7 +35,6 @@ class _DashboardState extends State<Dashboard> {
   int swipeIndex = 0;
 
   PatientUserResponse userResponse = PatientUserResponse();
-  LoginResponse loginResponse = LoginResponse();
 
   @override
   void initState() {
@@ -51,11 +49,14 @@ class _DashboardState extends State<Dashboard> {
         ? getIt<PatientUserResponse>()
         : PatientUserResponse();
 
+    _showUpdateProfileDialogIfNeeded();
+
     _usersSubscription = getIt<UsersCubit>().stream.listen((state) {
       if (state is GetPatientStateSuccessful && mounted) {
         setState(() {
           userResponse = state.user;
         });
+        _showUpdateProfileDialogIfNeeded();
       }
     });
 
@@ -63,6 +64,34 @@ class _DashboardState extends State<Dashboard> {
 
 
     _pageController = PageController();
+  }
+
+  void _showUpdateProfileDialogIfNeeded() {
+    final shouldShowDialog = userResponse.patient?.user?.profileCompleted != true;
+
+    if (!mounted || !shouldShowDialog) {
+      return;
+    }
+
+    // _hasShownProfileUpdateDialog = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      DialogUtil.showUpdateProfileDialog(
+        context: context,
+        onClick: () async {
+          if (!mounted) return;
+          await context.push(AppRoutes.profileSetup);
+          if (!mounted) return;
+
+          await getIt<UsersCubit>().getPatientProfile();
+          if (!mounted) return;
+
+          _showUpdateProfileDialogIfNeeded();
+        },
+      );
+    });
   }
 
   @override

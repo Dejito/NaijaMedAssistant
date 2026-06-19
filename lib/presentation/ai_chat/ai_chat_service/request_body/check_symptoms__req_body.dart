@@ -1,14 +1,14 @@
 
-class SymptomsCheckReqBody {
+class CheckSymptomsReqBody {
 
   final List<Symptom> symptoms;
 
-  SymptomsCheckReqBody({
+  CheckSymptomsReqBody({
     required this.symptoms,
   });
 
-  factory SymptomsCheckReqBody.fromJson(Map<String, dynamic> json) {
-    return SymptomsCheckReqBody(
+  factory CheckSymptomsReqBody.fromJson(Map<String, dynamic> json) {
+    return CheckSymptomsReqBody(
       symptoms: (json['symptoms'] as List<dynamic>?)
           ?.map((e) => Symptom.fromJson(e))
           .toList() ??
