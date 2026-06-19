@@ -5,8 +5,9 @@ import 'package:naija_med_assistant/app_launch.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/check_symptoms__req_body.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_cubit.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/check_symptoms_state.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/view/symptoms_clerk/ai_symptom_clerk_feedback_screen.dart';
+import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
 
-// --- Mock Model Types to Keep Your Project Compiling ---
 enum MessageType { text, symptomCheck, typingIndicator, statusUpdate }
 
 class SymptomQuestionnaire {
@@ -62,6 +63,46 @@ class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
   final List<CheckSymptomsReqBody> checkSymptomsReqBody = [
     CheckSymptomsReqBody(
       symptoms: [
+        // Symptom(
+        //   name: 'Healthy',
+        //   answers: [
+        //     SymptomAnswer(
+        //       key: 'start_date',
+        //       question: 'When did it start?',
+        //       answer: 'Yesterday',
+        //     ),
+        //     SymptomAnswer(
+        //       key: 'temperature',
+        //       question: 'How high is your fever?',
+        //       answer: '36C, I have normal temperature',
+        //     ),
+        //     SymptomAnswer(
+        //       key: 'is_constant',
+        //       question: 'Is it constant?',
+        //       answer: true,
+        //     ),
+        //   ],
+        // ),
+        Symptom(
+          name: 'Fever',
+          answers: [
+            SymptomAnswer(
+              key: 'start_date',
+              question: 'When did it start?',
+              answer: 'Yesterday',
+            ),
+            SymptomAnswer(
+              key: 'temperature',
+              question: 'How high is your fever?',
+              answer: '39C',
+            ),
+            SymptomAnswer(
+              key: 'is_constant',
+              question: 'Is it constant?',
+              answer: true,
+            ),
+          ],
+        ),
         Symptom(
           name: 'Fever',
           answers: [
@@ -108,11 +149,11 @@ class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
 
   @override
   void initState() {
-    _loadInitialMessages();
+    _renderSymptoms();
     super.initState();
   }
 
-  void _loadInitialMessages() {
+  void _renderSymptoms() {
     final symptoms = widget.symptoms;
 
     if (symptoms.isNotEmpty) {
@@ -457,33 +498,18 @@ class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
             '[AiSymptomsClerkScreen] checkSymptoms response: ${state.checkSymptomsResponse.toJson()}',
           );
 
-          final response = state.checkSymptomsResponse;
-          final recommendation = response.recommendation?.trim();
-          final responseText = [
-            if (response.diagnosis.isNotEmpty) 'Diagnosis: ${response.diagnosis}',
-            if (response.severityBand.isNotEmpty)
-              'Severity: ${response.severityBand}',
-            if (recommendation != null && recommendation.isNotEmpty)
-              'Recommendation: $recommendation',
-          ].join('\n');
-
-          setState(() {
-            messages.add(
-              Message(
-                text: responseText.isEmpty
-                    ? 'Symptom check completed successfully.'
-                    : responseText,
-                isMe: false,
-                time: 'Now',
-                type: MessageType.statusUpdate,
+          // Navigate to feedback screen with the response
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => AiSymptomClerkFeedbackScreen(
+                checkSymptomsResponse: state.checkSymptomsResponse,
               ),
-            );
-          });
+            ),
+          );
         }
       },
       builder: (context, state) {
         final isLoading = state is CheckSymptomsLoading;
-
         return Scaffold(
           backgroundColor: const Color(0xFFFAFAFA),
           appBar: AppBar(
