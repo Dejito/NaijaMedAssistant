@@ -36,7 +36,6 @@ class _DashboardState extends State<Dashboard> {
   int swipeIndex = 0;
 
   PatientUserResponse userResponse = PatientUserResponse();
-  LoginResponse loginResponse = LoginResponse();
 
   @override
   void initState() {

@@ -10,7 +10,6 @@ class AppImages {
   static const userImage = 'assets/drawables/pp.jpeg';
 
 
-  static const logo2 = 'assets/drawables/logo2.png';
   static const emailIllustration = 'assets/drawables/email_illustration.webp';
   static const successCheckmark = 'assets/drawables/successful_checkmark.webp';
   static const forgotPassword = 'assets/drawables/forgot_password.webp';
