@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
+import 'package:naija_med_assistant/core/constant/textfield_styles.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_patient_req_body.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/response/get_patient_response.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_cubit.dart';
@@ -28,6 +29,19 @@ class PatientProfileSetup extends StatefulWidget {
 }
 
 class _PatientProfileSetupState extends State<PatientProfileSetup> {
+  static const List<String> _genderOptions = ['Male', 'Female'];
+  static const List<String> _bloodGroupOptions = [
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-',
+  ];
+  static const List<String> _genotypeOptions = ['AA', 'AS', 'AC', 'SS', 'SC', 'CC'];
+
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -51,6 +65,10 @@ class _PatientProfileSetupState extends State<PatientProfileSetup> {
   final TextEditingController _nextOfKinPhoneController = TextEditingController();
   final TextEditingController _nextOfKinRelationshipController = TextEditingController();
   final TextEditingController _bmiController = TextEditingController();
+
+  String? _selectedGender;
+  String? _selectedBloodGroup;
+  String? _selectedGenotype;
 
   bool _hasHydratedForm = false;
 
@@ -127,6 +145,10 @@ class _PatientProfileSetupState extends State<PatientProfileSetup> {
     _nextOfKinRelationshipController.text = patient?.nextOfKinRelationship ?? '';
     _bmiController.text = patient?.bmi?.toStringAsFixed(1) ?? '';
 
+    _selectedGender = _resolveOption(_genderController.text, _genderOptions);
+    _selectedBloodGroup = _resolveOption(_bloodGroupController.text, _bloodGroupOptions);
+    _selectedGenotype = _resolveOption(_genotypeController.text, _genotypeOptions);
+
     _hasHydratedForm = true;
     _updateBmi();
   }
@@ -142,6 +164,21 @@ class _PatientProfileSetupState extends State<PatientProfileSetup> {
     }
 
     return DateFormat('yyyy-MM-dd').format(parsedDate);
+  }
+
+  String? _resolveOption(String? value, List<String> options) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+
+    final normalizedValue = value.trim().toLowerCase();
+    for (final option in options) {
+      if (option.toLowerCase() == normalizedValue) {
+        return option;
+      }
+    }
+
+    return null;
   }
 
   void _updateBmi() {
@@ -167,6 +204,39 @@ class _PatientProfileSetupState extends State<PatientProfileSetup> {
     if (_bmiController.text != formattedBmi) {
       _bmiController.text = formattedBmi;
     }
+  }
+
+  Widget _buildDropdownField({
+    required String title,
+    required String? value,
+    required List<String> options,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 16.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleText(title, fontWeight: FontWeight.w500),
+          7.verticalSpace,
+          DropdownButtonFormField<String>(
+            initialValue: value,
+            isExpanded: true,
+            decoration: InputDecoration(
+              hintText: 'Select $title',
+              hintStyle: const TextStyle(color: Colors.grey),
+              focusedBorder: AppStyles.focusedBorder,
+              enabledBorder: AppStyles.focusBorder,
+              border: AppStyles.focusBorder,
+            ),
+            items: options
+                .map((option) => DropdownMenuItem<String>(value: option, child: Text(option)))
+                .toList(),
+            onChanged: onChanged,
+          ),
+        ],
+      ),
+    );
   }
 
   String? _valueOrNull(String value) {
@@ -346,10 +416,16 @@ class _PatientProfileSetupState extends State<PatientProfileSetup> {
                     suffixIcon: const Icon(Icons.calendar_today_outlined),
                     bottomPadding: 16,
                   ),
-                  InputText(
+                  _buildDropdownField(
                     title: 'Gender',
-                    controller: _genderController,
-                    bottomPadding: 16,
+                    value: _selectedGender,
+                    options: _genderOptions,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedGender = value;
+                        _genderController.text = value ?? '';
+                      });
+                    },
                   ),
                   InputText(
                     title: 'State',
@@ -361,15 +437,27 @@ class _PatientProfileSetupState extends State<PatientProfileSetup> {
                     controller: _lgaController,
                     bottomPadding: 16,
                   ),
-                  InputText(
+                  _buildDropdownField(
                     title: 'Blood Group',
-                    controller: _bloodGroupController,
-                    bottomPadding: 16,
+                    value: _selectedBloodGroup,
+                    options: _bloodGroupOptions,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedBloodGroup = value;
+                        _bloodGroupController.text = value ?? '';
+                      });
+                    },
                   ),
-                  InputText(
+                  _buildDropdownField(
                     title: 'Genotype',
-                    controller: _genotypeController,
-                    bottomPadding: 16,
+                    value: _selectedGenotype,
+                    options: _genotypeOptions,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedGenotype = value;
+                        _genotypeController.text = value ?? '';
+                      });
+                    },
                   ),
                   InputText(
                     title: 'Height (m)',
