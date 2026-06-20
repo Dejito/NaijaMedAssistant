@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_doctor_req_body.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_patient_req_body.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/response/get_doctor_response.dart';
@@ -22,13 +22,27 @@ class UsersCubit extends Cubit<UsersState> {
 
   UsersCubit(this.apiService) : super(UsersInitial());
 
+  void _cachePatientProfile(PatientUserResponse user) {
+    if (getIt.isRegistered<PatientUserResponse>()) {
+      getIt.unregister<PatientUserResponse>();
+    }
+    getIt.registerSingleton<PatientUserResponse>(user);
+  }
+
+  void _cacheDoctorProfile(DoctorProfileResponse user) {
+    if (getIt.isRegistered<DoctorProfileResponse>()) {
+      getIt.unregister<DoctorProfileResponse>();
+    }
+    getIt.registerSingleton<DoctorProfileResponse>(user);
+  }
+
   Future<void> getPatientProfile() async {
     try {
       emit(GetPatientStateLoading());
       final response = await ApiService.getPatient();
       if (response.statusCode == 200 || response.statusCode == 201) {
         final user = PatientUserResponse.fromJson(response.body);
-        getIt.registerSingleton<PatientUserResponse>(user);
+        _cachePatientProfile(user);
         emit(GetPatientStateSuccessful(user: user));
       } else {
         emit(GetPatientStateFailed());
@@ -48,7 +62,7 @@ class UsersCubit extends Cubit<UsersState> {
       final response = await ApiService.getDoctor();
       if (response.statusCode == 200 || response.statusCode == 201) {
         final user = DoctorProfileResponse.fromJson(response.body);
-        getIt.registerSingleton<DoctorProfileResponse>(user);
+        _cacheDoctorProfile(user);
         emit(GetDoctorStateSuccessful(user: user));
       } else {
         emit(GetDoctorStateFailed());

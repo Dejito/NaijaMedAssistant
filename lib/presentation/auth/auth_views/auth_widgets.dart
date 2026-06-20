@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:naija_med_assistant/presentation/views/widgets/elevated_bottom_button.dart';
 
 import '../../../../core/constant/app_assets.dart';
 import '../../../../core/constant/app_colors.dart';
@@ -14,30 +13,35 @@ Container keepMeLoggedInForgotPassword(
   return Container(
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Checkbox(
-              checkColor: AppColors.white,
-              activeColor: AppColors.primaryColor,
-              value: value,
-              onChanged: onClickedChanged,
+        Expanded(
+          child: Row(
+            children: [
+              Checkbox(
+                checkColor: AppColors.white,
+                activeColor: AppColors.primaryColor,
+                value: value,
+                onChanged: onClickedChanged,
             ),
-            titleText("Keep me logged in",
-              fontSize: 11,
-              // fontStyle: FontStyle.italic,
-              textAlign: TextAlign.start,
-              fontWeight: FontWeight.w300,
-            ),
-          ],
+              Expanded(
+                child: titleText("Keep me logged in",
+                  fontSize: 11,
+                  // fontStyle: FontStyle.italic,
+                  textAlign: TextAlign.start,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
+          ),
         ),
-        titleText(
-          "Forgot Password?",
-          fontSize: 14,
-          // fontStyle: FontStyle.italic,
-          textAlign: TextAlign.start,
-          fontWeight: FontWeight.w300,
+        Flexible(
+          child: titleText(
+            "Forgot Password?",
+            fontSize: 14,
+            // fontStyle: FontStyle.italic,
+            textAlign: TextAlign.end,
+            fontWeight: FontWeight.w300,
+          ),
         ),
       ],
     ),
