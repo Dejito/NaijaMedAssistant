@@ -21,8 +21,8 @@ import '../presentation/auth/auth_views/login/login_screen.dart';
 import '../presentation/auth/auth_views/sign_up/sign_up.dart';
 import '../presentation/auth/auth_views/sign_up/verify_email.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
-import '../presentation/user/profile_setup.dart';
-import '../presentation/user/profile_setup_doctor.dart';
+import '../presentation/user/users_view/profile_setup_patient.dart';
+import '../presentation/user/users_view/profile_setup_doctor.dart';
 
 class AppRoutes {
   // New welcome flow paths
@@ -97,12 +97,12 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.profileSetup,
-      builder: (_, __) => ProfileSetup(),
+      builder: (_, __) => PatientProfileSetup(),
     ),
 
     GoRoute(
       path: AppRoutes.profileSetupDoctor,
-      builder: (_, __) => ProfileSetupDoctor(),
+      builder: (_, __) => DoctorProfileSetup(),
     ),
 
     GoRoute(

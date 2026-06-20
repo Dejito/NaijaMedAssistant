@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:naija_med_assistant/presentation/user/user_service/response/get_doctor_response.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_doctor_states.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_patient_states.dart';
 
@@ -42,16 +43,16 @@ class UsersCubit extends Cubit<UsersState> {
       emit(GetDoctorStateLoading());
       final response = await ApiService.getDoctor();
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final user = PatientUserResponse.fromJson(response.body);
-        getIt.registerSingleton<PatientUserResponse>(user);
-        emit(GetPatientStateSuccessful(user: user));
+        final user = DoctorProfileResponse.fromJson(response.body);
+        getIt.registerSingleton<DoctorProfileResponse>(user);
+        emit(GetDoctorStateSuccessful(user: user));
       } else {
-        emit(GetPatientStateFailed());
+        emit(GetDoctorStateFailed());
       }
     } catch (e) {
       handleError(
         e,
-        onEmit: (msg) => emit(GetPatientStateFailed(error: msg)),
+        onEmit: (msg) => emit(GetDoctorStateFailed(error: msg)),
       );
       // showToast(message: e.toString());
     }

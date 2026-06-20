@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
-import 'package:naija_med_assistant/router/route.dart';
 
-import '../views/widgets/elevated_bottom_button.dart';
-import '../views/widgets/text_input.dart';
-import '../views/widgets/titleText.dart';
-import '../auth/auth_views/auth_widgets.dart';
+import '../../views/widgets/elevated_bottom_button.dart';
+import '../../views/widgets/text_input.dart';
+import '../../views/widgets/titleText.dart';
+import '../../auth/auth_views/auth_widgets.dart';
 
-class ProfileSetup extends StatelessWidget {
+class PatientProfileSetup extends StatelessWidget {
 
   static const route = '/profile-setup';
 
-  ProfileSetup({super.key});
+  PatientProfileSetup({super.key});
 
   final TextEditingController nameController = TextEditingController(text: 'Ogunrinde Blessing');
   final TextEditingController emailController = TextEditingController(text: 'Bogunride22@gmail.com');

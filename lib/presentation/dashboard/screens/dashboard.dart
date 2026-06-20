@@ -73,8 +73,6 @@ class _DashboardState extends State<Dashboard> {
       return;
     }
 
-    // _hasShownProfileUpdateDialog = true;
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 

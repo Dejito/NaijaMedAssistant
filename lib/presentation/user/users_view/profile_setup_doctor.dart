@@ -2,19 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/core/constant/app_assets.dart';
-import 'package:naija_med_assistant/core/constant/app_colors.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-import '../views/widgets/elevated_bottom_button.dart';
-import '../views/widgets/text_input.dart';
-import '../views/widgets/titleText.dart';
-import '../auth/auth_views/auth_widgets.dart';
+import '../../views/widgets/elevated_bottom_button.dart';
+import '../../views/widgets/text_input.dart';
+import '../../views/widgets/titleText.dart';
 
-
-class ProfileSetupDoctor extends StatelessWidget {
+class DoctorProfileSetup extends StatelessWidget {
   static const route = '/profile-setup-doctor';
 
-  ProfileSetupDoctor({super.key});
+  DoctorProfileSetup({super.key});
 
   // Empty by default as requested
   final TextEditingController nameController = TextEditingController();
