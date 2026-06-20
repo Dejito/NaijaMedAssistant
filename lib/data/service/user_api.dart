@@ -2,6 +2,8 @@
 import 'package:dio/dio.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/check_symptoms__req_body.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/initiate_chat_req_body.dart';
+import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_doctor_req_body.dart';
+import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_patient_req_body.dart';
 
 import '../../core/constant/app_url.dart';
 import '../../presentation/auth/auth_service/req_body/forgot_password_req.dart';
@@ -65,6 +67,19 @@ class ApiService {
         .get(AppUrl.getDoctor);
     return response;
   }
+
+  static Future<Response> updatePatient(UpdatePatientReqBody updatePatientReqBody) async {
+    var response = await HttpUtil()
+        .put(AppUrl.updatePatient, data: updatePatientReqBody.toJson());
+    return response;
+  }
+
+  static Future<Response> updateDoctor(UpdateDoctorReqBody updateDoctorReqBody) async {
+    var response = await HttpUtil()
+        .put(AppUrl.updateDoctor, data: updateDoctorReqBody.toJson());
+    return response;
+  }
+
 
   static Future<Response> checkSymptoms(CheckSymptomsReqBody checkSymptomsReqBody) async {
     var response = await HttpUtil()

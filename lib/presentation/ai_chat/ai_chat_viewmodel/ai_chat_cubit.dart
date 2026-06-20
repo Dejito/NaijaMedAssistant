@@ -13,6 +13,7 @@ import '../ai_chat_service/response/chat_model.dart';
 part 'ai_chat_state.dart';
 
 class AiChatCubit extends Cubit<AiChatState> {
+
   final SocketManager _socketManager;
   final Set<String> _seenMessageIds = <String>{};
 
@@ -28,7 +29,7 @@ class AiChatCubit extends Cubit<AiChatState> {
     _socketManager.initialize();
   }
 
-  bool sendMessage(String rawText) {
+  bool sendMessage({required String rawText, String? patientUserId, String? doctorUserId, String? conversationId, String? conversationType}) {
     final text = rawText.trim();
     if (text.isEmpty) return false;
 
@@ -38,7 +39,7 @@ class AiChatCubit extends Cubit<AiChatState> {
       return false;
     }
 
-    _socketManager.sendMessage(message: text);
+    _socketManager.sendMessage(message: text, patientUserId: patientUserId, doctorUserId: doctorUserId, conversationId: conversationId, conversationType: conversationId);
     emit(state.copyWith(isAiTyping: true, clearError: true));
     return true;
   }

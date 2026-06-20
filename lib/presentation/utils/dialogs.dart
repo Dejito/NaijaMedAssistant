@@ -102,7 +102,7 @@ class DialogUtil {
       context: context,
       pageBuilder: (_, __, ___) {
         return PopScope(
-          canPop: false,
+          canPop: true,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 50.w),
             child: AlertDialog(

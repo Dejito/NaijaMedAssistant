@@ -12,7 +12,8 @@ import '../../app_launch.dart';
 import '../../core/constant/app_assets.dart';
 import '../../socket_manager/socket_manager.dart';
 import '../user/users_viewmodel/users_cubit.dart';
-import '../views/widgets/titleText.dart'; // Adjust path based on your layout
+import '../utils/dialogs.dart';
+import '../views/widgets/titleText.dart';
 
 class DoctorDashboard extends StatefulWidget {
 
@@ -25,7 +26,7 @@ class DoctorDashboard extends StatefulWidget {
 class _DoctorDashboardState extends State<DoctorDashboard> {
 
   late SocketManager _socketManager = SocketManager();
-  DoctorProfileResponse doctorProfile = DoctorProfileResponse();
+  DoctorProfileResponse user = DoctorProfileResponse();
   late final StreamSubscription<UsersState> _usersSubscription;
 
   final List<PatientCase> _cases = const [
@@ -70,22 +71,52 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
 
     _socketManager.initialize();
 
-    doctorProfile = getIt.isRegistered<DoctorProfileResponse>()
+    user = getIt.isRegistered<DoctorProfileResponse>()
         ? getIt<DoctorProfileResponse>()
         : DoctorProfileResponse();
+
+    _showUpdateProfileDialogIfNeeded();
 
     _usersSubscription = getIt<UsersCubit>().stream.listen((state) {
       if (state is GetDoctorStateSuccessful && mounted) {
         setState(() {
-          doctorProfile = state.user;
+          user = state.user;
         });
+        _showUpdateProfileDialogIfNeeded();
+
       }
     });
 
-    getIt<UsersCubit>().getPatientProfile();
-
+    getIt<UsersCubit>().getDoctorProfile();
 
   }
+
+  void _showUpdateProfileDialogIfNeeded() {
+    final shouldShowDialog = user.doctor?.user?.profileCompleted != true;
+
+    if (!mounted || !shouldShowDialog) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      DialogUtil.showUpdateProfileDialog(
+        context: context,
+        onClick: () async {
+          if (!mounted) return;
+          await context.push(AppRoutes.profileSetupDoctor);
+          if (!mounted) return;
+
+          await getIt<UsersCubit>().getDoctorProfile();
+          if (!mounted) return;
+
+          _showUpdateProfileDialogIfNeeded();
+        },
+      );
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +164,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 ),
                 SizedBox(width: 12.w),
                 Text(
-                  "Welcome Dr. Balogun",
+                  "Welcome Dr. ${user.doctor?.user?.firstName ?? ""}",
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.bold,
