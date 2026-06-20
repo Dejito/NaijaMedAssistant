@@ -255,7 +255,7 @@ class _SymptomsInputScreenState extends State<SymptomsInputScreen> {
                 onTap: () {
                   if (_selectedSymptoms.isEmpty) return;
                   context.push(
-                    AppRoutes.aiSymptomResultScreen,
+                    AppRoutes.symptomsInputConnectAiClerkScreen,
                     extra: _selectedSymptoms.map((s) => s.name).toList(),
                   );
                 },

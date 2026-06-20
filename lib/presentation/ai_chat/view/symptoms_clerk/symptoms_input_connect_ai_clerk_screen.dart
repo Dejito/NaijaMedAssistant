@@ -6,10 +6,10 @@ import '../../../auth/auth_views/auth_widgets.dart';
 import '../../../views/widgets/elevated_bottom_button.dart';
 import '../../../views/widgets/titleText.dart';
 
-class SymptomsInput2Screen extends StatelessWidget {
+class SymptomsInputConnectAiClerkScreen extends StatelessWidget {
   final List<String> symptoms;
 
-  const SymptomsInput2Screen({
+  const SymptomsInputConnectAiClerkScreen({
     super.key,
     this.symptoms = const [],
   });

@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-class DoctorsChatBoxPatient extends StatefulWidget {
+class DoctorsPatientChatScreen extends StatefulWidget {
 
   // Flag to identify role context during routing/navigation
   final bool isDoctor;
 
-  const DoctorsChatBoxPatient({
+  const DoctorsPatientChatScreen({
     super.key,
     this.isDoctor = true,
   });
 
   @override
-  State<DoctorsChatBoxPatient> createState() => _DoctorsChatBoxPatientState();
+  State<DoctorsPatientChatScreen> createState() => _DoctorsPatientChatScreenState();
 }
 
-class _DoctorsChatBoxPatientState extends State<DoctorsChatBoxPatient> {
+class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<DoctorMessage> _messages = [];
 

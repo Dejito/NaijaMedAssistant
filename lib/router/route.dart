@@ -11,7 +11,7 @@ import 'package:naija_med_assistant/presentation/emergency/emergency_support_scr
 
 import '../presentation/ai_chat/view/symptoms_clerk/ai_symptom_clerk_screen.dart';
 import '../presentation/ai_chat/view/symptoms_clerk/symptoms_input_screen.dart';
-import '../presentation/ai_chat/view/symptoms_clerk/symptoms_input_2_screen.dart';
+import '../presentation/ai_chat/view/symptoms_clerk/symptoms_input_connect_ai_clerk_screen.dart';
 import '../presentation/ai_chat/view/chat_with_ai_screen.dart';
 import '../presentation/ai_chat/view/doctor_connection_screen.dart';
 import '../presentation/ai_chat/view/doctor_patient_chat_screen.dart';
@@ -39,7 +39,7 @@ class AppRoutes {
   static const String patientAppPage = "/app-page";
   static const String doctorAppPage = "/doctor-app-page";
   static const String aiSymptomChecker = "/symptom-checker";
-  static const String aiSymptomResultScreen = "/symptom-result";
+  static const String symptomsInputConnectAiClerkScreen = "/symptoms-input-connect-ai-clerk-screen";
   static const String aiHealthChatBox = "/chatbox";
   static const String chatWithAi = '/chat-with-ai';
   static const String doctorConnectionScreen = '/doctor-connection-screen';
@@ -126,7 +126,7 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
-      path: AppRoutes.aiSymptomResultScreen,
+      path: AppRoutes.symptomsInputConnectAiClerkScreen,
       builder: (_, state) {
         final extra = state.extra;
         final symptoms = extra is List<String>
@@ -134,7 +134,7 @@ final GoRouter router = GoRouter(
             : extra is List
                 ? List<String>.from(extra.map((e) => e.toString()))
                 : <String>[];
-        return SymptomsInput2Screen(symptoms: symptoms);
+        return SymptomsInputConnectAiClerkScreen(symptoms: symptoms);
       },
     ),
 
@@ -175,7 +175,7 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.doctorChatBoxPatient,
-      builder: (_, __) => const DoctorsChatBoxPatient(isDoctor: true,),
+      builder: (_, __) => const DoctorsPatientChatScreen(isDoctor: true,),
     ),
 
   GoRoute(

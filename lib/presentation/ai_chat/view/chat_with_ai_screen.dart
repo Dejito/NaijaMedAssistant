@@ -28,7 +28,7 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
   }
 
   void _sendMessage() {
-    final sent = _chatCubit.sendMessage(_messageController.text);
+    final sent = _chatCubit.sendMessage(rawText: _messageController.text);
     if (sent) {
       _messageController.clear();
       _scrollToBottom();
@@ -67,10 +67,6 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.menu, color: Colors.black),
-        //   onPressed: () {},
-        // ),
         title: const Text(
           'Chat With AI',
           style: TextStyle(

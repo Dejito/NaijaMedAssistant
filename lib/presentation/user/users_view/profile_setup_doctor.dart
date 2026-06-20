@@ -20,7 +20,6 @@ import '../../views/widgets/text_input.dart';
 import '../../views/widgets/titleText.dart';
 
 class DoctorProfileSetup extends StatefulWidget {
-  static const route = '/profile-setup-doctor';
 
   const DoctorProfileSetup({super.key});
 
