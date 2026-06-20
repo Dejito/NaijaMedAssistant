@@ -36,10 +36,6 @@ class DoctorProfileSetup extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.home_outlined, color: Colors.black87),
-        //   onPressed: () => context.go(AppRoutes.dashboard),
-        // ),
         title: titleText('Profile Set-up', fontSize: 16, fontWeight: FontWeight.bold),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.5.h),

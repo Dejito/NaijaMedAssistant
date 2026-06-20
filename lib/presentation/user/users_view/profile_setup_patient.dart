@@ -14,9 +14,9 @@ class PatientProfileSetup extends StatelessWidget {
 
   PatientProfileSetup({super.key});
 
-  final TextEditingController nameController = TextEditingController(text: 'Ogunrinde Blessing');
-  final TextEditingController emailController = TextEditingController(text: 'Bogunride22@gmail.com');
-  final TextEditingController phoneController = TextEditingController(text: '08102394672');
+  final TextEditingController nameController = TextEditingController(text: '');
+  final TextEditingController emailController = TextEditingController(text: '');
+  final TextEditingController phoneController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_doctor_req_body.dart';
+import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_patient_req_body.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/response/get_doctor_response.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_doctor_states.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_patient_states.dart';
+import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/update_doctor_states.dart';
+import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/update_patient_states.dart';
 
 import '../../../app_launch.dart';
 import '../user_service/response/get_patient_response.dart';
@@ -58,26 +62,44 @@ class UsersCubit extends Cubit<UsersState> {
     }
   }
 
+  Future<void> updatePatient(UpdatePatientReqBody updatePatientReqBody) async {
+    try {
+      emit(UpdatePatientLoading());
+      final response = await ApiService.updatePatient(updatePatientReqBody);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        emit(UpdatePatientSuccessful());
+      } else {
+        emit(UpdatePatientFailed());
+        showToast(message: "Unexpected server response. Please try again.");
+      }
+    } catch (e) {
+      handleError(
+        e,
+        onEmit: (msg) => emit(UpdatePatientFailed(error: msg)),
+      );
+      showToast(message: e.toString());
+    }
+  }
 
 
-
-  // Future<void> updateUser(UpdateUserReqBody updateUserReqBody) async {
-  //   try {
-  //     emit(UpdateUserLoading());
-  //     final response = await ApiService.updateUser(updateUserReqBody);
-  //     if (response.statusCode == 200 || response.statusCode == 201) {
-  //       emit(UpdateUserSuccessful());
-  //     } else {
-  //       emit(UpdateUserFailed());
-  //       showToast(message: "Unexpected server response. Please try again.");
-  //     }
-  //   } catch (e) {
-  //     handleError(
-  //       e,
-  //       onEmit: (msg) => emit(UpdateUserFailed(error: msg)),
-  //     );
-  //   }
-  // }
+  Future<void> updateDoctor(UpdateDoctorReqBody updateDoctorReqBody) async {
+    try {
+      emit(UpdateDoctorLoading());
+      final response = await ApiService.updateDoctor(updateDoctorReqBody);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        emit(UpdateDoctorSuccessful());
+      } else {
+        emit(UpdateDoctorFailed());
+        showToast(message: "Unexpected server response. Please try again.");
+      }
+    } catch (e) {
+      handleError(
+        e,
+        onEmit: (msg) => emit(UpdateDoctorFailed(error: msg)),
+      );
+      showToast(message: e.toString());
+    }
+  }
 
 
 }
