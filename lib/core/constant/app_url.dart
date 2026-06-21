@@ -23,6 +23,7 @@ class AppUrl {
 
   ///Symptom Checker
   static const checkSymptom = 'symptom-checks';
+  static String escalateSymptomsToDoctor(String symptomCheckId) => 'symptom-checks/escalation-decision/$symptomCheckId';
 
 
   ///Chats

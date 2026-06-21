@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/router/route.dart';
+
 
 class DoctorConnectionScreen extends StatefulWidget {
 
@@ -63,8 +62,8 @@ class _DoctorConnectionScreenState extends State<DoctorConnectionScreen> {
             // The brand asset icon centered
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0EDFF),
+              decoration: const BoxDecoration(
+                color: Color(0xFFF0EDFF),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

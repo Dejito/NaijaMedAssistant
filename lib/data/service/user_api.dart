@@ -1,6 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/check_symptoms__req_body.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/escalate_symptoms_req_body.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/initiate_chat_req_body.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_doctor_req_body.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_patient_req_body.dart';
@@ -86,6 +87,13 @@ class ApiService {
         .post(AppUrl.checkSymptom, data: checkSymptomsReqBody.toJson());
     return response;
   }
+
+  static Future<Response> escalateSymptomsToDoctor(String symptomCheckId, EscalateSymptomsReqBody escalateSymptomsReqBody) async {
+    var response = await HttpUtil()
+        .post(AppUrl.escalateSymptomsToDoctor(symptomCheckId), data: escalateSymptomsReqBody.toJson());
+    return response;
+  }
+
 
   static Future<Response> initiateChat(InitiateChatReqBody initiateChatReqBody) async {
     var response = await HttpUtil()
