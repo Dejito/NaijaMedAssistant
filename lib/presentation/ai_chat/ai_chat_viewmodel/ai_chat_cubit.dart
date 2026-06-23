@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/check_symptoms_response.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/check_symptoms_state.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/escalate_symptoms_states.dart';
+import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/flutter_toast.dart';
 
 import '../../../app_launch.dart';
@@ -184,6 +185,7 @@ class AiChatCubit extends Cubit<AiChatState> {
         // getIt.registerSingleton<CheckSymptomsResponse>(checkSymptomsResponse);
       }
     } catch (e) {
+      dismissEaseLoadingIndicator();
       handleError(
         e,
         onEmit: (msg) => emit(CheckSymptomsError(error: msg)),

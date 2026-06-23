@@ -7,6 +7,7 @@ import '../ai_chat/ai_chat_viewmodel/ai_chat_cubit.dart';
 import '../auth/auth_service/response/auth_token.dart';
 import '../../data/service/user_api.dart';
 import '../auth/auth_viewmodel/auth_cubit.dart';
+import '../doctor/doctor_viewmodel/doctor_cubit.dart';
 import '../user/users_viewmodel/users_cubit.dart';
 
 void setUpEndpointCalls() {
@@ -22,13 +23,15 @@ void setUpEndpointCalls() {
     ),
   );
 
- //  getIt.registerSingleton<NotificationCubit>(
- //      NotificationCubit(ApiService())
- //  );
- //
+  getIt.registerSingleton<DoctorCubit>(
+    DoctorCubit(ApiService(),
+    ),
+  );
+
  getIt.registerSingleton<UsersCubit>(
       UsersCubit(ApiService())
   );
+
 
 }
 

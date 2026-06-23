@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_cubit.dart';
 
 import '../../../app_launch.dart';
 import '../../../core/constant/app_keys.dart';
@@ -152,6 +153,7 @@ class AuthCubit extends Cubit<AuthState> {
           // if (getIt.isRegistered<UsersCubit>()) {
           //   try {
               await getIt<UsersCubit>().getDoctorProfile();
+              await getIt<DoctorCubit>().fetchCases();
             // } catch (_) {}
           // } else {
           //   debugPrint('UsersCubit is not registered; skipping patient profile fetch.');

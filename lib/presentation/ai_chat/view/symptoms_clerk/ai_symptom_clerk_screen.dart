@@ -83,44 +83,45 @@ class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
         //     ),
         //   ],
         // ),
+        // Symptom(
+        //   name: 'Fever',
+        //   answers: [
+        //     SymptomAnswer(
+        //       key: 'start_date',
+        //       question: 'When did it start?',
+        //       answer: 'Yesterday',
+        //     ),
+        //     SymptomAnswer(
+        //       key: 'temperature',
+        //       question: 'How high is your fever?',
+        //       answer: '42C',
+        //     ),
+        //     SymptomAnswer(
+        //       key: 'is_constant',
+        //       question: 'Is it constant?',
+        //       answer: true,
+        //     ),
+        //   ],
+        // ),
         Symptom(
-          name: 'Fever',
+          name: 'Listlessness',
           answers: [
             SymptomAnswer(
               key: 'start_date',
               question: 'When did it start?',
-              answer: 'Yesterday',
+              answer: '2 days ago',
             ),
             SymptomAnswer(
               key: 'temperature',
-              question: 'How high is your fever?',
-              answer: '39C',
+              question: 'What is your body temperature?',
+              answer: '44C',
             ),
-            SymptomAnswer(
-              key: 'is_constant',
-              question: 'Is it constant?',
-              answer: true,
-            ),
-          ],
-        ),
-        Symptom(
-          name: 'Fever',
-          answers: [
-            SymptomAnswer(
-              key: 'start_date',
-              question: 'When did it start?',
-              answer: 'Yesterday',
-            ),
-            SymptomAnswer(
-              key: 'temperature',
-              question: 'How high is your fever?',
-              answer: '39C',
-            ),
-            SymptomAnswer(
-              key: 'is_constant',
-              question: 'Is it constant?',
-              answer: true,
-            ),
+
+            // SymptomAnswer(
+            //   key: 'is_constant',
+            //   question: 'Is it constant?',
+            //   answer: true,
+            // ),
           ],
         ),
         Symptom(
@@ -134,12 +135,32 @@ class _AiSymptomsClerkScreenState extends State<AiSymptomsClerkScreen> {
             SymptomAnswer(
               key: 'intensity',
               question: 'How intense is the headache?',
-              answer: 'Moderate',
+              answer: 'my head is banging',
             ),
             SymptomAnswer(
               key: 'is_constant',
               question: 'Is it constant?',
-              answer: false,
+              answer: true,
+            ),
+          ],
+        ),
+        Symptom(
+          name: 'Ulcer',
+          answers: [
+            SymptomAnswer(
+              key: 'start_date',
+              question: 'When did it start?',
+              answer: '2 years ago',
+            ),
+            SymptomAnswer(
+              key: 'intensity',
+              question: 'How intense is the headache?',
+              answer: 'my stomach is eating up',
+            ),
+            SymptomAnswer(
+              key: 'is_constant',
+              question: 'Is it constant?',
+              answer: 'periodic',
             ),
           ],
         ),

@@ -3,10 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page_doctor.dart';
 import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
-import 'package:naija_med_assistant/presentation/doctor/create_prescription_screen.dart';
-import 'package:naija_med_assistant/presentation/doctor/doctor_case_summary_screen.dart';
-import 'package:naija_med_assistant/presentation/doctor/doctor_cases_screen.dart';
-import 'package:naija_med_assistant/presentation/doctor/previous_documentation_screen.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_view/create_prescription_screen.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_view/doctor_cases_screen.dart';
 import 'package:naija_med_assistant/presentation/emergency/emergency_support_screen.dart';
 
 import '../presentation/ai_chat/view/symptoms_clerk/ai_symptom_clerk_screen.dart';
@@ -20,6 +18,8 @@ import '../presentation/ai_chat/ai_chat_service/response/check_symptoms_response
 import '../presentation/auth/auth_views/login/login_screen.dart';
 import '../presentation/auth/auth_views/sign_up/sign_up.dart';
 import '../presentation/auth/auth_views/sign_up/verify_email.dart';
+import '../presentation/doctor/doctor_view/doctor_case_summary_screen.dart';
+import '../presentation/doctor/doctor_view/previous_documentation_screen.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
 import '../presentation/user/users_view/profile_setup_patient.dart';
 import '../presentation/user/users_view/profile_setup_doctor.dart';
