@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../ai_chat/view/patient_doctor_history_screen.dart';
 import '../dashboard/screens/dashboard.dart';
-import '../doctor/doctor_cases_screen.dart';
-import '../doctor/doctor_dashboard.dart';
+import '../doctor/doctor_view/doctor_cases_screen.dart';
+import '../doctor/doctor_view/doctor_dashboard.dart';
 import '../views/profile/profile.dart';
 
 class DoctorApplicationPage extends StatefulWidget {

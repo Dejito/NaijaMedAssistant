@@ -8,12 +8,12 @@ import 'package:naija_med_assistant/presentation/user/user_service/response/get_
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_doctor_states.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-import '../../app_launch.dart';
-import '../../core/constant/app_assets.dart';
-import '../../socket_manager/socket_manager.dart';
-import '../user/users_viewmodel/users_cubit.dart';
-import '../utils/dialogs.dart';
-import '../views/widgets/titleText.dart';
+import '../../../app_launch.dart';
+import '../../../core/constant/app_assets.dart';
+import '../../../socket_manager/socket_manager.dart';
+import '../../user/users_viewmodel/users_cubit.dart';
+import '../../utils/dialogs.dart';
+import '../../views/widgets/titleText.dart';
 
 class DoctorDashboard extends StatefulWidget {
 

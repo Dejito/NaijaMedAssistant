@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../views/widgets/titleText.dart'; // Adjust import based on your architecture
+import '../../views/widgets/titleText.dart';
 
-// --- 1. DATA MODEL ---
+
 class HistoricalCaseRecord {
   final String presentingComplaint;
   final String diagnosis;

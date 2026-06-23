@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
-import '../views/widgets/titleText.dart';
+import '../../views/widgets/titleText.dart';
 
 class DoctorCasesScreen extends StatefulWidget {
 

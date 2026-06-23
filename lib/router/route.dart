@@ -3,9 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page.dart';
 import 'package:naija_med_assistant/presentation/app_page/app_page_doctor.dart';
 import 'package:naija_med_assistant/presentation/dashboard/screens/dashboard.dart';
-import 'package:naija_med_assistant/presentation/doctor/create_prescription_screen.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_view/create_prescription_screen.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_case_summary_screen.dart';
-import 'package:naija_med_assistant/presentation/doctor/doctor_cases_screen.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_view/doctor_cases_screen.dart';
 import 'package:naija_med_assistant/presentation/doctor/previous_documentation_screen.dart';
 import 'package:naija_med_assistant/presentation/emergency/emergency_support_screen.dart';
 
