@@ -29,6 +29,7 @@ class _AiSymptomClerkFeedbackScreenState
     extends State<AiSymptomClerkFeedbackScreen> {
 
   bool _showHomeRemedies = false;
+  bool userClickedYes = false;
 
   bool get _isMild =>
       widget.checkSymptomsResponse.severity.toLowerCase() == 'mild';
@@ -58,8 +59,10 @@ class _AiSymptomClerkFeedbackScreenState
           } else if (state is EscalateSymptomsError) {
             dismissEaseLoadingIndicator();
           } else if (state is EscalateSymptomsSuccessful) {
-            if
-            context.push(AppRoutes.doctorConnectionScreen);
+            dismissEaseLoadingIndicator();
+            if (userClickedYes) {
+              context.push(AppRoutes.doctorConnectionScreen);
+            }
           }
         },
         builder: (context, state) {
@@ -186,29 +189,29 @@ class _AiSymptomClerkFeedbackScreenState
                 /// HOME REMEDIES
                 if (_isMild &&
                     response.homeRemedies.isNotEmpty) ...[
-                  Center(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _showHomeRemedies = !_showHomeRemedies;
-                        });
-                      },
-                      icon: Icon(
-                        _showHomeRemedies
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down,
-                      ),
-                      label: Text(
-                        _showHomeRemedies
-                            ? "Hide Home Remedies"
-                            : "View Home Remedies",
-                      ),
-                    ),
-                  ),
+                //   Center(
+                //     child: OutlinedButton.icon(
+                //       onPressed: () {
+                //         setState(() {
+                //           _showHomeRemedies = !_showHomeRemedies;
+                //         });
+                //       },
+                //       icon: Icon(
+                //         _showHomeRemedies
+                //             ? Icons.keyboard_arrow_up
+                //             : Icons.keyboard_arrow_down,
+                //       ),
+                //       label: Text(
+                //         _showHomeRemedies
+                //             ? "Hide Home Remedies"
+                //             : "View Home Remedies",
+                //       ),
+                //     ),
+                //   ),
 
                   const SizedBox(height: 20),
 
-                  if (_showHomeRemedies)
+                  if (response.homeRemedies.isNotEmpty && _showHomeRemedies)
                     ...response.homeRemedies.map(
                           (remedy) =>
                           Container(
@@ -267,6 +270,8 @@ class _AiSymptomClerkFeedbackScreenState
                         onPressed: () {
                           final escalateSymptomReqBody = EscalateSymptomsReqBody(decision: "accepted");
                           getIt<AiChatCubit>().escalateSymptomsToDoctor(response.symptomCheckId, escalateSymptomReqBody);
+                           userClickedYes = true;
+
                           // connect doctor
                         },
                         child: const Text("Yes"),
