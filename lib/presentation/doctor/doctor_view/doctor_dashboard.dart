@@ -263,8 +263,11 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             // --- 4. Cases Queue Frame Pipeline Block ---
             DoctorCasesList(
               cases: _cases,
-              onViewPatientDetails: () {
-                context.push(AppRoutes.caseSummaryScreen);
+              onViewPatientDetails: (selectedCase) {
+                context.push(
+                  AppRoutes.caseSummaryScreen,
+                  extra: selectedCase,
+                );
               },
             ),
           ],

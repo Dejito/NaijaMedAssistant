@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/fetch_cases_response.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
 import '../../views/widgets/titleText.dart';
 
 class DoctorCaseSummaryScreen extends StatelessWidget {
-  const DoctorCaseSummaryScreen({super.key});
+  final MedicalCase? medicalCase;
+
+  const DoctorCaseSummaryScreen({super.key, this.medicalCase});
 
   @override
   Widget build(BuildContext context) {
+    final caseItem = medicalCase;
+    final patient = caseItem?.patient;
+    final patientUser = patient?.user;
+    final patientName =
+        '${patientUser?.firstName ?? ''} ${patientUser?.lastName ?? ''}'.trim();
+    final severity = (caseItem?.severity ?? '').toUpperCase();
+    final status = (caseItem?.status ?? '').toUpperCase();
+    final badgeLabel = severity.isNotEmpty
+        ? severity
+        : (status.isNotEmpty ? status : 'OPEN');
+    final badgeColor = _badgeColor(severity, status);
+    final age = _calculateAge(patientUser?.dateOfBirth);
+    final fullAddress = _buildAddress(patient);
+    final summaryNote = caseItem?.aiSummary ?? caseItem?.diagnosis ?? caseItem?.notes;
+    final currentMedications = patient?.medications;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -48,12 +67,11 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
                   padding:
                       EdgeInsets.symmetric(horizontal: 24.w, vertical: 6.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFDC3545),
-                    // Match exactly the red layout hex
+                    color: badgeColor,
                     borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Text(
-                    "URGENT",
+                    badgeLabel,
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: Colors.white,
@@ -81,7 +99,7 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "AI Assistant",
+                        caseItem != null ? "AI Assistant" : "Case Details",
                         style: TextStyle(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.bold,
@@ -90,7 +108,9 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 2.h),
                       Text(
-                        "Summary Note for Doctor",
+                        caseItem != null
+                            ? "Summary Note for Doctor"
+                            : "No case data was provided",
                         style: TextStyle(
                           fontSize: 11.sp,
                           color: Colors.black54,
@@ -103,18 +123,43 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               ),
               SizedBox(height: 24.h),
 
-              // --- Patient Demographics Fields ---
-              _buildProfileFieldRow("Name", "Jane Smith"),
-              _buildProfileFieldRow("Gender", "Female"),
-              _buildProfileFieldRow("Age", "34"),
-              _buildProfileFieldRow("Occupation", "Accountant"),
-              _buildProfileFieldRow("Marital Status", "Married"),
+              if (caseItem == null) ...[
+                Text(
+                  'No case details available. Please open a case from the cases list.',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.black87,
+                    height: 1.5,
+                  ),
+                ),
+                SizedBox(height: 24.h),
+              ] else ...[
+
               _buildProfileFieldRow(
-                  "Address", "No. 1, Latona road, Agege, Lagos State"),
-              _buildProfileFieldRow("Religion", "Muslim"),
-              _buildProfileFieldRow("Tribe", "Yoruba"),
+                "Name",
+                patientName.isNotEmpty ? patientName : 'Unknown patient',
+              ),
+              _buildProfileFieldRow("Gender", patientUser?.gender ?? 'Not specified'),
+              _buildProfileFieldRow("Age", age != null ? '$age years' : 'N/A'),
+              _buildProfileFieldRow("Email", patientUser?.email ?? 'N/A'),
+              _buildProfileFieldRow("Phone Number", patientUser?.phoneNumber ?? 'N/A'),
+              _buildProfileFieldRow("Address", fullAddress),
+              _buildProfileFieldRow("Blood Group", patient?.bloodGroup ?? 'N/A'),
+              _buildProfileFieldRow("Genotype", patient?.genotype ?? 'N/A'),
               _buildProfileFieldRow(
-                  "Presenting Complaint", "Fever, Headache, Nausea * 3"),
+                "Allergies",
+                patient?.allergies?.isNotEmpty == true ? patient!.allergies! : 'None recorded',
+              ),
+              _buildProfileFieldRow(
+                "Chronic Conditions",
+                patient?.chronicConditions?.isNotEmpty == true
+                    ? patient!.chronicConditions!
+                    : 'None recorded',
+              ),
+              _buildProfileFieldRow(
+                "Presenting Complaint",
+                caseItem.symptoms ?? 'N/A',
+              ),
 
               SizedBox(height: 20.h),
               const Divider(color: Color(0xFFF1F1F1), thickness: 1.5),
@@ -131,7 +176,7 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               Text(
-                "Summary is that of a 34 year old woman whose present complaint is Fever, Headache and Nausea all of 3 days duration. No associated vomiting or prostration. She has not used any medication since onset of symptoms. Patient is a known Peptic Ulcer Disease patient.\nThere is no known food or drug allergy.\nSymptoms was flagged to you for doctor's review",
+                summaryNote ?? 'No summary note available for this case yet.',
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: Colors.black87,
@@ -145,10 +190,26 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               SizedBox(height: 12.h),
 
               // --- Diagnostics Breakdown ---
-              _buildClinicalHighlightBlock("Suggested Home Remedies",
-                  "Stay Hydrated, Rest, Steam Inhalation"),
+              _buildClinicalHighlightBlock(
+                "Current Medications",
+                currentMedications?.isNotEmpty == true
+                    ? currentMedications!
+                    : 'None recorded',
+              ),
               SizedBox(height: 10.h),
-              _buildClinicalHighlightBlock("AI Assesment", "Malaria"),
+              _buildClinicalHighlightBlock(
+                "AI Assesment",
+                caseItem.diagnosis ?? caseItem.aiSummary ?? 'N/A',
+              ),
+
+              SizedBox(height: 10.h),
+              _buildClinicalHighlightBlock(
+                "Case Details",
+                'Case type: ${caseItem.caseType ?? 'N/A'}\n'
+                'Source: ${caseItem.source ?? 'N/A'}\n'
+                'Status: ${caseItem.status ?? 'N/A'}\n'
+                'Requires physical care: ${caseItem.requiresPhysicalCare == true ? 'Yes' : 'No'}',
+              ),
 
               SizedBox(height: 24.h),
               Text(
@@ -179,6 +240,7 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
                 },
               ),
               SizedBox(height: 16.h),
+              ],
             ],
           ),
         ),
@@ -233,6 +295,7 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (boldHeader.contains("Assesment")) ...[
                 Text(
@@ -243,12 +306,14 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
                       color: Colors.black54),
                 ),
               ],
-              Text(
-                textValue,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+              Expanded(
+                child: Text(
+                  textValue,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
                 ),
               ),
             ],
@@ -284,5 +349,43 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  int? _calculateAge(String? dateOfBirth) {
+    if (dateOfBirth == null || dateOfBirth.isEmpty) return null;
+    final parsed = DateTime.tryParse(dateOfBirth);
+    if (parsed == null) return null;
+
+    final now = DateTime.now();
+    var age = now.year - parsed.year;
+    if (now.month < parsed.month ||
+        (now.month == parsed.month && now.day < parsed.day)) {
+      age--;
+    }
+    return age;
+  }
+
+  String _buildAddress(PatientDetails? patient) {
+    final parts = [
+      patient?.address,
+      patient?.lga,
+      patient?.state,
+    ].where((part) => part != null && part.trim().isNotEmpty).cast<String>().toList();
+
+    if (parts.isEmpty) {
+      return 'N/A';
+    }
+
+    return parts.join(', ');
+  }
+
+  Color _badgeColor(String severity, String status) {
+    if (severity == 'CRITICAL' || severity == 'SEVERE') {
+      return const Color(0xFFDC3545);
+    }
+    if (severity == 'MILD' || status == 'CLOSED') {
+      return const Color(0xFF1E7E34);
+    }
+    return const Color(0xFF4D2CFA);
   }
 }

@@ -4,7 +4,7 @@ import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/
 
 class DoctorCasesList extends StatelessWidget {
   final List<MedicalCase> cases;
-  final VoidCallback onViewPatientDetails;
+  final ValueChanged<MedicalCase> onViewPatientDetails;
 
   const DoctorCasesList({
     super.key,
@@ -35,111 +35,111 @@ class DoctorCasesList extends StatelessWidget {
 
         final age = _calculateAge(patientUser?.dateOfBirth);
 
-        return Container(
-          margin: EdgeInsets.only(bottom: 12.h),
-          padding: EdgeInsets.all(12.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: Colors.grey.shade300,
+        return InkWell(
+          onTap: () => onViewPatientDetails(item),
+          child: Container(
+            margin: EdgeInsets.only(bottom: 12.h),
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                color: Colors.grey.shade300,
+              ),
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Header
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _buildCaseLabelRow(
-                      'Patient',
-                      patientName.isEmpty
-                          ? 'Unknown'
-                          : patientName,
-                    ),
-                  ),
-                  SizedBox(width: 3.w),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 4.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isUrgent
-                          ? const Color(0xFFDC3545)
-                          : const Color(0xFF4D2CFA),
-                      borderRadius:
-                      BorderRadius.circular(4.r),
-                    ),
-                    child: Text(
-                      severity.isNotEmpty
-                          ? severity
-                          : (status.isNotEmpty
-                          ? status
-                          : 'OPEN'),
-                      style: TextStyle(
-                        fontSize: 9.sp,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Header
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _buildCaseLabelRow(
+                        'Patient',
+                        patientName.isEmpty
+                            ? 'Unknown'
+                            : patientName,
                       ),
                     ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 3.h),
-
-              _buildCaseLabelRow(
-                'Gender',
-                patientUser?.gender ?? 'Not specified',
-              ),
-
-              SizedBox(height: 6.h),
-
-              _buildCaseLabelRow(
-                'Age',
-                age != null ? '$age years' : 'N/A',
-              ),
-
-              SizedBox(height: 3.h),
-
-              /// Symptoms
-              _buildMultilineSection(
-                title: 'Symptoms',
-                value: item.symptoms ?? 'N/A',
-              ),
-
-              SizedBox(height: 2.h),
-
-              /// Diagnosis
-              _buildMultilineSection(
-                title: 'AI Diagnosis',
-                value: item.aiSummary ??
-                    item.diagnosis ??
-                    'N/A',
-                isHighlighted: true,
-              ),
-
-              SizedBox(height: 12.h),
-
-              /// Footer
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _timeAgo(item.createdAt),
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
+                    SizedBox(width: 3.w),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 4.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isUrgent
+                            ? const Color(0xFFDC3545)
+                            : const Color(0xFF4D2CFA),
+                        borderRadius:
+                        BorderRadius.circular(4.r),
+                      ),
+                      child: Text(
+                        severity.isNotEmpty
+                            ? severity
+                            : (status.isNotEmpty
+                            ? status
+                            : 'OPEN'),
+                        style: TextStyle(
+                          fontSize: 9.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  InkWell(
-                    onTap: onViewPatientDetails,
-                    child: Row(
+                  ],
+                ),
+
+                SizedBox(height: 3.h),
+
+                _buildCaseLabelRow(
+                  'Gender',
+                  patientUser?.gender ?? 'Not specified',
+                ),
+
+                SizedBox(height: 6.h),
+
+                _buildCaseLabelRow(
+                  'Age',
+                  age != null ? '$age years' : 'N/A',
+                ),
+
+                SizedBox(height: 3.h),
+
+                /// Symptoms
+                _buildMultilineSection(
+                  title: 'Symptoms',
+                  value: item.symptoms ?? 'N/A',
+                ),
+
+                SizedBox(height: 2.h),
+
+                /// Diagnosis
+                _buildMultilineSection(
+                  title: 'AI Diagnosis',
+                  value: item.aiSummary ??
+                      item.diagnosis ??
+                      'N/A',
+                  isHighlighted: true,
+                ),
+
+                SizedBox(height: 12.h),
+
+                /// Footer
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _timeAgo(item.createdAt),
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
@@ -158,10 +158,10 @@ class DoctorCasesList extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

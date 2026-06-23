@@ -18,6 +18,7 @@ import '../presentation/ai_chat/ai_chat_service/response/check_symptoms_response
 import '../presentation/auth/auth_views/login/login_screen.dart';
 import '../presentation/auth/auth_views/sign_up/sign_up.dart';
 import '../presentation/auth/auth_views/sign_up/verify_email.dart';
+import '../presentation/doctor/doctor_service/response/fetch_cases_response.dart';
 import '../presentation/doctor/doctor_view/doctor_case_summary_screen.dart';
 import '../presentation/doctor/doctor_view/previous_documentation_screen.dart';
 import '../presentation/onboarding/onboarding_screen.dart';
@@ -190,7 +191,13 @@ final GoRouter router = GoRouter(
 
   GoRoute(
       path: AppRoutes.caseSummaryScreen,
-      builder: (_, __) => const DoctorCaseSummaryScreen(),
+       builder: (_, state) {
+         final extra = state.extra;
+         if (extra is MedicalCase) {
+           return DoctorCaseSummaryScreen(medicalCase: extra);
+         }
+         return const DoctorCaseSummaryScreen();
+       },
     ),
 
   GoRoute(
