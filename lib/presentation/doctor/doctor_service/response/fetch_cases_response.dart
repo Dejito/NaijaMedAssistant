@@ -1,15 +1,15 @@
 
-class MedicalCasesResponse {
+class CasesResponse {
   final List<MedicalCase>? cases;
   final PaginationData? pagination;
 
-  MedicalCasesResponse({
+  CasesResponse({
     this.cases,
     this.pagination,
   });
 
-  factory MedicalCasesResponse.fromJson(Map<String, dynamic> json) {
-    return MedicalCasesResponse(
+  factory CasesResponse.fromJson(Map<String, dynamic> json) {
+    return CasesResponse(
       cases: json['cases'] != null
           ? (json['cases'] as List).map((i) => MedicalCase.fromJson(i as Map<String, dynamic>)).toList()
           : null,

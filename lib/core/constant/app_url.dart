@@ -16,8 +16,8 @@ class AppUrl {
 
 
   ///Cases
-  static const createCases = 'case';
-  static const getCases = 'case';
+  static const createCases = 'cases';
+  static const getCases = 'cases';
 
 
 

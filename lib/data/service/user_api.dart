@@ -101,6 +101,32 @@ class ApiService {
     return response;
   }
 
+  static Future<Response> fetchCases({
+    Map<String, dynamic>? queryParameters,
+    String? patientUserId,
+    String? status,
+    String? severity,
+    int? page,
+    int? limit,
+  }) async {
+    final resolvedQueryParameters = <String, dynamic>{
+      ...?queryParameters,
+      if (patientUserId != null) 'patient_user_id': patientUserId,
+      if (status != null) 'status': status,
+      if (severity != null) 'severity': severity,
+      if (page != null) 'page': page,
+      if (limit != null) 'limit': limit,
+    };
+
+    var response = await HttpUtil().get(
+      AppUrl.getCases,
+      queryParameters:
+          resolvedQueryParameters.isEmpty ? null : resolvedQueryParameters,
+    );
+    return response;
+  }
+
+
 
 
 
