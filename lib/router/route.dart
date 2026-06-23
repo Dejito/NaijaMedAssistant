@@ -46,7 +46,7 @@ class AppRoutes {
   static const String doctorChatBoxPatient = '/doctor-patient-chatbot';
   static const String emergencyServices = '/emergency-services';
   static const String doctorCases = '/doctor-cases-screen';
-  static const String doctorCaseSummary = '/doctor-cases-summary-screen';
+  static const String caseSummaryScreen = '/doctor-cases-summary-screen';
   static const String previousDocumentationScreen = '/previous-documentation';
   static const String createPrescriptionScreen = '/create-prescription';
   static const String aiSymptomClerkFeedbackScreen = '/ai-symptom-clerk-feedback-screen';
@@ -189,7 +189,7 @@ final GoRouter router = GoRouter(
     ),
 
   GoRoute(
-      path: AppRoutes.doctorCaseSummary,
+      path: AppRoutes.caseSummaryScreen,
       builder: (_, __) => const DoctorCaseSummaryScreen(),
     ),
 

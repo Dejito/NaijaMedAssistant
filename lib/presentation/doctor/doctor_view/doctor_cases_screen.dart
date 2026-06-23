@@ -192,7 +192,7 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
                   final currentCase = _displayedCases[index];
                   return InkWell(
                       onTap: (){
-                        context.push(AppRoutes.doctorCaseSummary);
+                        context.push(AppRoutes.caseSummaryScreen);
                       },
                       child: _buildCaseCardItem(currentCase));
                 },
