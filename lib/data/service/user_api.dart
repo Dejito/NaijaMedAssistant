@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/check_symptoms__req_body.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/escalate_symptoms_req_body.dart';
-import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/request_body/initiate_chat_req_body.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_service/req_body/initiate_chat_req_body.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_doctor_req_body.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/req_body/update_patient_req_body.dart';
 
