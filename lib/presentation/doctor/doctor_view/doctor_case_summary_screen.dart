@@ -7,6 +7,7 @@ import '../../views/widgets/titleText.dart';
 import '../doctor_service/response/fetch_cases_response.dart';
 
 class DoctorCaseSummaryScreen extends StatelessWidget {
+
   final MedicalCase? medicalCase;
 
   const DoctorCaseSummaryScreen({super.key, this.medicalCase});
