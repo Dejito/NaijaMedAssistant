@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/fetch_cases_response.dart';
 
-class DoctorCasesList extends StatelessWidget {
+class DoctorCasesListViewItem extends StatelessWidget {
   final List<MedicalCase> cases;
   final ValueChanged<MedicalCase> onViewPatientDetails;
 
-  const DoctorCasesList({
+  const DoctorCasesListViewItem({
     super.key,
     required this.cases,
     required this.onViewPatientDetails,

@@ -261,7 +261,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             SizedBox(height: 10.h),
 
             // --- 4. Cases Queue Frame Pipeline Block ---
-            DoctorCasesList(
+            DoctorCasesListViewItem(
               cases: _cases,
               onViewPatientDetails: (selectedCase) {
                 context.push(
