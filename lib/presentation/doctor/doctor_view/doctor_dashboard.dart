@@ -4,7 +4,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/fetch_cases_response.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_cubit.dart';
 import 'package:naija_med_assistant/presentation/user/user_service/response/get_doctor_response.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_module_states/fetch_cases_state.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_doctor_states.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
@@ -14,6 +17,7 @@ import '../../../socket_manager/socket_manager.dart';
 import '../../user/users_viewmodel/users_cubit.dart';
 import '../../utils/dialogs.dart';
 import '../../views/widgets/titleText.dart';
+import 'widget/cases_listview_item.dart';
 
 class DoctorDashboard extends StatefulWidget {
 
@@ -27,40 +31,9 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
 
   late SocketManager _socketManager = SocketManager();
   DoctorProfileResponse user = DoctorProfileResponse();
+  List<MedicalCase> _cases = const [];
   late final StreamSubscription<UsersState> _usersSubscription;
-
-  final List<PatientCase> _cases = const [
-    PatientCase(
-      name: "Jane Smith",
-      gender: "Female",
-      age: 34,
-      symptoms: "Fever, Headache, Nausea",
-      diagnosis: "Likely Malaria",
-      confidence: "80%",
-      timeAgo: "2 Mins Ago",
-      status: "URGENT",
-    ),
-    PatientCase(
-      name: "Jane Smith",
-      gender: "Female",
-      age: 34,
-      symptoms: "Fever, Headache, Nausea",
-      diagnosis: "Likely Malaria",
-      confidence: "80%",
-      timeAgo: "5 Mins Ago",
-      status: "MODERATE",
-    ),
-    PatientCase(
-      name: "Jane Smith",
-      gender: "Female",
-      age: 34,
-      symptoms: "Fever, Headache, Nausea",
-      diagnosis: "Likely Malaria",
-      confidence: "80%",
-      timeAgo: "5 Mins Ago",
-      status: "MODERATE",
-    ),
-  ];
+  late final StreamSubscription<DoctorState> _doctorSubscription;
 
   @override
   void initState() {
@@ -75,20 +48,40 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
         ? getIt<DoctorProfileResponse>()
         : DoctorProfileResponse();
 
-    _showUpdateProfileDialogIfNeeded();
+    final existingCases =
+        getIt.isRegistered<CasesResponse>() ? getIt<CasesResponse>().cases : null;
+    _cases = existingCases ?? const [];
+
+    // _showUpdateProfileDialogIfNeeded();
 
     _usersSubscription = getIt<UsersCubit>().stream.listen((state) {
       if (state is GetDoctorStateSuccessful && mounted) {
         setState(() {
           user = state.user;
         });
-        _showUpdateProfileDialogIfNeeded();
+        // _showUpdateProfileDialogIfNeeded();
 
       }
     });
 
-    getIt<UsersCubit>().getDoctorProfile();
+    _doctorSubscription = getIt<DoctorCubit>().stream.listen((state) {
+      if (state is FetchCasesSuccessful && mounted) {
+        setState(() {
+          _cases = state.casesResponse.cases ?? const [];
+        });
+      }
+    });
 
+    getIt<UsersCubit>().getDoctorProfile();
+    getIt<DoctorCubit>().fetchCases();
+
+  }
+
+  @override
+  void dispose() {
+    _usersSubscription.cancel();
+    _doctorSubscription.cancel();
+    super.dispose();
   }
 
   void _showUpdateProfileDialogIfNeeded() {
@@ -268,93 +261,12 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             SizedBox(height: 10.h),
 
             // --- 4. Cases Queue Frame Pipeline Block ---
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _cases.length,
-              itemBuilder: (context, index) {
-                final item = _cases[index];
-                final isUrgent = item.status == "URGENT";
-
-                return Container(
-                  margin: EdgeInsets.only(bottom: 12.h),
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header Row tracking target priority tags cleanly
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildCaseLabelRow("Patient :", item.name),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                            decoration: BoxDecoration(
-                              color: isUrgent ? const Color(0xFFDC3545) : const Color(0xFF4D2CFA),
-                              borderRadius: BorderRadius.circular(4.r),
-                            ),
-                            child: Text(
-                              item.status,
-                              style: TextStyle(fontSize: 9.sp, color: Colors.white, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 2.h),
-                      _buildCaseLabelRow("Gender :", item.gender),
-                      SizedBox(height: 2.h),
-                      _buildCaseLabelRow("Age :", "${item.age}"),
-                      SizedBox(height: 2.h),
-                      _buildCaseLabelRow("Symptom Checked :", item.symptoms),
-                      SizedBox(height: 2.h),
-
-                      // AI Diagnostic confidence matrix highlighting step
-                      Row(
-                        children: [
-                          Text(
-                            "AI Diagnosis :  ",
-                            style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.black54),
-                          ),
-                          Text(
-                            "${item.diagnosis} (${item.confidence})",
-                            style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.bold, color: Colors.black87),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8.h),
-
-                      // Footer action trace metrics track link
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            item.timeAgo,
-                            style: TextStyle(fontSize: 11.sp, color: Colors.green, fontWeight: FontWeight.bold),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              context.push(AppRoutes.doctorCases);
-                            },
-                            child: Row(
-                              children: [
-                                Text(
-                                  "View Patient Details",
-                                  style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.bold, color: Colors.black87),
-                                ),
-                                SizedBox(width: 2.w),
-                                Icon(Icons.chevron_right, size: 16.w, color: Colors.black87),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+            DoctorCasesListViewItem(
+              cases: _cases,
+              onViewPatientDetails: (selectedCase) {
+                context.push(
+                  AppRoutes.caseSummaryScreen,
+                  extra: selectedCase,
                 );
               },
             ),
@@ -384,42 +296,4 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
     );
   }
 
-  // Row line builder to split data and metadata keys clearly
-  Widget _buildCaseLabelRow(String label, String value) {
-    return Row(
-      children: [
-        Text(
-          "$label  ",
-          style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.black54),
-        ),
-        Text(
-          value,
-          style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.black87),
-        ),
-      ],
-    );
-  }
-}
-
-
-class PatientCase {
-  final String name;
-  final String gender;
-  final int age;
-  final String symptoms;
-  final String diagnosis;
-  final String confidence;
-  final String timeAgo;
-  final String status; // URGENT, MODERATE
-
-  const PatientCase({
-    required this.name,
-    required this.gender,
-    required this.age,
-    required this.symptoms,
-    required this.diagnosis,
-    required this.confidence,
-    required this.timeAgo,
-    required this.status,
-  });
 }

@@ -1,7 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/fetch_cases_response.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_view/widget/cases_listview_item.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_cubit.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_module_states/fetch_cases_state.dart';
 import 'package:naija_med_assistant/router/route.dart';
+
+import '../../../app_launch.dart';
 
 import '../../views/widgets/titleText.dart';
 
@@ -15,87 +23,53 @@ class DoctorCasesScreen extends StatefulWidget {
 
 class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
   // Master list state container
-  late List<PatientCaseDetail> _displayedCases;
+  late List<MedicalCase> _displayedCases;
+  late final StreamSubscription<DoctorState> _doctorSubscription;
 
-  final List<PatientCaseDetail> _allCases = const [
-    PatientCaseDetail(
-      name: "Jane Smith",
-      gender: "Female",
-      age: 34,
-      symptoms: "Fever, Headache, Nausea",
-      diagnosis: "Likely Malaria",
-      confidence: "80%",
-      timeAgo: "2 Mins Ago",
-      status: "URGENT",
-      isVerified: false,
-    ),
-    PatientCaseDetail(
-      name: "Jane Smith",
-      gender: "Female",
-      age: 34,
-      symptoms: "Fever, Headache, Nausea",
-      diagnosis: "Likely Malaria",
-      confidence: "80%",
-      timeAgo: "Now",
-      status: "URGENT",
-      isVerified: true,
-    ),
-    PatientCaseDetail(
-      name: "Jane Smith",
-      gender: "Female",
-      age: 34,
-      symptoms: "Fever, Headache, Nausea",
-      diagnosis: "Likely Malaria",
-      confidence: "80%",
-      timeAgo: "5 Mins Ago",
-      status: "MODERATE",
-      isVerified: false,
-    ),
-    PatientCaseDetail(
-      name: "Jane Smith",
-      gender: "Female",
-      age: 34,
-      symptoms: "Fever, Headache, Nausea",
-      diagnosis: "Likely Malaria",
-      confidence: "80%",
-      timeAgo: "5 Mins Ago",
-      status: "MODERATE",
-      isVerified: true,
-    ),
-    PatientCaseDetail(
-      name: "Jane Smith",
-      gender: "Female",
-      age: 34,
-      symptoms: "Fever, Headache, Nausea",
-      diagnosis: "Likely Malaria",
-      confidence: "80%",
-      timeAgo: "10 Mins Ago",
-      status: "MILD",
-      isVerified: false,
-    ),
-  ];
 
   @override
   void initState() {
     super.initState();
-    // Using explicit initialization to guarantee deep copy array reference pointer links
-    _displayedCases = List.from(_allCases);
+    // Load existing cases from cache if available
+    final existingCases =
+        getIt.isRegistered<CasesResponse>() ? getIt<CasesResponse>().cases : null;
+    _displayedCases = existingCases ?? const [];
+
+    // Subscribe to doctor cubit for real-time case updates
+    _doctorSubscription = getIt<DoctorCubit>().stream.listen((state) {
+      if (state is FetchCasesSuccessful && mounted) {
+        setState(() {
+          _displayedCases = state.casesResponse.cases ?? const [];
+        });
+      }
+    });
+
+    // Fetch fresh cases on screen load
+    getIt<DoctorCubit>().fetchCases();
+  }
+
+  @override
+  void dispose() {
+    _doctorSubscription.cancel();
+    super.dispose();
   }
 
   void _onSortOptionSelected(String criteria) {
     setState(() {
       if (criteria == "Most Urgent") {
         _displayedCases.sort((a, b) {
-          const order = {"URGENT": 0, "MODERATE": 1, "MILD": 2};
-          return (order[a.status] ?? 3).compareTo(order[b.status] ?? 3);
+          final aSeverity = a.severity?.toUpperCase() ?? '';
+          final bSeverity = b.severity?.toUpperCase() ?? '';
+          const order = {"CRITICAL": 0, "SEVERE": 1, "MODERATE": 2, "MILD": 3};
+          return (order[aSeverity] ?? 4).compareTo(order[bSeverity] ?? 4);
         });
       } else if (criteria == "Most Recent") {
         _displayedCases.sort((a, b) {
-          const order = {"Now": 0, "2 Mins Ago": 1, "5 Mins Ago": 2, "10 Mins Ago": 3};
-          return (order[a.timeAgo] ?? 4).compareTo(order[b.timeAgo] ?? 4);
+          final aCreated = DateTime.tryParse(a.createdAt ?? '');
+          final bCreated = DateTime.tryParse(b.createdAt ?? '');
+          if (aCreated == null || bCreated == null) return 0;
+          return bCreated.compareTo(aCreated);
         });
-      } else if (criteria == "Assigned") {
-        _displayedCases.sort((a, b) => (b.isVerified ? 1 : 0).compareTo(a.isVerified ? 1 : 0));
       }
     });
   }
@@ -155,7 +129,6 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
                     itemBuilder: (BuildContext context) => [
                       _buildPopupOption("Most Urgent"),
                       _buildPopupOption("Most Recent"),
-                      _buildPopupOption("Assigned"),
                     ],
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -181,24 +154,15 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
               ),
             ),
 
-            // --- Scrollable Card Stream Pipeline ---
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                itemCount: _displayedCases.length,
-                shrinkWrap: true, // Forces layout constraints confirmation
-                physics: const AlwaysScrollableScrollPhysics(), // Ensures bounds calculation remains active
-                itemBuilder: (context, index) {
-                  final currentCase = _displayedCases[index];
-                  return InkWell(
-                      onTap: (){
-                        context.push(AppRoutes.doctorCaseSummary);
-                      },
-                      child: _buildCaseCardItem(currentCase));
-                },
-              ),
-            ),
-          ],
+            DoctorCasesListViewItem(
+              cases: _displayedCases,
+              onViewPatientDetails: (selectedCase) {
+                context.push(
+                  AppRoutes.caseSummaryScreen,
+                  extra: selectedCase,
+                );
+              },
+            ),          ],
         ),
       ),
     );
@@ -229,20 +193,18 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
     );
   }
 
-  Widget _buildCaseCardItem(PatientCaseDetail currentCase) {
-    Color badgeColor;
-    switch (currentCase.status) {
-      case "URGENT":
-        badgeColor = const Color(0xFFDC3545);
-        break;
-      case "MODERATE":
-        badgeColor = const Color(0xFF4D2CFA);
-        break;
-      case "MILD":
-      default:
-        badgeColor = const Color(0xFF1E7E34);
-        break;
-    }
+  Widget _buildCaseCardItem(MedicalCase currentCase) {
+    final severity = (currentCase.severity ?? '').toUpperCase();
+    final status = (currentCase.status ?? '').toUpperCase();
+    final badgeLabel = severity.isNotEmpty
+        ? severity
+        : (status.isNotEmpty ? status : 'OPEN');
+    final badgeColor = _badgeColor(severity, status);
+    final patientUser = currentCase.patient?.user;
+    final patientName =
+        '${patientUser?.firstName ?? ''} ${patientUser?.lastName ?? ''}'.trim();
+    final age = _calculateAge(patientUser?.dateOfBirth);
+    final timeAgoLabel = _timeAgo(currentCase.createdAt);
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
@@ -255,19 +217,21 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMetricFieldRow("Patient :", currentCase.name),
-              Container(
+           Row(
+             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               Expanded(
+                 child: _buildMetricFieldRow("Patient :", patientName.isEmpty ? 'Unknown' : patientName),
+               ),
+               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: badgeColor,
                   borderRadius: BorderRadius.circular(4.r),
                 ),
                 child: Text(
-                  currentCase.status,
+                  badgeLabel,
                   style: TextStyle(
                     fontSize: 9.sp,
                     color: Colors.white,
@@ -282,8 +246,9 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildMetricFieldRow("Gender :", currentCase.gender),
-              if (currentCase.isVerified)
+              _buildMetricFieldRow("Gender :",
+                  patientUser?.gender ?? 'Not specified'),
+              if (currentCase.doctorUserId != null)
                 Padding(
                   padding: EdgeInsets.only(right: 12.w),
                   child: const Icon(
@@ -294,10 +259,12 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
                 ),
             ],
           ),
-          SizedBox(height: 2.h),
-          _buildMetricFieldRow("Age :", "${currentCase.age}"),
-          SizedBox(height: 2.h),
-          _buildMetricFieldRow("Symptom Checked :", currentCase.symptoms),
+           SizedBox(height: 2.h),
+           _buildMetricFieldRow(
+               "Age :", age != null ? '$age years' : 'N/A'),
+           SizedBox(height: 2.h),
+          _buildMetricFieldRow(
+              "Symptom Checked :", currentCase.symptoms ?? 'N/A'),
           SizedBox(height: 2.h),
 
           Row(
@@ -306,9 +273,11 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
                 "AI Diagnosis :  ",
                 style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.black54),
               ),
-              Text(
-                "${currentCase.diagnosis} (${currentCase.confidence})",
-                style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.bold, color: Colors.black87),
+              Expanded(
+                child: Text(
+                  currentCase.aiSummary ?? currentCase.diagnosis ?? 'N/A',
+                  style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.bold, color: Colors.black87),
+                ),
               ),
             ],
           ),
@@ -318,10 +287,10 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                currentCase.timeAgo,
+                timeAgoLabel,
                 style: TextStyle(
                   fontSize: 11.sp,
-                  color: currentCase.timeAgo == "Now" ? const Color(0xFF1E7E34) : Colors.green,
+                  color: Colors.green,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -345,42 +314,55 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
     );
   }
 
-  Widget _buildMetricFieldRow(String label, String value) {
-    return Row(
-      children: [
-        Text(
-          "$label  ",
-          style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.black54),
-        ),
-        Text(
-          value,
-          style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.black87),
-        ),
-      ],
-    );
-  }
-}
+   Widget _buildMetricFieldRow(String label, String value) {
+     return Row(
+       children: [
+         Text(
+           "$label  ",
+           style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.black54),
+         ),
+         Text(
+           value,
+           style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: Colors.black87),
+         ),
+       ],
+     );
+   }
 
-class PatientCaseDetail {
-  final String name;
-  final String gender;
-  final int age;
-  final String symptoms;
-  final String diagnosis;
-  final String confidence;
-  final String timeAgo;
-  final String status; // URGENT, MODERATE, MILD
-  final bool isVerified; // Displays the green check circle badge if true
+   int? _calculateAge(String? dateOfBirth) {
+     if (dateOfBirth == null || dateOfBirth.isEmpty) return null;
+     final parsed = DateTime.tryParse(dateOfBirth);
+     if (parsed == null) return null;
 
-  const PatientCaseDetail({
-    required this.name,
-    required this.gender,
-    required this.age,
-    required this.symptoms,
-    required this.diagnosis,
-    required this.confidence,
-    required this.timeAgo,
-    required this.status,
-    this.isVerified = false,
-  });
-}
+     final now = DateTime.now();
+     var age = now.year - parsed.year;
+     if (now.month < parsed.month ||
+         (now.month == parsed.month && now.day < parsed.day)) {
+       age--;
+     }
+     return age;
+   }
+
+   String _timeAgo(String? createdAt) {
+     if (createdAt == null || createdAt.isEmpty) return 'Just now';
+     final parsed = DateTime.tryParse(createdAt);
+     if (parsed == null) return 'Just now';
+
+     final difference = DateTime.now().difference(parsed.toLocal());
+     if (difference.inMinutes < 1) return 'Just now';
+     if (difference.inMinutes < 60) return '${difference.inMinutes} mins ago';
+     if (difference.inHours < 24) return '${difference.inHours} hrs ago';
+     return '${difference.inDays} days ago';
+   }
+
+   Color _badgeColor(String severity, String status) {
+     if (severity == 'CRITICAL' || severity == 'SEVERE') {
+       return const Color(0xFFDC3545);
+     }
+     if (severity == 'MILD' || status == 'CLOSED') {
+       return const Color(0xFF1E7E34);
+     }
+     return const Color(0xFF4D2CFA);
+   }
+ }
+
