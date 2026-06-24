@@ -110,7 +110,8 @@ class DoctorCasesList extends StatelessWidget {
                 /// Symptoms
                 _buildMultilineSection(
                   title: 'Symptoms',
-                  value: item.symptoms ?? 'N/A',
+                  value: _extractSymptoms(item.symptoms),
+                  isHighlighted: true
                 ),
 
                 SizedBox(height: 2.h),
@@ -307,5 +308,20 @@ class DoctorCasesList extends StatelessWidget {
     }
 
     return '${difference.inDays} days ago';
+  }
+}
+
+String _extractSymptoms(String? symptoms) {
+  if (symptoms == null || symptoms.isEmpty) return 'N/A';
+  try {
+    final segments = symptoms.split(';');
+    final extraction = segments
+        .map((seg) => seg.split(':').first.trim())
+        .where((name) => name.isNotEmpty)
+        .toSet()
+        .toList();
+    return extraction.join(', ');
+  } catch (_) {
+    return symptoms;
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/fetch_cases_response.dart';
-import 'package:naija_med_assistant/router/route.dart';
 
+import '../../../router/route.dart';
 import '../../views/widgets/titleText.dart';
+import '../doctor_service/response/fetch_cases_response.dart';
 
 class DoctorCaseSummaryScreen extends StatelessWidget {
   final MedicalCase? medicalCase;
@@ -16,24 +16,26 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
     final caseItem = medicalCase;
     final patient = caseItem?.patient;
     final patientUser = patient?.user;
-    final patientName =
-        '${patientUser?.firstName ?? ''} ${patientUser?.lastName ?? ''}'.trim();
+
+    final patientName = '${patientUser?.firstName ?? ''} ${patientUser?.lastName ?? ''}'.trim();
     final severity = (caseItem?.severity ?? '').toUpperCase();
     final status = (caseItem?.status ?? '').toUpperCase();
-    final badgeLabel = severity.isNotEmpty
-        ? severity
-        : (status.isNotEmpty ? status : 'OPEN');
+
+    // Replicating the mock's visual structure
+    final badgeLabel = severity.isNotEmpty ? severity : (status.isNotEmpty ? status : 'OPEN');
     final badgeColor = _badgeColor(severity, status);
     final age = _calculateAge(patientUser?.dateOfBirth);
-    final fullAddress = _buildAddress(patient);
-    final summaryNote = caseItem?.aiSummary ?? caseItem?.diagnosis ?? caseItem?.notes;
-    final currentMedications = patient?.medications;
+
+    // Dynamic extraction matching the reference design layout
+    final presentingComplaint = extractSymptoms(caseItem?.symptoms);
+    final summaryNote = caseItem?.aiSummary ?? caseItem?.diagnosis ?? 'No case summary text available.';
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => context.pop(),
@@ -64,16 +66,15 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               // --- Status Badge ---
               Center(
                 child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 24.w, vertical: 6.h),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
                   decoration: BoxDecoration(
                     color: badgeColor,
-                    borderRadius: BorderRadius.circular(6.r),
+                    borderRadius: BorderRadius.circular(4.r), // Sharp rectangular pill from UI
                   ),
                   child: Text(
                     badgeLabel,
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 10.sp,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
@@ -81,17 +82,23 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 24.h),
+              SizedBox(height: 20.h),
 
               // --- AI Assistant Header ---
               Row(
                 children: [
                   Container(
-                    width: 44.w,
-                    height: 44.w,
+                    width: 40.w,
+                    height: 40.w,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade300,
                       shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "B",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: Colors.white),
+                      ),
                     ),
                   ),
                   SizedBox(width: 12.w),
@@ -99,147 +106,104 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        caseItem != null ? "AI Assistant" : "Case Details",
+                        "AI Assistant",
                         style: TextStyle(
-                          fontSize: 15.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 1.h),
                       Text(
-                        caseItem != null
-                            ? "Summary Note for Doctor"
-                            : "No case data was provided",
+                        "Summary Note for Doctor",
                         style: TextStyle(
                           fontSize: 11.sp,
                           color: Colors.black54,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-              SizedBox(height: 24.h),
+              SizedBox(height: 20.h),
 
               if (caseItem == null) ...[
                 Text(
-                  'No case details available. Please open a case from the cases list.',
+                  'No case details available. Please open a valid case.',
+                  style: TextStyle(fontSize: 12.sp, color: Colors.black87),
+                ),
+              ] else ...[
+                // --- Cleansed Profile Fields conforming to UI ---
+                _buildProfileFieldRow("Name", patientName.isNotEmpty ? patientName : 'Not specified'),
+                _buildProfileFieldRow("Gender", patientUser?.gender ?? 'Not specified'),
+                _buildProfileFieldRow("Age", age != null ? '$age' : 'N/A'),
+                // _buildProfileFieldRow("Occupation", 'Accountant'), // Fallback template matching design
+                // _buildProfileFieldRow("Marital Status", 'Married'),
+                _buildProfileFieldRow("Address", _buildAddress(patient)),
+                // _buildProfileFieldRow("Religion", 'Muslim'),
+                // _buildProfileFieldRow("Tribe", 'Yoruba'),
+                _buildProfileFieldRow("Presenting Complaint", presentingComplaint),
+
+                SizedBox(height: 20.h),
+                Text(
+                  "Patient Summary Note",
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold,
+                    // color: Colors.blackDE,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  summaryNote,
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: Colors.black87,
-                    height: 1.5,
+                    height: 1.4,
                   ),
                 ),
+
+                SizedBox(height: 16.h),
+                Container(color: Colors.grey.shade200, height: 1.h),
+                SizedBox(height: 16.h),
+
+
+                Row(
+                  children: [
+                    Text(
+                      "AI Assesment : ",
+                      style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    Text(
+                      severity.isNotEmpty ? _capitalize(severity) : 'N/A',
+                      style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black87),
+                    ),
+                  ],
+                ),
+
                 SizedBox(height: 24.h),
-              ] else ...[
-
-              _buildProfileFieldRow(
-                "Name",
-                patientName.isNotEmpty ? patientName : 'Unknown patient',
-              ),
-              _buildProfileFieldRow("Gender", patientUser?.gender ?? 'Not specified'),
-              _buildProfileFieldRow("Age", age != null ? '$age years' : 'N/A'),
-              _buildProfileFieldRow("Email", patientUser?.email ?? 'N/A'),
-              _buildProfileFieldRow("Phone Number", patientUser?.phoneNumber ?? 'N/A'),
-              _buildProfileFieldRow("Address", fullAddress),
-              _buildProfileFieldRow("Blood Group", patient?.bloodGroup ?? 'N/A'),
-              _buildProfileFieldRow("Genotype", patient?.genotype ?? 'N/A'),
-              _buildProfileFieldRow(
-                "Allergies",
-                patient?.allergies?.isNotEmpty == true ? patient!.allergies! : 'None recorded',
-              ),
-              _buildProfileFieldRow(
-                "Chronic Conditions",
-                patient?.chronicConditions?.isNotEmpty == true
-                    ? patient!.chronicConditions!
-                    : 'None recorded',
-              ),
-              _buildProfileFieldRow(
-                "Presenting Complaint",
-                caseItem.symptoms ?? 'N/A',
-              ),
-
-              SizedBox(height: 20.h),
-              const Divider(color: Color(0xFFF1F1F1), thickness: 1.5),
-              SizedBox(height: 16.h),
-
-              // --- Detailed Clinical Summary Section ---
-              Text(
-                "Patient Summary Note",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                Text(
+                  "Click the Button Below to Start a Chat With Patient",
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
-              ),
-              SizedBox(height: 12.h),
-              Text(
-                summaryNote ?? 'No summary note available for this case yet.',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.black87,
-                  height: 1.5,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+                SizedBox(height: 12.h),
 
-              SizedBox(height: 16.h),
-              const Divider(color: Color(0xFFF1F1F1), thickness: 1.5),
-              SizedBox(height: 12.h),
-
-              // --- Diagnostics Breakdown ---
-              _buildClinicalHighlightBlock(
-                "Current Medications",
-                currentMedications?.isNotEmpty == true
-                    ? currentMedications!
-                    : 'None recorded',
-              ),
-              SizedBox(height: 10.h),
-              _buildClinicalHighlightBlock(
-                "AI Assesment",
-                caseItem.diagnosis ?? caseItem.aiSummary ?? 'N/A',
-              ),
-
-              SizedBox(height: 10.h),
-              _buildClinicalHighlightBlock(
-                "Case Details",
-                'Case type: ${caseItem.caseType ?? 'N/A'}\n'
-                'Source: ${caseItem.source ?? 'N/A'}\n'
-                'Status: ${caseItem.status ?? 'N/A'}\n'
-                'Requires physical care: ${caseItem.requiresPhysicalCare == true ? 'Yes' : 'No'}',
-              ),
-
-              SizedBox(height: 24.h),
-              Text(
-                "Click the Button Below to Start a Chat With Patient",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              SizedBox(height: 12.h),
-
-              // --- Operational Action Buttons Pipeline ---
-              _buildActionButton("START CHAT", const Color(0xFF4D2CFA), () {
-                context.push(AppRoutes.doctorChatBoxPatient);
-              },),
-              _buildActionButton(
-                  "SCHEDULE FOR LATER", const Color(0xFF4D2CFA), () {}),
-              _buildActionButton(
-                  "FLAG TO ANOTHER DOCTOR", const Color(0xFF4D2CFA), () {}),
-
-              SizedBox(height: 12.h),
-              _buildActionButton(
-                "VIEW PREVIOUS DOCUMENTATION",
-                const Color(0xFF1E7E34),
-                () {
+                // --- Operational Pipeline Actions Layout ---
+                _buildActionButton("START CHAT", const Color(0xFF4D2CFA), () {
+                  context.push(AppRoutes.doctorChatBoxPatient);
+                }),
+                _buildActionButton("SCHEDULE FOR LATER", const Color(0xFF4D2CFA), () {}),
+                _buildActionButton("FLAG TO ANOTHER DOCTOR", const Color(0xFF4D2CFA), () {}),
+                SizedBox(height: 8.h),
+                _buildActionButton("VIEW PREVIOUS DOCUMENTATION", const Color(0xFF1E7E34), () {
                   context.push(AppRoutes.previousDocumentationScreen);
-                },
-              ),
-              SizedBox(height: 16.h),
+                }, isFullWidthGreen: true),
+                SizedBox(height: 16.h),
               ],
             ],
           ),
@@ -248,15 +212,14 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
     );
   }
 
-  // Aligned key-value pairs text generator
   Widget _buildProfileFieldRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
+      padding: EdgeInsets.symmetric(vertical: 3.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "$label :  ",
+            "$label :   ",
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.bold,
@@ -268,7 +231,7 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
               value,
               style: TextStyle(
                 fontSize: 12.sp,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
                 color: Colors.black87,
               ),
             ),
@@ -278,72 +241,40 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
     );
   }
 
-  // Clinical structural blocks layout
-  Widget _buildClinicalHighlightBlock(String boldHeader, String textValue) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 2.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            boldHeader,
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (boldHeader.contains("Assesment")) ...[
-                Text(
-                  "AI Assesment :  ",
-                  style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black54),
-                ),
-              ],
-              Expanded(
-                child: Text(
-                  textValue,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+  Widget _buildSectionHeader(String heading) {
+    return Text(
+      heading,
+      style: TextStyle(
+        fontSize: 12.sp,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
       ),
     );
   }
 
-  // Custom rounded actionable pills
-  Widget _buildActionButton(
-      String label, Color backgroundFill, VoidCallback onTapAction) {
+  Widget _buildActionButton(String label, Color backgroundFill, VoidCallback onTapAction, {bool isFullWidthGreen = false}) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.h),
-      child: InkWell(
-        onTap: onTapAction,
-        borderRadius: BorderRadius.circular(20.r),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          decoration: BoxDecoration(
-            color: backgroundFill,
-            borderRadius: BorderRadius.circular(20.r),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 11.sp,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.2,
+      child: SizedBox(
+        width: isFullWidthGreen ? double.infinity : null,
+        child: InkWell(
+          onTap: onTapAction,
+          borderRadius: BorderRadius.circular(6.r),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+            decoration: BoxDecoration(
+              color: backgroundFill,
+              borderRadius: BorderRadius.circular(6.r),
+            ),
+            child: Text(
+              label,
+              textAlign: isFullWidthGreen ? TextAlign.center : TextAlign.start,
+              style: TextStyle(
+                fontSize: 11.sp,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.3,
+              ),
             ),
           ),
         ),
@@ -351,41 +282,52 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
     );
   }
 
+  // Parses: "Listlessness: When did it start?...; Headache: When did it start?..." -> "Listlessness, Headache, Ulcer"
+  String extractSymptoms(String? symptoms) {
+    if (symptoms == null || symptoms.isEmpty) return 'N/A';
+    try {
+      final segments = symptoms.split(';');
+      final extraction = segments
+          .map((seg) => seg.split(':').first.trim())
+          .where((name) => name.isNotEmpty)
+          .toSet()
+          .toList();
+      return extraction.join(', ');
+    } catch (_) {
+      return symptoms;
+    }
+  }
+
   int? _calculateAge(String? dateOfBirth) {
     if (dateOfBirth == null || dateOfBirth.isEmpty) return null;
     final parsed = DateTime.tryParse(dateOfBirth);
     if (parsed == null) return null;
-
     final now = DateTime.now();
     var age = now.year - parsed.year;
-    if (now.month < parsed.month ||
-        (now.month == parsed.month && now.day < parsed.day)) {
+    if (now.month < parsed.month || (now.month == parsed.month && now.day < parsed.day)) {
       age--;
     }
     return age;
   }
 
   String _buildAddress(PatientDetails? patient) {
-    final parts = [
+    final segments = [
       patient?.address,
       patient?.lga,
       patient?.state,
-    ].where((part) => part != null && part.trim().isNotEmpty).cast<String>().toList();
+    ].where((element) => element != null && element.trim().isNotEmpty).cast<String>().toList();
 
-    if (parts.isEmpty) {
-      return 'N/A';
-    }
-
-    return parts.join(', ');
+    return segments.isEmpty ? 'N/A' : segments.join(', ');
   }
 
   Color _badgeColor(String severity, String status) {
-    if (severity == 'CRITICAL' || severity == 'SEVERE') {
-      return const Color(0xFFDC3545);
-    }
-    if (severity == 'MILD' || status == 'CLOSED') {
-      return const Color(0xFF1E7E34);
-    }
+    if (severity == 'CRITICAL' || severity == 'SEVERE') return const Color(0xFFC8001F); // Urgent Red
+    if (severity == 'MILD' || status == 'CLOSED') return const Color(0xFF1E7E34);
     return const Color(0xFF4D2CFA);
+  }
+
+  String _capitalize(String input) {
+    if (input.isEmpty) return input;
+    return input[0].toUpperCase() + input.substring(1).toLowerCase();
   }
 }
