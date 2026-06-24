@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../router/route.dart';
+import '../../../socket_manager/socket_manager.dart';
 import '../../views/widgets/titleText.dart';
 import '../doctor_service/response/fetch_cases_response.dart';
 
@@ -11,6 +12,64 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
   final MedicalCase? medicalCase;
 
   const DoctorCaseSummaryScreen({super.key, this.medicalCase});
+
+  Future<void> _handleStartChat(BuildContext context, MedicalCase? caseItem) async {
+    final conversationId = caseItem?.caseId?.trim() ?? '';
+
+    if (conversationId.isEmpty) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Conversation ID is missing for this case.')),
+      );
+      return;
+    }
+
+    final socketManager = SocketManager();
+    var hasHandledResponse = false;
+
+    void handleJoinSuccess() {
+      if (hasHandledResponse || !context.mounted) return;
+      hasHandledResponse = true;
+      context.push(AppRoutes.doctorChatBoxPatient);
+    }
+
+    void handleJoinError(String message) {
+      if (hasHandledResponse || !context.mounted) return;
+      hasHandledResponse = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+
+    socketManager.onConversationJoined((_) {
+      handleJoinSuccess();
+    });
+
+    socketManager.onError((message) {
+      handleJoinError(message);
+    });
+
+    socketManager.onConnectError((error) {
+      handleJoinError('Socket connection failed: $error');
+    });
+
+    void emitJoinConversation() {
+      socketManager.joinConversation(conversationId);
+    }
+
+    if (socketManager.isConnected) {
+      emitJoinConversation();
+      return;
+    }
+
+    socketManager.onConnect(() {
+      if (!hasHandledResponse) {
+        emitJoinConversation();
+      }
+    });
+
+    socketManager.initialize();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +255,7 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
 
                 // --- Operational Pipeline Actions Layout ---
                 _buildActionButton("START CHAT", const Color(0xFF4D2CFA), () {
-                  context.push(AppRoutes.doctorChatBoxPatient);
+                  _handleStartChat(context, caseItem);
                 }),
                 _buildActionButton("SCHEDULE FOR LATER", const Color(0xFF4D2CFA), () {}),
                 _buildActionButton("FLAG TO ANOTHER DOCTOR", const Color(0xFF4D2CFA), () {}),
