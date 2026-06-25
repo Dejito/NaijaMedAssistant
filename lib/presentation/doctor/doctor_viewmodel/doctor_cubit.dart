@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_service/req_body/initiate_chat_req_body.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/fetch_cases_response.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/initiate_chat_response.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_module_states/accept_case_states.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_module_states/fetch_cases_state.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_module_states/initiate_chat_states.dart';
 
@@ -10,6 +11,8 @@ import '../../../app_launch.dart';
 import '../../../data/service/http_util.dart';
 import '../../../data/service/user_api.dart';
 import '../../views/widgets/flutter_toast.dart';
+import '../doctor_service/response/accept_case_response.dart';
+import 'doctor_module_states/decline_case_states.dart';
 
 part 'doctor_state.dart';
 
@@ -35,6 +38,41 @@ class DoctorCubit extends Cubit<DoctorState> {
       handleError(e,
         onEmit: (msg) => emit(FetchCasesError(error: msg)),
       );
+    }
+  }
+
+  Future<void> acceptCase(String  caseId) async {
+    try {
+      emit(AcceptCaseLoadingState());
+      final response = await ApiService.acceptCase(caseId);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = response.data;
+        final acceptCaseResponse = AcceptCaseResponse.fromJson(responseData);
+        emit(AcceptCaseSuccessful(acceptCaseResponse: acceptCaseResponse));
+        // getIt.registerSingleton<CasesResponse>(fetchCasesResponse);
+      }
+    } catch (e) {
+      handleError(e,
+        onEmit: (msg) => emit(AcceptCaseError(error: msg)),
+      );;
+    }
+  }
+
+  Future<void> declineCase(String  caseId) async {
+    try {
+      emit(DeclineCaseLoadingState());
+      final response = await ApiService.declineCase(caseId);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // final responseData = response.data;
+        // final acceptCaseResponse = AcceptCaseResponse.fromJson(responseData);
+        emit(DeclineCaseSuccessful());
+        // getIt.registerSingleton<CasesResponse>(fetchCasesResponse);
+      }
+    } catch (e) {
+      handleError(e,
+        onEmit: (msg) => emit(DeclineCaseError(error: msg)),
+      );
+      showToast(message: e.toString());
     }
   }
 

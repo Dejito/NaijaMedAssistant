@@ -126,6 +126,17 @@ class ApiService {
     return response;
   }
 
+  static Future<Response> acceptCase(String caseId) async {
+    var response = await HttpUtil()
+        .post(AppUrl.acceptCase(caseId));
+    return response;
+  }
+  static Future<Response> declineCase(String caseId) async {
+    var response = await HttpUtil()
+        .post(AppUrl.declineCase(caseId));
+    return response;
+  }
+
 
 
 

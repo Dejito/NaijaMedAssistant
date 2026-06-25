@@ -18,6 +18,8 @@ class AppUrl {
   ///Cases
   static const createCases = 'cases';
   static const getCases = 'cases';
+  static String acceptCase(String caseId) => 'cases/$caseId/accept';
+  static String declineCase(String caseId) => 'cases/$caseId/decline';
 
 
 

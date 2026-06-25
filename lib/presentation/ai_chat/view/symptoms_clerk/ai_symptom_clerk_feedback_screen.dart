@@ -72,9 +72,10 @@ class _AiSymptomClerkFeedbackScreenState
           } else if (state is EscalateSymptomsSuccessful) {
             dismissEaseLoadingIndicator();
             getIt<AiChatCubit>().joinConversation(state.escalateSymptomsResponse.conversationId ?? '');
-            if (state.conversationJoined){
+            // if (state.conversationJoined){
+            //TODO: implement socket listening here to push  nav
               context.push(AppRoutes.doctorConnectionScreen);
-            }
+            // }
           }
         },
         builder: (context, state) {
