@@ -1,4 +1,6 @@
 
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/escalate_symptoms_response.dart';
+
 import '../ai_chat_cubit.dart';
 
 class EscalateSymptomsLoading extends AiChatState {
@@ -12,7 +14,7 @@ class EscalateSymptomsError extends AiChatState {
 }
 
 class EscalateSymptomsSuccessful extends AiChatState {
-  // final CheckSymptomsResponse checkSymptomsResponse;
-  const EscalateSymptomsSuccessful();
+  final EscalateSymptomsResponse escalateSymptomsResponse;
+  const EscalateSymptomsSuccessful({required this.escalateSymptomsResponse});
 
 }

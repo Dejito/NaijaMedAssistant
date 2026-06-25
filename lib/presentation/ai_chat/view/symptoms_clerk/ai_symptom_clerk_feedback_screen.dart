@@ -71,9 +71,12 @@ class _AiSymptomClerkFeedbackScreenState
             dismissEaseLoadingIndicator();
           } else if (state is EscalateSymptomsSuccessful) {
             dismissEaseLoadingIndicator();
-            if (_flowState == ChatFlowState.accepted) {
-              context.push(AppRoutes.doctorConnectionScreen);
-            }
+            getIt<AiChatCubit>().joinConversation(state.escalateSymptomsResponse.conversationId ?? '');
+            // if (state.conversationJoined){
+            //TODO: implement socket listening here to push  nav
+            //   context.push(AppRoutes.doctorConnectionScreen);
+              context.push(AppRoutes.doctorChatBoxPatient);
+            // }
           }
         },
         builder: (context, state) {
