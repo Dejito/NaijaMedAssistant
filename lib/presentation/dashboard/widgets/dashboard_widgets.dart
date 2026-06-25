@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
-import 'package:naija_med_assistant/presentation/dashboard/widgets/symptom_check_listview.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/fetch_symptoms_history_response.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
 import '../../../../core/constant/app_assets.dart';
@@ -203,7 +204,7 @@ Widget drawerHeader({required String username}) {
   );
 }
 
-Widget viewMoreSymptoms() {
+Widget viewMoreSymptoms(Function() onClickViewMore) {
   return Container(
     margin: EdgeInsets.symmetric(vertical: 12.h),
     child: Row(
@@ -214,12 +215,56 @@ Widget viewMoreSymptoms() {
           fontWeight: FontWeight.bold,
           // fontSize:
         ),
+       InkWell(
+         onTap: onClickViewMore,
+          child: Row(
+            children: [
+              titleText(
+                "View more ",
+                color: AppColors.primaryColor, fontWeight: FontWeight.w500,
+                // fontSize:
+              ),
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: AppColors.primaryColor,
+                size: 12,
+              )
+            ],
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+String symptomsToString(List<String>? symptoms) =>
+    (symptoms != null && symptoms.isNotEmpty) ? symptoms.join(', ') : 'N/A';
+
+Widget symptomCheckHistoryItem(SymptomCheckItem symptomCheckHistory) {
+  return Container(
+    padding: EdgeInsets.all(12.w),
+    margin: EdgeInsets.only(bottom: 12.h),
+    decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(12.r)),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        symptomCheckHistoryItemItem(
+          key: 'Symptom Checked',
+          value: symptomsToString(symptomCheckHistory.symptoms),
+        ),
+        symptomCheckHistoryItemItem(
+            key: 'Date', value: symptomCheckHistory.createdAt ?? ''),
+        symptomCheckHistoryItemItem(
+            key: 'Status Tag', value: symptomCheckHistory.status ?? ''),
         Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             titleText(
-              "View more ",
-              color: AppColors.primaryColor, fontWeight: FontWeight.w500,
-              // fontSize:
+              "View Full Details ",
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
             ),
             const Icon(
               Icons.arrow_forward_ios_rounded,
@@ -233,7 +278,21 @@ Widget viewMoreSymptoms() {
   );
 }
 
-Widget symptomCheckHistoryItem(SymptomCheckHistory symptomCheckHistory) {
+Widget symptomCheckHistoryItemFromServer(SymptomCheckItem item) {
+  final symptomsText = symptomsToString(item.symptoms);
+
+  String formattedDate = 'N/A';
+  if (item.createdAt != null) {
+    try {
+      final parsed = DateTime.parse(item.createdAt!);
+      formattedDate = DateFormat('dd/MM/yyyy').format(parsed);
+    } catch (_) {
+      formattedDate = item.createdAt!;
+    }
+  }
+
+  final statusText = item.status ?? 'N/A';
+
   return Container(
     padding: EdgeInsets.all(12.w),
     margin: EdgeInsets.only(bottom: 12.h),
@@ -245,12 +304,10 @@ Widget symptomCheckHistoryItem(SymptomCheckHistory symptomCheckHistory) {
       children: [
         symptomCheckHistoryItemItem(
           key: 'Symptom Checked',
-          value: symptomCheckHistory.symptomChecked,
+          value: symptomsText,
         ),
-        symptomCheckHistoryItemItem(
-            key: 'Date', value: symptomCheckHistory.date),
-        symptomCheckHistoryItemItem(
-            key: 'Status Tag', value: symptomCheckHistory.status),
+        symptomCheckHistoryItemItem(key: 'Date', value: formattedDate),
+        symptomCheckHistoryItemItem(key: 'Status Tag', value: statusText),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

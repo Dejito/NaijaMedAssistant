@@ -140,13 +140,13 @@ class ApiService {
 
   static Future<Response> getPatientSymptomChecksHistory() async {
     var response = await HttpUtil()
-        .post(AppUrl.getPatientSymptomChecksHistory);
+        .get(AppUrl.getPatientSymptomChecksHistory);
     return response;
   }
 
   static Future<Response> getDoctorSymptomChecksHistory() async {
     var response = await HttpUtil()
-        .post(AppUrl.getDoctorSymptomsCheckHistory);
+        .get(AppUrl.getDoctorSymptomsCheckHistory);
     return response;
   }
 
