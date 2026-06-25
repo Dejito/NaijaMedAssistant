@@ -178,9 +178,27 @@ final GoRouter router = GoRouter(
       path: AppRoutes.doctorChatBoxPatient,
       builder: (_, state) {
         final extra = state.extra;
-        final conversationId = extra is String ? extra : null;
+        String? conversationId;
+        var isDoctor = true;
+
+        if (extra is String) {
+          conversationId = extra;
+        } else if (extra is Map<String, dynamic>) {
+          conversationId = extra['conversationId']?.toString();
+          final rawIsDoctor = extra['isDoctor'];
+          if (rawIsDoctor is bool) {
+            isDoctor = rawIsDoctor;
+          }
+        } else if (extra is Map) {
+          conversationId = extra['conversationId']?.toString();
+          final rawIsDoctor = extra['isDoctor'];
+          if (rawIsDoctor is bool) {
+            isDoctor = rawIsDoctor;
+          }
+        }
+
         return DoctorsPatientChatScreen(
-          isDoctor: true,
+          isDoctor: isDoctor,
           conversationId: conversationId,
         );
       },

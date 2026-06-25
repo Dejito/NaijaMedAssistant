@@ -1,7 +1,7 @@
 
-
 import 'package:flutter/material.dart';
 
+import '../ai_chat/view/chat_with_ai_screen.dart';
 import '../ai_chat/view/patient_doctor_history_screen.dart';
 import '../dashboard/screens/dashboard.dart';
 import '../doctor/doctor_view/doctor_cases_screen.dart';
@@ -21,7 +21,7 @@ class _DoctorApplicationPageState extends State<DoctorApplicationPage> {
   final List<Widget> _pages = [
     const DoctorDashboard(),
     const DoctorCasesScreen(),
-    const PatientDoctorHistoryScreen(),
+    const ChatWithAiScreen(),
     const Profile(),
   ];
 

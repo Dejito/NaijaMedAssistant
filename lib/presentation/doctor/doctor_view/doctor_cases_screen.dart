@@ -154,15 +154,19 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
               ),
             ),
 
-            DoctorCasesListViewItem(
-              cases: _displayedCases,
-              onViewPatientDetails: (selectedCase) {
-                context.push(
-                  AppRoutes.caseSummaryScreen,
-                  extra: selectedCase,
-                );
-              },
-            ),          ],
+            Expanded(
+              child: DoctorCasesListViewItem(
+                cases: _displayedCases,
+                isScrollable: true,
+                onViewPatientDetails: (selectedCase) {
+                  context.push(
+                    AppRoutes.caseSummaryScreen,
+                    extra: selectedCase,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -365,4 +369,3 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
      return const Color(0xFF4D2CFA);
    }
  }
-
