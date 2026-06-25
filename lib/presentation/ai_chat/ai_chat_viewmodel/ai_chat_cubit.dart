@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/check_symptoms_response.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/check_symptoms_state.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/escalate_symptoms_states.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/get_patient_symptoms_check_history.dart';
 import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/flutter_toast.dart';
 
@@ -14,6 +15,7 @@ import '../ai_chat_service/request_body/check_symptoms__req_body.dart';
 import '../ai_chat_service/request_body/escalate_symptoms_req_body.dart';
 import '../ai_chat_service/response/chat_model.dart';
 import '../ai_chat_service/response/escalate_symptoms_response.dart';
+import '../ai_chat_service/response/fetch_symptoms_history_response.dart';
 
 part 'ai_chat_state.dart';
 
@@ -195,6 +197,26 @@ class AiChatCubit extends Cubit<AiChatState> {
         final escalateSymptomsResponse = EscalateSymptomsResponse.fromJson(responseData);
         emit(EscalateSymptomsSuccessful(escalateSymptomsResponse: escalateSymptomsResponse));
         getIt.registerSingleton<EscalateSymptomsResponse>(escalateSymptomsResponse);
+      }
+    } catch (e) {
+      dismissEaseLoadingIndicator();
+      handleError(
+        e,
+        onEmit: (msg) => emit(CheckSymptomsError(error: msg)),
+      );
+      showToast(message: e.toString());
+    }
+  }
+
+  Future<void> getPatientSymptomChecksHistory() async {
+    try {
+      emit(const GetPatientSymptomsCheckLoading(message: ""));
+      final response = await ApiService.getPatientSymptomChecksHistory();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = response.data;
+        final patientSymptomCheckHistoryResponse = PatientSymptomCheckHistoryResponse.fromJson(responseData);
+        emit(GetPatientSymptomsCheckSuccessful(patientSymptomCheckHistoryResponse: patientSymptomCheckHistoryResponse));
+        getIt.registerSingleton<PatientSymptomCheckHistoryResponse>(patientSymptomCheckHistoryResponse);
       }
     } catch (e) {
       dismissEaseLoadingIndicator();

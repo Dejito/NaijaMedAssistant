@@ -22,9 +22,10 @@ class AppUrl {
   static String declineCase(String caseId) => 'cases/$caseId/decline';
 
 
-
   ///Symptom Checker
   static const checkSymptom = 'symptom-checks';
+  static const getPatientSymptomChecksHistory = 'patients/symptom-checks';
+  static const getDoctorSymptomsCheckHistory = 'symptom-checks/escalated';
   static String escalateSymptomsToDoctor(String symptomCheckId) => 'symptom-checks/escalation-decision/$symptomCheckId';
 
 
