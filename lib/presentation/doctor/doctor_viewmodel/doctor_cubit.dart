@@ -10,17 +10,81 @@ import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_
 import '../../../app_launch.dart';
 import '../../../data/service/http_util.dart';
 import '../../../data/service/user_api.dart';
+import '../../../socket_manager/socket_manager.dart';
 import '../../views/widgets/flutter_toast.dart';
 import '../doctor_service/response/accept_case_response.dart';
 import 'doctor_module_states/decline_case_states.dart';
+import 'doctor_module_states/join_conversation_states.dart';
 
 part 'doctor_state.dart';
 
 class DoctorCubit extends Cubit<DoctorState> {
 
   final ApiService? apiService;
+  final SocketManager _socketManager;
+  String? _pendingJoinConversationId;
 
-  DoctorCubit(this.apiService) : super(DoctorInitial());
+  DoctorCubit(this.apiService, {SocketManager? socketManager})
+      : _socketManager = socketManager ?? SocketManager(),
+        super(DoctorInitial()) {
+    _bindSocketCallbacks();
+  }
+
+  void _bindSocketCallbacks() {
+    _socketManager.onConnect(() {
+      final pendingConversationId = _pendingJoinConversationId;
+      if (pendingConversationId != null && pendingConversationId.isNotEmpty) {
+        _socketManager.joinConversation(pendingConversationId);
+      }
+    });
+
+    _socketManager.onConversationJoined((payload) {
+      final conversationId =
+          payload['conversation_id']?.toString() ??
+          payload['conversationId']?.toString() ??
+          _pendingJoinConversationId ??
+          '';
+
+      if (conversationId.isEmpty) {
+        emit(JoinConversationError(error: 'Failed to join conversation.'));
+        _pendingJoinConversationId = null;
+        return;
+      }
+
+      _pendingJoinConversationId = null;
+      emit(JoinConversationSuccessful(conversationId: conversationId));
+    });
+
+    _socketManager.onError((message) {
+      if (_pendingJoinConversationId == null) return;
+      _pendingJoinConversationId = null;
+      emit(JoinConversationError(error: message));
+    });
+
+    _socketManager.onConnectError((error) {
+      if (_pendingJoinConversationId == null) return;
+      _pendingJoinConversationId = null;
+      emit(JoinConversationError(error: 'Socket connection failed: $error'));
+    });
+  }
+
+  void joinConversation(String conversationId) {
+    final normalizedConversationId = conversationId.trim();
+    if (normalizedConversationId.isEmpty) {
+      emit(JoinConversationError(error: 'Conversation ID is missing.'));
+      return;
+    }
+
+    _pendingJoinConversationId = normalizedConversationId;
+    emit(JoinConversationLoadingState());
+
+    if (_socketManager.isConnected) {
+      _socketManager.joinConversation(normalizedConversationId);
+      return;
+    }
+
+    _socketManager.initialize();
+  }
 
   Future<void> fetchCases({Map<String, dynamic>? queryParameters}) async {
     try {
@@ -49,12 +113,12 @@ class DoctorCubit extends Cubit<DoctorState> {
         final responseData = response.data;
         final acceptCaseResponse = AcceptCaseResponse.fromJson(responseData);
         emit(AcceptCaseSuccessful(acceptCaseResponse: acceptCaseResponse));
-        // getIt.registerSingleton<CasesResponse>(fetchCasesResponse);
+        joinConversation(acceptCaseResponse.conversationId ?? '');
       }
     } catch (e) {
       handleError(e,
         onEmit: (msg) => emit(AcceptCaseError(error: msg)),
-      );;
+      );
     }
   }
 

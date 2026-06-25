@@ -74,7 +74,8 @@ class _AiSymptomClerkFeedbackScreenState
             getIt<AiChatCubit>().joinConversation(state.escalateSymptomsResponse.conversationId ?? '');
             // if (state.conversationJoined){
             //TODO: implement socket listening here to push  nav
-              context.push(AppRoutes.doctorConnectionScreen);
+            //   context.push(AppRoutes.doctorConnectionScreen);
+              context.push(AppRoutes.doctorChatBoxPatient);
             // }
           }
         },
