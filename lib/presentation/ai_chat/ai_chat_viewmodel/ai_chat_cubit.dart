@@ -13,6 +13,7 @@ import '../../../socket_manager/socket_manager.dart';
 import '../ai_chat_service/request_body/check_symptoms__req_body.dart';
 import '../ai_chat_service/request_body/escalate_symptoms_req_body.dart';
 import '../ai_chat_service/response/chat_model.dart';
+import '../ai_chat_service/response/escalate_symptoms_response.dart';
 
 part 'ai_chat_state.dart';
 
@@ -63,6 +64,10 @@ class AiChatCubit extends Cubit<AiChatState> {
     _socketManager.disconnect();
   }
 
+  void joinConversation(String conversationId) {
+    _socketManager.joinConversation(conversationId);
+  }
+
   void _bindSocketCallbacks() {
     _socketManager.onConnect(() {
       emit(
@@ -108,6 +113,13 @@ class AiChatCubit extends Cubit<AiChatState> {
           clearError: true,
         ),
       );
+    });
+
+    _socketManager.onConversationJoined((payload) {
+      final conversationId = payload['conversationId']?.toString();
+      if (conversationId != null && conversationId.isNotEmpty) {
+        emit(state.copyWith(conversationJoined: true));
+      }
     });
 
     _socketManager.onTyping((payload) {
@@ -179,10 +191,10 @@ class AiChatCubit extends Cubit<AiChatState> {
       emit(const EscalateSymptomsLoading(message: ""));
       final response = await ApiService.escalateSymptomsToDoctor(symptomCheckId, escalateSymptomsReqBody);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // final responseData = response.data;
-        // final checkSymptomsResponse = CheckSymptomsResponse.fromJson(responseData);
-        emit(const EscalateSymptomsSuccessful());
-        // getIt.registerSingleton<CheckSymptomsResponse>(checkSymptomsResponse);
+        final responseData = response.data;
+        final escalateSymptomsResponse = EscalateSymptomsResponse.fromJson(responseData);
+        emit(EscalateSymptomsSuccessful(escalateSymptomsResponse: escalateSymptomsResponse));
+        getIt.registerSingleton<EscalateSymptomsResponse>(escalateSymptomsResponse);
       }
     } catch (e) {
       dismissEaseLoadingIndicator();

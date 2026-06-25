@@ -71,7 +71,8 @@ class _AiSymptomClerkFeedbackScreenState
             dismissEaseLoadingIndicator();
           } else if (state is EscalateSymptomsSuccessful) {
             dismissEaseLoadingIndicator();
-            if (_flowState == ChatFlowState.accepted) {
+            getIt<AiChatCubit>().joinConversation(state.escalateSymptomsResponse.conversationId ?? '');
+            if (state.conversationJoined){
               context.push(AppRoutes.doctorConnectionScreen);
             }
           }
