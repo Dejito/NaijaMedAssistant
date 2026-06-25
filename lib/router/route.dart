@@ -176,7 +176,14 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: AppRoutes.doctorChatBoxPatient,
-      builder: (_, __) => const DoctorsPatientChatScreen(isDoctor: true,),
+      builder: (_, state) {
+        final extra = state.extra;
+        final conversationId = extra is String ? extra : null;
+        return DoctorsPatientChatScreen(
+          isDoctor: true,
+          conversationId: conversationId,
+        );
+      },
     ),
 
   GoRoute(

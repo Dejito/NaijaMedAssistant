@@ -71,12 +71,15 @@ class _AiSymptomClerkFeedbackScreenState
             dismissEaseLoadingIndicator();
           } else if (state is EscalateSymptomsSuccessful) {
             dismissEaseLoadingIndicator();
-            getIt<AiChatCubit>().joinConversation(state.escalateSymptomsResponse.conversationId ?? '');
-            // if (state.conversationJoined){
-            //TODO: implement socket listening here to push  nav
-            //   context.push(AppRoutes.doctorConnectionScreen);
-              context.push(AppRoutes.doctorChatBoxPatient);
-            // }
+            final conversationId = state.escalateSymptomsResponse.conversationId ?? '';
+            getIt<AiChatCubit>().joinConversation(conversationId);
+            if (conversationId.trim().isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Conversation ID is missing. Please try again.')),
+              );
+              return;
+            }
+            context.push(AppRoutes.doctorChatBoxPatient, extra: conversationId);
           }
         },
         builder: (context, state) {
