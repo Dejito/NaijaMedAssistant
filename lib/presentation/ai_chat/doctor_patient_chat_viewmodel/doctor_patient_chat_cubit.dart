@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../socket_manager/socket_manager.dart';
 import '../ai_chat_service/response/chat_model.dart';
@@ -9,6 +9,7 @@ part 'doctor_patient_chat_state.dart';
 class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
   final SocketManager _socketManager;
   final Set<String> _seenMessageIds = <String>{};
+  late final String _currentUserRole;
 
   DoctorPatientChatCubit({SocketManager? socketManager})
       : _socketManager = socketManager ?? SocketManager(),
@@ -18,6 +19,7 @@ class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
     required String conversationId,
     required bool isDoctor,
   }) {
+    _currentUserRole = isDoctor ? 'doctor' : 'patient';
     final normalizedConversationId = conversationId.trim();
     if (normalizedConversationId.isEmpty) {
       emit(state.copyWith(errorMessage: 'Conversation ID is missing.'));
@@ -56,6 +58,20 @@ class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
       return false;
     }
 
+    final optimisticMessage = ChatUiModel(
+      text: text,
+      isUser: true,
+      time: _formatTime(DateTime.now()),
+      conversationId: conversationId,
+      senderRole: _currentUserRole,
+      identifier: 'human',
+    );
+
+    final updatedMessages = List<ChatUiModel>.from(state.messages)
+      ..add(optimisticMessage);
+
+    emit(state.copyWith(messages: updatedMessages, clearError: true));
+
     _socketManager.sendMessage(
       message: text,
       conversationId: conversationId,
@@ -84,20 +100,33 @@ class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
   void seedMessages(List<ChatUiModel> fetched) {
     if (fetched.isEmpty) return;
     final existing = state.messages;
-    final existingIds = existing
-        .where((m) => m.messageId != null)
+    final fetchedIds = fetched
+        .where((m) => m.messageId != null && m.messageId!.isNotEmpty)
         .map((m) => m.messageId!)
         .toSet();
-    final merged = [
-      ...fetched,
-      ...existing.where((m) => m.messageId == null || !existingIds.contains(m.messageId)),
-    ];
-    // Deduplicate fetched messages by id
+
+    final merged = <ChatUiModel>[...fetched];
+
+    for (final message in existing) {
+      final messageId = message.messageId;
+      if (messageId != null &&
+          messageId.isNotEmpty &&
+          fetchedIds.contains(messageId)) {
+        continue;
+      }
+      if (_containsEquivalentMessage(fetched, message)) {
+        continue;
+      }
+      merged.add(message);
+    }
+
     final seen = <String>{};
     final deduped = merged.where((m) {
-      if (m.messageId == null) return true;
-      return seen.add(m.messageId!);
+      final messageId = m.messageId;
+      if (messageId == null || messageId.isEmpty) return true;
+      return seen.add(messageId);
     }).toList();
+
     emit(state.copyWith(messages: deduped));
   }
 
@@ -111,29 +140,37 @@ class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
     _socketManager.onConnect(() {
       if (isClosed) return;
       _socketManager.joinConversation(state.conversationId);
-      emit(state.copyWith(isConnected: true, isInitializing: false, clearError: true));
+      emit(state.copyWith(
+          isConnected: true, isInitializing: false, clearError: true));
     });
 
     _socketManager.onDisconnect(() {
       if (isClosed) return;
-      emit(state.copyWith(isConnected: false, isInitializing: false, isOtherUserTyping: false));
+      emit(state.copyWith(
+          isConnected: false, isInitializing: false, isOtherUserTyping: false));
     });
 
     _socketManager.onConversationJoined((payload) {
       if (isClosed) return;
-      final joinedConversationId =
-          payload['conversationId']?.toString() ?? payload['conversation_id']?.toString() ?? '';
+      final joinedConversationId = payload['conversationId']?.toString() ??
+          payload['conversation_id']?.toString() ??
+          '';
       if (joinedConversationId.isEmpty) return;
       if (joinedConversationId != state.conversationId) return;
 
-      emit(state.copyWith(isConversationJoined: true, isInitializing: false, clearError: true));
+      emit(state.copyWith(
+          isConversationJoined: true, isInitializing: false, clearError: true));
     });
 
     _socketManager.onNewMessage((payload) {
       if (isClosed) return;
-      final incomingConversationId =
-          payload['conversation_id']?.toString() ?? payload['conversationId']?.toString() ?? '';
-      if (incomingConversationId.isEmpty || incomingConversationId != state.conversationId) return;
+      final incomingConversationId = payload['conversation_id']?.toString() ??
+          payload['conversationId']?.toString() ??
+          '';
+      if (incomingConversationId.isEmpty ||
+          incomingConversationId != state.conversationId) {
+        return;
+      }
 
       final messageId = payload['message_id']?.toString();
       if (messageId != null && messageId.isNotEmpty) {
@@ -141,12 +178,13 @@ class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
         _seenMessageIds.add(messageId);
       }
 
-      final senderRole = (payload['sender_role']?.toString() ?? '').toLowerCase();
-      final currentRole = isDoctor ? 'doctor' : 'patient';
-      final isCurrentUserMessage = senderRole == currentRole;
+      final senderRole = _normalizeRole(payload['sender_role']?.toString());
+      final isCurrentUserMessage = senderRole == _currentUserRole;
 
       final rawText = (payload['message'] ?? '').toString();
-      if (rawText.trim().isEmpty) return;
+      if (rawText.trim().isEmpty) {
+        return;
+      }
 
       final parsedTimestamp = DateTime.tryParse(
         (payload['timestamp'] ?? payload['created_at'] ?? '').toString(),
@@ -164,34 +202,68 @@ class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
         senderRole: payload['sender_role']?.toString(),
       );
 
-      final updatedMessages = List<ChatUiModel>.from(state.messages)..add(message);
-      emit(state.copyWith(messages: updatedMessages, isOtherUserTyping: false, clearError: true));
+      final updatedMessages = List<ChatUiModel>.from(state.messages);
+      final pendingIndex = updatedMessages.indexWhere(
+        (item) =>
+            (item.messageId == null || item.messageId!.isEmpty) &&
+            _normalizeRole(item.senderRole) == senderRole &&
+            item.text.trim() == rawText.trim(),
+      );
+
+      if (pendingIndex >= 0) {
+        updatedMessages[pendingIndex] = message;
+      } else {
+        updatedMessages.add(message);
+      }
+
+      emit(state.copyWith(
+          messages: updatedMessages,
+          isOtherUserTyping: false,
+          clearError: true));
     });
 
     _socketManager.onMessageDelivered((payload) {
       if (isClosed) return;
-      final incomingConversationId =
-          payload['conversationId']?.toString() ?? payload['conversation_id']?.toString() ?? '';
-      if (incomingConversationId.isEmpty || incomingConversationId != state.conversationId) return;
+      final incomingConversationId = payload['conversationId']?.toString() ??
+          payload['conversation_id']?.toString() ??
+          '';
+      if (incomingConversationId.isEmpty ||
+          incomingConversationId != state.conversationId) {
+        return;
+      }
 
-      emit(state.copyWith(lastDeliveredMessageId: payload['messageId']?.toString() ?? payload['message_id']?.toString()));
+      emit(state.copyWith(
+          lastDeliveredMessageId: payload['messageId']?.toString() ??
+              payload['message_id']?.toString()));
     });
 
     _socketManager.onTyping((payload) {
       if (isClosed) return;
-      final incomingConversationId =
-          payload['conversationId']?.toString() ?? payload['conversation_id']?.toString() ?? '';
-      if (incomingConversationId.isEmpty || incomingConversationId != state.conversationId) return;
-      if (payload['user_id'] == null) return;
+      final incomingConversationId = payload['conversationId']?.toString() ??
+          payload['conversation_id']?.toString() ??
+          '';
+      if (incomingConversationId.isEmpty ||
+          incomingConversationId != state.conversationId) {
+        return;
+      }
+      if (payload['user_id'] == null) {
+        return;
+      }
       emit(state.copyWith(isOtherUserTyping: true));
     });
 
     _socketManager.onTypingStopped((payload) {
       if (isClosed) return;
-      final incomingConversationId =
-          payload['conversationId']?.toString() ?? payload['conversation_id']?.toString() ?? '';
-      if (incomingConversationId.isEmpty || incomingConversationId != state.conversationId) return;
-      if (payload['user_id'] == null) return;
+      final incomingConversationId = payload['conversationId']?.toString() ??
+          payload['conversation_id']?.toString() ??
+          '';
+      if (incomingConversationId.isEmpty ||
+          incomingConversationId != state.conversationId) {
+        return;
+      }
+      if (payload['user_id'] == null) {
+        return;
+      }
       emit(state.copyWith(isOtherUserTyping: false));
     });
 
@@ -202,7 +274,9 @@ class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
 
     _socketManager.onConnectError((error) {
       if (isClosed) return;
-      emit(state.copyWith(errorMessage: 'Socket connection failed: $error', isInitializing: false));
+      emit(state.copyWith(
+          errorMessage: 'Socket connection failed: $error',
+          isInitializing: false));
     });
   }
 
@@ -213,5 +287,22 @@ class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
     final period = local.hour < 12 ? 'AM' : 'PM';
     return '$hour:$minute $period';
   }
-}
 
+  String _normalizeRole(String? role) => (role ?? '').trim().toLowerCase();
+
+  bool _containsEquivalentMessage(
+      List<ChatUiModel> items, ChatUiModel candidate) {
+    return items.any((item) {
+      final candidateId = candidate.messageId;
+      final itemId = item.messageId;
+      if (candidateId != null && candidateId.isNotEmpty) {
+        return candidateId == itemId;
+      }
+
+      return item.text.trim() == candidate.text.trim() &&
+          _normalizeRole(item.senderRole) ==
+              _normalizeRole(candidate.senderRole) &&
+          (item.conversationId ?? '') == (candidate.conversationId ?? '');
+    });
+  }
+}

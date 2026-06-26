@@ -13,7 +13,6 @@ import '../ai_chat_service/response/chat_model.dart';
 import '../doctor_patient_chat_viewmodel/doctor_patient_chat_cubit.dart';
 
 class DoctorsPatientChatScreen extends StatefulWidget {
-
   final bool isDoctor;
   final String? conversationId;
 
@@ -24,14 +23,21 @@ class DoctorsPatientChatScreen extends StatefulWidget {
   });
 
   @override
-  State<DoctorsPatientChatScreen> createState() => _DoctorsPatientChatScreenState();
+  State<DoctorsPatientChatScreen> createState() =>
+      _DoctorsPatientChatScreenState();
 }
 
 class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final DoctorPatientChatCubit _chatCubit = DoctorPatientChatCubit();
+  final AiChatCubit _historyCubit = getIt<AiChatCubit>();
   Timer? _typingDebounce;
+  bool _hasAutoScrolledOnOpen = false;
+  bool _isPaginatingHistory = false;
+  double _paginationAnchorPixels = 0;
+  double _paginationAnchorMaxScrollExtent = 0;
+  int _lastMessageCount = 0;
 
   @override
   void initState() {
@@ -42,46 +48,72 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
     );
     _scrollController.addListener(_onScroll);
     // Seed any messages already fetched on the history screen
-    _seedHistoryMessages();
+    _seedHistoryMessages(_historyCubit.state);
     _ensureConversationHistory();
   }
 
   String _normalizedId(String? id) => (id ?? '').trim();
+  String _normalizedRole(String? role) => (role ?? '').trim().toLowerCase();
+  String get _currentUserRole => widget.isDoctor ? 'doctor' : 'patient';
+  String get _otherUserRole => widget.isDoctor ? 'patient' : 'doctor';
 
   Future<void> _ensureConversationHistory() async {
     final conversationId = _normalizedId(widget.conversationId);
     if (conversationId.isEmpty) return;
 
-    final aiCubit = getIt<AiChatCubit>();
-    final aiState = aiCubit.state;
+    final aiState = _historyCubit.state;
     final hasSeedablePayload =
         _normalizedId(aiState.loadedConversationId) == conversationId &&
-        (aiState.conversationPayload?.messages?.isNotEmpty ?? false);
+            (aiState.conversationPayload?.messages?.isNotEmpty ?? false);
 
     if (!hasSeedablePayload) {
-      await aiCubit.getConversationMessages(conversationId);
+      await _historyCubit.getConversationMessages(conversationId);
       if (!mounted) return;
     }
 
-    _seedHistoryMessages();
+    _seedHistoryMessages(_historyCubit.state);
   }
 
-  void _seedHistoryMessages() {
-    final aiState = getIt<AiChatCubit>().state;
+  void _seedHistoryMessages(AiChatState aiState) {
     final expectedConversationId = _normalizedId(widget.conversationId);
     if (expectedConversationId.isEmpty) return;
 
     final loadedConversationId = _normalizedId(aiState.loadedConversationId);
-    final payloadConversationId = _normalizedId(aiState.conversationPayload?.conversationId);
+    final payloadConversationId =
+        _normalizedId(aiState.conversationPayload?.conversationId);
     final isMatchingConversation =
         loadedConversationId == expectedConversationId ||
-        payloadConversationId == expectedConversationId;
+            payloadConversationId == expectedConversationId;
     if (!isMatchingConversation) return;
 
     final logItems = aiState.conversationPayload?.messages ?? [];
     if (logItems.isEmpty) return;
+
+    final hadExistingMessages = _chatCubit.state.messages.isNotEmpty;
     final uiMessages = logItems.map(_toUiModel).toList();
     _chatCubit.seedMessages(uiMessages);
+
+    if (_isPaginatingHistory) {
+      _restoreScrollAfterPagination();
+      return;
+    }
+
+    if (!_hasAutoScrolledOnOpen &&
+        !hadExistingMessages &&
+        uiMessages.isNotEmpty) {
+      _hasAutoScrolledOnOpen = true;
+      _scrollToBottom(animated: false);
+    }
+  }
+
+  bool _isRelevantHistoryState(AiChatState aiState) {
+    final expectedConversationId = _normalizedId(widget.conversationId);
+    if (expectedConversationId.isEmpty) return false;
+
+    return _normalizedId(aiState.loadedConversationId) ==
+            expectedConversationId ||
+        _normalizedId(aiState.conversationPayload?.conversationId) ==
+            expectedConversationId;
   }
 
   ChatUiModel _toUiModel(MessageLogItem item) {
@@ -90,15 +122,18 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
     final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
     final min = local.minute.toString().padLeft(2, '0');
     final period = local.hour < 12 ? 'AM' : 'PM';
+    final senderRole = _normalizedRole(item.senderRole ?? item.user?.role);
     return ChatUiModel(
       text: item.message ?? '',
-      isUser: item.isOutgoing,
+      isUser: senderRole.isNotEmpty
+          ? senderRole == _currentUserRole
+          : item.isOutgoing,
       time: '$hour:$min $period',
       messageId: item.messageId,
       conversationId: item.conversationId,
       userId: item.userId,
       identifier: item.identifier,
-      senderRole: item.senderRole,
+      senderRole: senderRole.isEmpty ? item.senderRole : senderRole,
       messageType: item.messageType,
       isRead: item.isRead,
       isEmergency: item.isEmergency,
@@ -110,11 +145,16 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
     if (!_scrollController.hasClients) return;
     if (_scrollController.position.pixels <=
         _scrollController.position.minScrollExtent + 80) {
-      final aiCubit = getIt<AiChatCubit>();
-      if (!aiCubit.state.isLoadingConversation &&
-          aiCubit.state.conversationHasMore &&
+      if (!_historyCubit.state.isLoadingConversation &&
+          _historyCubit.state.conversationHasMore &&
+          !_isPaginatingHistory &&
           widget.conversationId != null) {
-        aiCubit.getConversationMessages(widget.conversationId!, loadMore: true);
+        _isPaginatingHistory = true;
+        _paginationAnchorPixels = _scrollController.position.pixels;
+        _paginationAnchorMaxScrollExtent =
+            _scrollController.position.maxScrollExtent;
+        _historyCubit.getConversationMessages(widget.conversationId!,
+            loadMore: true);
       }
     }
   }
@@ -130,9 +170,7 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
   }
 
   void _sendMessage() {
-    final sent = _chatCubit.sendMessage(
-        _messageController.text
-    );
+    final sent = _chatCubit.sendMessage(_messageController.text);
     if (!sent) return;
 
     _chatCubit.sendTypingStopped();
@@ -154,16 +192,66 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
     });
   }
 
-  void _scrollToBottom() {
+  void _scrollToBottom({bool animated = true}) {
     FocusManager.instance.primaryFocus?.unfocus();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_scrollController.hasClients) return;
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
-      );
+      if (!mounted || !_scrollController.hasClients) return;
+      final target = _scrollController.position.maxScrollExtent;
+      if (animated) {
+        _scrollController.animateTo(
+          target,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
+        return;
+      }
+      _scrollController.jumpTo(target);
     });
+  }
+
+  void _restoreScrollAfterPagination() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) {
+        _isPaginatingHistory = false;
+        return;
+      }
+
+      final delta = _scrollController.position.maxScrollExtent -
+          _paginationAnchorMaxScrollExtent;
+      final target = (_paginationAnchorPixels + delta)
+          .clamp(
+            _scrollController.position.minScrollExtent,
+            _scrollController.position.maxScrollExtent,
+          )
+          .toDouble();
+
+      _scrollController.jumpTo(target);
+      _isPaginatingHistory = false;
+    });
+  }
+
+  bool _isOwnMessage(ChatUiModel message) {
+    final senderRole = _normalizedRole(message.senderRole);
+    if (senderRole.isNotEmpty) {
+      return senderRole == _currentUserRole;
+    }
+    return message.isUser;
+  }
+
+  bool _isDoctorMessage(ChatUiModel message) {
+    final senderRole = _normalizedRole(message.senderRole);
+    if (senderRole.isNotEmpty) {
+      return senderRole == 'doctor';
+    }
+    return _isOwnMessage(message)
+        ? widget.isDoctor
+        : _otherUserRole == 'doctor';
+  }
+
+  bool _isNearBottom({double threshold = 120}) {
+    if (!_scrollController.hasClients) return true;
+    final position = _scrollController.position;
+    return (position.maxScrollExtent - position.pixels) <= threshold;
   }
 
   PopupMenuItem<String> _buildContextMenuItem(String title, String value) {
@@ -202,7 +290,25 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
           );
           _chatCubit.clearError();
         }
-        _scrollToBottom();
+
+        final hadMessageCountChange =
+            state.messages.length != _lastMessageCount;
+
+        if (_isPaginatingHistory) {
+          _lastMessageCount = state.messages.length;
+          return;
+        }
+
+        if (!_hasAutoScrolledOnOpen && state.messages.isNotEmpty) {
+          _hasAutoScrolledOnOpen = true;
+          _scrollToBottom(animated: false);
+        } else if (hadMessageCountChange) {
+          _scrollToBottom();
+        } else if (state.isOtherUserTyping && _isNearBottom()) {
+          _scrollToBottom();
+        }
+
+        _lastMessageCount = state.messages.length;
       },
       builder: (context, state) {
         return Scaffold(
@@ -216,8 +322,11 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
               onPressed: () => Navigator.pop(context),
             ),
             title: Text(
-              widget.isDoctor ? 'Doctor\'s Chat Box' : "Patient\'s ChatBox",
-              style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
+              widget.isDoctor ? "Doctor's Chat Box" : "Patient's ChatBox",
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500),
             ),
             actions: [
               if (widget.isDoctor) ...[
@@ -240,7 +349,8 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
                     _buildContextMenuItem('Voice Call', 'voice'),
                     _buildContextMenuItem('Video Call', 'video'),
                     _buildContextMenuItem('View Patient Profile', 'profile'),
-                    _buildContextMenuItem('Create Prescription', 'prescription'),
+                    _buildContextMenuItem(
+                        'Create Prescription', 'prescription'),
                   ],
                 ),
                 const SizedBox(width: 8),
@@ -251,62 +361,68 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
               child: Container(color: Colors.grey.shade200, height: 1.5),
             ),
           ),
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 16, bottom: 8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Text(
-                    state.isConversationJoined
-                        ? 'Connected (${state.conversationId})'
-                        : (state.isInitializing ? 'Connecting...' : 'Joining conversation...'),
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          body: BlocListener<AiChatCubit, AiChatState>(
+            bloc: _historyCubit,
+            listener: (context, aiState) {
+              if (!aiState.isLoadingConversation) {
+                if (_isRelevantHistoryState(aiState)) {
+                  _seedHistoryMessages(aiState);
+                } else if (_isPaginatingHistory) {
+                  _isPaginatingHistory = false;
+                }
+              }
+            },
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 8),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 30, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: Text(
+                      state.isConversationJoined
+                          ? 'Connected (${state.conversationId})'
+                          : (state.isInitializing
+                              ? 'Connecting...'
+                              : 'Joining conversation...'),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
                   ),
                 ),
-              ),
-              // Pagination loading indicator at the top
-              BlocBuilder<AiChatCubit, AiChatState>(
-                bloc: getIt<AiChatCubit>(),
-                builder: (context, aiState) {
-                  // When new pages arrive, merge them into _chatCubit
-                  if (!aiState.isLoadingConversation &&
-                      (_normalizedId(aiState.loadedConversationId) == _normalizedId(widget.conversationId) ||
-                          _normalizedId(aiState.conversationPayload?.conversationId) == _normalizedId(widget.conversationId)) &&
-                      aiState.conversationPayload != null) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      final msgs = (aiState.conversationPayload!.messages ?? [])
-                          .map(_toUiModel)
-                          .toList();
-                      _chatCubit.seedMessages(msgs);
-                    });
-                  }
-                  if (aiState.isLoadingConversation) {
-                    return const LinearProgressIndicator(minHeight: 2);
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  itemCount: state.messages.length + (state.isOtherUserTyping ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (state.isOtherUserTyping && index == state.messages.length) {
-                      return _buildTypingIndicator();
+                BlocBuilder<AiChatCubit, AiChatState>(
+                  bloc: _historyCubit,
+                  builder: (context, aiState) {
+                    if (aiState.isLoadingConversation) {
+                      return const LinearProgressIndicator(minHeight: 2);
                     }
-                    return _buildMessageBubble(state.messages[index]);
+                    return const SizedBox.shrink();
                   },
                 ),
-              ),
-              _buildInputAccessoryField(),
-            ],
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    itemCount: state.messages.length +
+                        (state.isOtherUserTyping ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (state.isOtherUserTyping &&
+                          index == state.messages.length) {
+                        return _buildTypingIndicator();
+                      }
+                      return _buildMessageBubble(state.messages[index]);
+                    },
+                  ),
+                ),
+                _buildInputAccessoryField(),
+              ],
+            ),
           ),
         );
       },
@@ -314,62 +430,82 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
   }
 
   Widget _buildMessageBubble(ChatUiModel msg) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.grey.shade200, width: 1.5),
-      ),
+    final isOwnMessage = _isOwnMessage(msg);
+    final isDoctorMessage = _isDoctorMessage(msg);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment:
+            isOwnMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (msg.isUser) ...[
-            _buildAvatar(isDoctor: false),
+          if (!isOwnMessage) ...[
+            _buildAvatar(isDoctor: isDoctorMessage),
             const SizedBox(width: 12),
           ],
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                MarkdownBody(
-                  data: msg.text,
-                  selectable: false,
-                  styleSheet: MarkdownStyleSheet(
-                    p: const TextStyle(
-                      color: Colors.black87,
-                      fontSize: 13,
-                      height: 1.45,
-                    ),
-                    strong: const TextStyle(
-                      color: Colors.black87,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      height: 1.45,
-                    ),
-                    listBullet: const TextStyle(
-                      color: Colors.black87,
-                      fontSize: 13,
-                      height: 1.45,
-                    ),
-                    blockSpacing: 6,
+          Flexible(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.72,
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: isOwnMessage ? const Color(0xFFF5F2FF) : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isOwnMessage
+                        ? const Color(0xFFD9D0FF)
+                        : Colors.grey.shade200,
+                    width: 1.5,
                   ),
                 ),
-                const SizedBox(height: 12),
-                Align(
-                  alignment: msg.isUser ? Alignment.bottomRight : Alignment.bottomLeft,
-                  child: Text(
-                    msg.time,
-                    style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MarkdownBody(
+                      data: msg.text,
+                      selectable: false,
+                      styleSheet: MarkdownStyleSheet(
+                        p: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 13,
+                          height: 1.45,
+                        ),
+                        strong: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          height: 1.45,
+                        ),
+                        listBullet: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 13,
+                          height: 1.45,
+                        ),
+                        blockSpacing: 6,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Align(
+                      alignment: isOwnMessage
+                          ? Alignment.bottomRight
+                          : Alignment.bottomLeft,
+                      child: Text(
+                        msg.time,
+                        style: TextStyle(
+                            color: Colors.grey.shade400, fontSize: 11),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-          if (!msg.isUser) ...[
+          if (isOwnMessage) ...[
             const SizedBox(width: 12),
-            _buildAvatar(isDoctor: true),
+            _buildAvatar(isDoctor: isDoctorMessage),
           ],
         ],
       ),
@@ -387,7 +523,7 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
       ),
       child: Row(
         children: [
-          _buildAvatar(isDoctor: true),
+          _buildAvatar(isDoctor: _otherUserRole == 'doctor'),
           const SizedBox(width: 12),
           Text(
             'Typing...',
@@ -434,7 +570,8 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
               onPressed: () {},
             ),
             IconButton(
-              icon: Icon(Icons.description_outlined, color: Colors.grey.shade600),
+              icon:
+                  Icon(Icons.description_outlined, color: Colors.grey.shade600),
               onPressed: () {},
             ),
             Expanded(
@@ -445,7 +582,8 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
                 onFieldSubmitted: (_) => _sendMessage(),
                 decoration: InputDecoration(
                   hintText: 'Type your message',
-                  hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+                  hintStyle:
+                      TextStyle(color: Colors.grey.shade400, fontSize: 14),
                   border: InputBorder.none,
                 ),
               ),
@@ -458,8 +596,10 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
               onTap: _sendMessage,
               child: Container(
                 padding: const EdgeInsets.all(6),
-                decoration: const BoxDecoration(color: Color(0xFF4D2CFA), shape: BoxShape.circle),
-                child: const Icon(Icons.arrow_upward, color: Colors.white, size: 16),
+                decoration: const BoxDecoration(
+                    color: Color(0xFF4D2CFA), shape: BoxShape.circle),
+                child: const Icon(Icons.arrow_upward,
+                    color: Colors.white, size: 16),
               ),
             ),
           ],
