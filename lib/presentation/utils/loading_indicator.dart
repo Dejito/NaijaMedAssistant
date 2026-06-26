@@ -5,7 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 void showEaseLoadingIndicator(){
   EasyLoading.show(
       indicator: const CircularProgressIndicator(
-        color: Colors.white24,
+        color: Colors.white,
       ),
       maskType: EasyLoadingMaskType.black,
       dismissOnTap: false

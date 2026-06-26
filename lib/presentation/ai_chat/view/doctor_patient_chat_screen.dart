@@ -183,7 +183,7 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
               onPressed: () => Navigator.pop(context),
             ),
             title: Text(
-              widget.isDoctor ? 'Patient Chat Box' : "Doctor's ChatBox",
+              widget.isDoctor ? 'Doctor\'s Chat Box' : "Patient\'s ChatBox",
               style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
             ),
             actions: [

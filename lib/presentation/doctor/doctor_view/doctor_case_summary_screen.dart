@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app_launch.dart';
 import '../../../router/route.dart';
-import '../../utils/loading_indicator.dart';
 import '../../views/widgets/titleText.dart';
 import '../doctor_service/response/fetch_cases_response.dart';
 import '../doctor_viewmodel/doctor_cubit.dart';
@@ -53,10 +52,7 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
     return BlocConsumer<DoctorCubit, DoctorState>(
       bloc: getIt<DoctorCubit>(),
       listener: (context, state) {
-        if (state is AcceptCaseLoadingState || state is JoinConversationLoadingState) {
-          showEaseLoadingIndicator();
-        } else if (state is AcceptCaseError) {
-          dismissEaseLoadingIndicator();
+        if (state is AcceptCaseError) {
           final message = state.error?.trim();
           if ((message ?? '').isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -64,7 +60,6 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
             );
           }
         } else if (state is JoinConversationError) {
-          dismissEaseLoadingIndicator();
           final message = state.error?.trim();
           if ((message ?? '').isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -72,11 +67,11 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
             );
           }
         } else if (state is JoinConversationSuccessful) {
-          dismissEaseLoadingIndicator();
-          context.push(AppRoutes.doctorChatBoxPatient, extra: state.conversationId);
+          context.push(AppRoutes.doctorChatBoxPatient, extra: {'conversationId': state.conversationId, 'isDoctor': true});
         }
       },
       builder: (context, state) {
+        final isLoading = state is AcceptCaseLoadingState || state is JoinConversationLoadingState;
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
@@ -105,154 +100,139 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
             ),
           ),
           body: SafeArea(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // --- Status Badge ---
-                  Center(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
-                      decoration: BoxDecoration(
-                        color: badgeColor,
-                        borderRadius: BorderRadius.circular(4.r), // Sharp rectangular pill from UI
-                      ),
-                      child: Text(
-                        badgeLabel,
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-
-                  // --- AI Assistant Header ---
-                  Row(
-                    children: [
-                      Container(
-                        width: 40.w,
-                        height: 40.w,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            "B",
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "AI Assistant",
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
-                          Text(
-                            "Summary Note for Doctor",
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20.h),
-
-                  if (caseItem == null) ...[
-                    Text(
-                      'No case details available. Please open a valid case.',
-                      style: TextStyle(fontSize: 12.sp, color: Colors.black87),
-                    ),
-                  ] else ...[
-                    // --- Cleansed Profile Fields conforming to UI ---
-                    _buildProfileFieldRow("Name", patientName.isNotEmpty ? patientName : 'Not specified'),
-                    _buildProfileFieldRow("Gender", patientUser?.gender ?? 'Not specified'),
-                    _buildProfileFieldRow("Age", age != null ? '$age' : 'N/A'),
-                    // _buildProfileFieldRow("Occupation", 'Accountant'), // Fallback template matching design
-                    // _buildProfileFieldRow("Marital Status", 'Married'),
-                    _buildProfileFieldRow("Address", _buildAddress(patient)),
-                    // _buildProfileFieldRow("Religion", 'Muslim'),
-                    // _buildProfileFieldRow("Tribe", 'Yoruba'),
-                    _buildProfileFieldRow("Presenting Complaint", presentingComplaint),
-
-                    SizedBox(height: 20.h),
-                    Text(
-                      "Patient Summary Note",
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.bold,
-                        // color: Colors.blackDE,
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                    Text(
-                      summaryNote,
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: Colors.black87,
-                        height: 1.4,
-                      ),
-                    ),
-
-                    SizedBox(height: 16.h),
-                    Container(color: Colors.grey.shade200, height: 1.h),
-                    SizedBox(height: 16.h),
-
-                    Row(
+            child: Column(
+              children: [
+                if (isLoading) const LinearProgressIndicator(minHeight: 2),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "AI Assesment : ",
-                          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.black),
+                        // --- Status Badge ---
+                        Center(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
+                            decoration: BoxDecoration(
+                              color: badgeColor,
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                            child: Text(
+                              badgeLabel,
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
                         ),
-                        Text(
-                          severity.isNotEmpty ? _capitalize(severity) : 'N/A',
-                          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black87),
+                        SizedBox(height: 20.h),
+                        Row(
+                          children: [
+                            Container(
+                              width: 40.w,
+                              height: 40.w,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "B",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.sp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "AI Assistant",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 1.h),
+                                Text(
+                                  "Summary Note for Doctor",
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
+                        SizedBox(height: 20.h),
+                        if (caseItem == null) ...[
+                          Text(
+                            'No case details available. Please open a valid case.',
+                            style: TextStyle(fontSize: 12.sp, color: Colors.black87),
+                          ),
+                        ] else ...[
+                          _buildProfileFieldRow("Name", patientName.isNotEmpty ? patientName : 'Not specified'),
+                          _buildProfileFieldRow("Gender", patientUser?.gender ?? 'Not specified'),
+                          _buildProfileFieldRow("Age", age != null ? '$age' : 'N/A'),
+                          _buildProfileFieldRow("Address", _buildAddress(patient)),
+                          _buildProfileFieldRow("Presenting Complaint", presentingComplaint),
+                          SizedBox(height: 20.h),
+                          Text(
+                            "Patient Summary Note",
+                            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10.h),
+                          Text(
+                            summaryNote,
+                            style: TextStyle(fontSize: 12.sp, color: Colors.black87, height: 1.4),
+                          ),
+                          SizedBox(height: 16.h),
+                          Container(color: Colors.grey.shade200, height: 1.h),
+                          SizedBox(height: 16.h),
+                          Row(
+                            children: [
+                              Text(
+                                "AI Assesment : ",
+                                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.black),
+                              ),
+                              Text(
+                                severity.isNotEmpty ? _capitalize(severity) : 'N/A',
+                                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black87),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 24.h),
+                          Text(
+                            "Click the Button Below to Start a Chat With Patient",
+                            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.black87),
+                          ),
+                          SizedBox(height: 12.h),
+                          _buildActionButton("START CHAT", const Color(0xFF4D2CFA), () {
+                            _onStartChatPressed(context, caseItem);
+                          }),
+                          _buildActionButton("SCHEDULE FOR LATER", const Color(0xFF4D2CFA), () {}),
+                          _buildActionButton("FLAG TO ANOTHER DOCTOR", const Color(0xFF4D2CFA), () {}),
+                          SizedBox(height: 8.h),
+                          _buildActionButton("VIEW PREVIOUS DOCUMENTATION", const Color(0xFF1E7E34), () {
+                            context.push(AppRoutes.previousDocumentationScreen);
+                          }, isFullWidthGreen: true),
+                          SizedBox(height: 16.h),
+                        ],
                       ],
                     ),
-
-                    SizedBox(height: 24.h),
-                    Text(
-                      "Click the Button Below to Start a Chat With Patient",
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-
-                    // --- Operational Pipeline Actions Layout ---
-                    _buildActionButton("START CHAT", const Color(0xFF4D2CFA), () {
-                      _onStartChatPressed(context, caseItem);
-                    }),
-                    _buildActionButton("SCHEDULE FOR LATER", const Color(0xFF4D2CFA), () {}),
-                    _buildActionButton("FLAG TO ANOTHER DOCTOR", const Color(0xFF4D2CFA), () {}),
-                    SizedBox(height: 8.h),
-                    _buildActionButton("VIEW PREVIOUS DOCUMENTATION", const Color(0xFF1E7E34), () {
-                      context.push(AppRoutes.previousDocumentationScreen);
-                    }, isFullWidthGreen: true),
-                    SizedBox(height: 16.h),
-                  ],
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -285,17 +265,6 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(String heading) {
-    return Text(
-      heading,
-      style: TextStyle(
-        fontSize: 12.sp,
-        fontWeight: FontWeight.bold,
-        color: Colors.black87,
       ),
     );
   }

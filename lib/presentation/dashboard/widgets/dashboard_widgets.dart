@@ -123,9 +123,12 @@ Widget quickActionsCardSlider({
                 label: 'AI Powered Symptom Checker',
               ),
             ),
-            quickActionsCard(
-              icon: AppIcons.logoBlack,
-              label: 'Chat with AI',
+            GestureDetector(
+              onTap: () => context.push(AppRoutes.chatWithAi),
+              child: quickActionsCard(
+                icon: AppIcons.logoBlack,
+                label: 'Chat with AI',
+              ),
             ),
             InkWell(
               onTap: () => context.push(AppRoutes.emergencyServices),
