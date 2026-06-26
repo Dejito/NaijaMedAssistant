@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:naija_med_assistant/presentation/dashboard/screens/patient_chats_history_screen.dart';
 
-import '../widgets/symptom_check_listview.dart';
+import 'symptom_check_history_screen.dart';
 
 class PatientHistoryScreen extends StatefulWidget {
   const PatientHistoryScreen({super.key});
@@ -10,7 +11,7 @@ class PatientHistoryScreen extends StatefulWidget {
 }
 
 class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
-  int _selectedTabIndex = 0; // 0 for Symptom Checker, 1 for AI Chats
+  int _selectedTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +22,10 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back, color: Colors.black),
+        //   onPressed: () => Navigator.of(context).pop(),
+        // ),
         title: const Text(
           'History',
           style: TextStyle(
@@ -120,12 +121,12 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
           Expanded(
             child: IndexedStack(
               index: _selectedTabIndex,
-              children: [
+              children: const [
                 // Tab index 0: Displays your already implemented view assembly
-                const SymptomCheckListview(),
+                SymptomCheckListview(),
 
                 // Tab index 1: Placeholder layout container for AI Chats list widget
-                _buildAiChatsListView(),
+                PatientChatsHistoryScreen(),
               ],
             ),
           ),
@@ -135,49 +136,4 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
   }
 
   /// Dummy layout for the right-hand view tab (AI Chats) shown in your screenshot
-  Widget _buildAiChatsListView() {
-    // Replace this structure entirely with your incoming chat response cubit/list-view
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: 4,
-      itemBuilder: (context, index) {
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Colors.grey.shade100),
-          ),
-          color: Colors.grey.shade50,
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            title: Text(
-              index == 0 ? 'Conversation on Weight Loss' : 'Household remedy for Indigestion',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 6.0),
-              child: Text(
-                index == 0 ? '3 Days Ago' : '5 Days Ago',
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
-              ),
-            ),
-            trailing: const Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  'Open Chat',
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 13),
-                ),
-                Icon(Icons.chevron_right, size: 16, color: Colors.black),
-              ],
-            ),
-            onTap: () {
-              // TODO: Wire entry point routing target for explicit conversation threads
-            },
-          ),
-        );
-      },
-    );
-  }
 }

@@ -212,19 +212,28 @@ class AiChatCubit extends Cubit<AiChatState> {
 
   Future<void> getPatientSymptomChecksHistory() async {
     try {
-      emit(const GetPatientSymptomsCheckLoading(message: ""));
+      emit(state.copyWith(
+        isLoadingSymptomHistory: true,
+        clearSymptomHistoryError: true,
+      ));
       final response = await ApiService.getPatientSymptomChecksHistory();
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = response.data;
         final patientSymptomCheckHistoryResponse = PatientSymptomCheckHistoryResponse.fromJson(responseData);
-        emit(GetPatientSymptomsCheckSuccessful(patientSymptomCheckHistoryResponse: patientSymptomCheckHistoryResponse));
+        emit(state.copyWith(
+          isLoadingSymptomHistory: false,
+          patientSymptomCheckHistoryResponse: patientSymptomCheckHistoryResponse,
+        ));
         getIt.registerSingleton<PatientSymptomCheckHistoryResponse>(patientSymptomCheckHistoryResponse);
       }
     } catch (e) {
       dismissEaseLoadingIndicator();
       handleError(
         e,
-        onEmit: (msg) => emit(CheckSymptomsError(error: msg)),
+        onEmit: (msg) => emit(state.copyWith(
+          isLoadingSymptomHistory: false,
+          symptomHistoryError: msg,
+        )),
       );
       showToast(message: e.toString());
     }
@@ -232,19 +241,28 @@ class AiChatCubit extends Cubit<AiChatState> {
 
   Future<void> getChatsHistory() async {
     try {
-      emit(const GetChatHistoryLoading(message: ""));
+      emit(state.copyWith(
+        isLoadingChatHistory: true,
+        clearChatHistoryError: true,
+      ));
       final response = await ApiService.getChatsHistory();
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = response.data;
         final chatsHistoryResponse = ChatsHistoryResponse.fromJson(responseData);
-        emit(GetChatHistorySuccessful(chatsHistoryResponse: chatsHistoryResponse));
+        emit(state.copyWith(
+          isLoadingChatHistory: false,
+          chatsHistoryResponse: chatsHistoryResponse,
+        ));
         getIt.registerSingleton<ChatsHistoryResponse>(chatsHistoryResponse);
       }
     } catch (e) {
       dismissEaseLoadingIndicator();
       handleError(
         e,
-        onEmit: (msg) => emit(GetChatHistoryError(error: msg)),
+        onEmit: (msg) => emit(state.copyWith(
+          isLoadingChatHistory: false,
+          chatHistoryError: msg,
+        )),
       );
       showToast(message: e.toString());
     }

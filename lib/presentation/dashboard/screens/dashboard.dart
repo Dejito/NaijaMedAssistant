@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/dashboard/widgets/main_drawer.dart';
-import 'package:naija_med_assistant/presentation/dashboard/widgets/symptom_check_listview.dart';
+import 'package:naija_med_assistant/presentation/dashboard/screens/symptom_check_history_screen.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_cubit.dart';
 import 'package:naija_med_assistant/presentation/user/users_viewmodel/users_module_states/get_patient_states.dart';
 import 'package:naija_med_assistant/presentation/utils/dialogs.dart';

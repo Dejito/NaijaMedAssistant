@@ -8,6 +8,12 @@ class AiChatState {
   final bool isInitializing;
   final bool conversationJoined;
   final String? errorMessage;
+  final bool isLoadingSymptomHistory;
+  final bool isLoadingChatHistory;
+  final String? symptomHistoryError;
+  final String? chatHistoryError;
+  final PatientSymptomCheckHistoryResponse? patientSymptomCheckHistoryResponse;
+  final ChatsHistoryResponse? chatsHistoryResponse;
 
   const AiChatState({
     this.messages = const <ChatUiModel>[],
@@ -16,6 +22,12 @@ class AiChatState {
     this.isInitializing = false,
     this.conversationJoined = false,
     this.errorMessage,
+    this.isLoadingSymptomHistory = false,
+    this.isLoadingChatHistory = false,
+    this.symptomHistoryError,
+    this.chatHistoryError,
+    this.patientSymptomCheckHistoryResponse,
+    this.chatsHistoryResponse,
   });
 
   AiChatState copyWith({
@@ -26,6 +38,14 @@ class AiChatState {
     bool? conversationJoined,
     String? errorMessage,
     bool clearError = false,
+    bool? isLoadingSymptomHistory,
+    bool? isLoadingChatHistory,
+    String? symptomHistoryError,
+    String? chatHistoryError,
+    bool clearSymptomHistoryError = false,
+    bool clearChatHistoryError = false,
+    PatientSymptomCheckHistoryResponse? patientSymptomCheckHistoryResponse,
+    ChatsHistoryResponse? chatsHistoryResponse,
   }) {
     return AiChatState(
       messages: messages ?? this.messages,
@@ -34,6 +54,17 @@ class AiChatState {
       isInitializing: isInitializing ?? this.isInitializing,
       conversationJoined: conversationJoined ?? this.conversationJoined,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      isLoadingSymptomHistory:
+          isLoadingSymptomHistory ?? this.isLoadingSymptomHistory,
+      isLoadingChatHistory: isLoadingChatHistory ?? this.isLoadingChatHistory,
+      symptomHistoryError: clearSymptomHistoryError
+          ? null
+          : (symptomHistoryError ?? this.symptomHistoryError),
+      chatHistoryError:
+          clearChatHistoryError ? null : (chatHistoryError ?? this.chatHistoryError),
+      patientSymptomCheckHistoryResponse:
+          patientSymptomCheckHistoryResponse ?? this.patientSymptomCheckHistoryResponse,
+      chatsHistoryResponse: chatsHistoryResponse ?? this.chatsHistoryResponse,
     );
   }
 }

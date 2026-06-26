@@ -296,7 +296,7 @@ Widget symptomCheckHistoryItemFromServer(SymptomCheckItem item) {
 
   return Container(
     padding: EdgeInsets.all(8.w),
-    margin: EdgeInsets.only(bottom: 12.h),
+    margin: EdgeInsets.only(bottom: 12.h, left: 12.w, right: 12.w),
     decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(12.r)),
