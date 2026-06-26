@@ -1,12 +1,10 @@
-import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/check_symptoms_response.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/conversation_payload_response.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/check_symptoms_state.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/escalate_symptoms_states.dart';
-import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/get_chat_history%20states.dart';
-import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/get_patient_symptoms_check_history.dart';
 import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/flutter_toast.dart';
 
@@ -270,22 +268,71 @@ class AiChatCubit extends Cubit<AiChatState> {
     }
   }
 
-  Future<void> getChatMessages(String conversationId, Map<String, dynamic>? queryParameters,
-      ) async {
+  Future<void> getConversationMessages(
+    String conversationId, {
+    Map<String, dynamic>? queryParameters,
+    bool loadMore = false,
+  }) async {
     try {
-      emit(const GetChatHistoryLoading(message: ""));
-      final response = await ApiService.getChatMessages(conversationId, queryParameters);
+      final page = loadMore ? (state.conversationPage + 1) : 1;
+
+      // Reset messages when loading a fresh conversation
+      if (!loadMore) {
+        emit(state.copyWith(
+          isLoadingConversation: true,
+          clearConversationError: true,
+          loadedConversationId: conversationId,
+          conversationPage: 1,
+          conversationHasMore: false,
+        ));
+      } else {
+        emit(state.copyWith(isLoadingConversation: true));
+      }
+
+      final params = <String, dynamic>{
+        'page': page,
+        ...?queryParameters,
+      };
+
+      final response = await ApiService.getConversationMessages(conversationId, params);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final responseData = response.data;
-        final chatsHistoryResponse = ChatsHistoryResponse.fromJson(responseData);
-        emit(GetChatHistorySuccessful(chatsHistoryResponse: chatsHistoryResponse));
-        getIt.registerSingleton<ChatsHistoryResponse>(chatsHistoryResponse);
+        final fresh = ConversationPayloadResponse.fromJson(response.data);
+
+        // Merge messages when paginating (older messages prepended)
+        final mergedMessages = <MessageLogItem>[
+          ...(fresh.messages ?? <MessageLogItem>[]),
+          if (loadMore) ...(state.conversationPayload?.messages ?? <MessageLogItem>[]),
+        ];
+
+        final merged = ConversationPayloadResponse(
+          conversationId: fresh.conversationId,
+          conversation: fresh.conversation,
+          messages: mergedMessages,
+          pagination: fresh.pagination,
+        );
+
+        final totalPages = fresh.pagination?.totalPages ?? 1;
+        final hasMore = page < totalPages;
+
+        emit(state.copyWith(
+          isLoadingConversation: false,
+          conversationPayload: merged,
+          loadedConversationId: conversationId,
+          conversationPage: page,
+          conversationHasMore: hasMore,
+        ));
+
+        getIt.registerSingleton<ConversationPayloadResponse>(merged);
       }
     } catch (e) {
       dismissEaseLoadingIndicator();
       handleError(
         e,
-        onEmit: (msg) => emit(GetChatHistoryError(error: msg)),
+        onEmit: (msg) => emit(state.copyWith(
+          isLoadingConversation: false,
+          conversationError: msg,
+        )),
       );
       showToast(message: e.toString());
     }

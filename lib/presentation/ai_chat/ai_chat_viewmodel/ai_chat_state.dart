@@ -8,12 +8,21 @@ class AiChatState {
   final bool isInitializing;
   final bool conversationJoined;
   final String? errorMessage;
+  // --- Symptom history ---
   final bool isLoadingSymptomHistory;
-  final bool isLoadingChatHistory;
   final String? symptomHistoryError;
-  final String? chatHistoryError;
   final PatientSymptomCheckHistoryResponse? patientSymptomCheckHistoryResponse;
+  // --- Chat list history ---
+  final bool isLoadingChatHistory;
+  final String? chatHistoryError;
   final ChatsHistoryResponse? chatsHistoryResponse;
+  // --- Conversation messages + pagination ---
+  final bool isLoadingConversation;
+  final String? conversationError;
+  final ConversationPayloadResponse? conversationPayload;
+  final String? loadedConversationId;
+  final bool conversationHasMore;
+  final int conversationPage;
 
   const AiChatState({
     this.messages = const <ChatUiModel>[],
@@ -23,11 +32,17 @@ class AiChatState {
     this.conversationJoined = false,
     this.errorMessage,
     this.isLoadingSymptomHistory = false,
-    this.isLoadingChatHistory = false,
     this.symptomHistoryError,
-    this.chatHistoryError,
     this.patientSymptomCheckHistoryResponse,
+    this.isLoadingChatHistory = false,
+    this.chatHistoryError,
     this.chatsHistoryResponse,
+    this.isLoadingConversation = false,
+    this.conversationError,
+    this.conversationPayload,
+    this.loadedConversationId,
+    this.conversationHasMore = false,
+    this.conversationPage = 1,
   });
 
   AiChatState copyWith({
@@ -39,13 +54,20 @@ class AiChatState {
     String? errorMessage,
     bool clearError = false,
     bool? isLoadingSymptomHistory,
-    bool? isLoadingChatHistory,
     String? symptomHistoryError,
-    String? chatHistoryError,
     bool clearSymptomHistoryError = false,
-    bool clearChatHistoryError = false,
     PatientSymptomCheckHistoryResponse? patientSymptomCheckHistoryResponse,
+    bool? isLoadingChatHistory,
+    String? chatHistoryError,
+    bool clearChatHistoryError = false,
     ChatsHistoryResponse? chatsHistoryResponse,
+    bool? isLoadingConversation,
+    String? conversationError,
+    bool clearConversationError = false,
+    ConversationPayloadResponse? conversationPayload,
+    String? loadedConversationId,
+    bool? conversationHasMore,
+    int? conversationPage,
   }) {
     return AiChatState(
       messages: messages ?? this.messages,
@@ -54,17 +76,18 @@ class AiChatState {
       isInitializing: isInitializing ?? this.isInitializing,
       conversationJoined: conversationJoined ?? this.conversationJoined,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-      isLoadingSymptomHistory:
-          isLoadingSymptomHistory ?? this.isLoadingSymptomHistory,
+      isLoadingSymptomHistory: isLoadingSymptomHistory ?? this.isLoadingSymptomHistory,
+      symptomHistoryError: clearSymptomHistoryError ? null : (symptomHistoryError ?? this.symptomHistoryError),
+      patientSymptomCheckHistoryResponse: patientSymptomCheckHistoryResponse ?? this.patientSymptomCheckHistoryResponse,
       isLoadingChatHistory: isLoadingChatHistory ?? this.isLoadingChatHistory,
-      symptomHistoryError: clearSymptomHistoryError
-          ? null
-          : (symptomHistoryError ?? this.symptomHistoryError),
-      chatHistoryError:
-          clearChatHistoryError ? null : (chatHistoryError ?? this.chatHistoryError),
-      patientSymptomCheckHistoryResponse:
-          patientSymptomCheckHistoryResponse ?? this.patientSymptomCheckHistoryResponse,
+      chatHistoryError: clearChatHistoryError ? null : (chatHistoryError ?? this.chatHistoryError),
       chatsHistoryResponse: chatsHistoryResponse ?? this.chatsHistoryResponse,
+      isLoadingConversation: isLoadingConversation ?? this.isLoadingConversation,
+      conversationError: clearConversationError ? null : (conversationError ?? this.conversationError),
+      conversationPayload: conversationPayload ?? this.conversationPayload,
+      loadedConversationId: loadedConversationId ?? this.loadedConversationId,
+      conversationHasMore: conversationHasMore ?? this.conversationHasMore,
+      conversationPage: conversationPage ?? this.conversationPage,
     );
   }
 }

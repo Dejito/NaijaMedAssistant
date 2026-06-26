@@ -79,6 +79,28 @@ class DoctorPatientChatCubit extends Cubit<DoctorPatientChatState> {
     emit(state.copyWith(clearError: true));
   }
 
+  /// Replaces the current message list with a pre-fetched history (e.g. from REST).
+  /// Deduplicates by messageId so live socket messages don't create duplicates.
+  void seedMessages(List<ChatUiModel> fetched) {
+    if (fetched.isEmpty) return;
+    final existing = state.messages;
+    final existingIds = existing
+        .where((m) => m.messageId != null)
+        .map((m) => m.messageId!)
+        .toSet();
+    final merged = [
+      ...fetched,
+      ...existing.where((m) => m.messageId == null || !existingIds.contains(m.messageId)),
+    ];
+    // Deduplicate fetched messages by id
+    final seen = <String>{};
+    final deduped = merged.where((m) {
+      if (m.messageId == null) return true;
+      return seen.add(m.messageId!);
+    }).toList();
+    emit(state.copyWith(messages: deduped));
+  }
+
   @override
   Future<void> close() {
     sendTypingStopped();

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/app_launch.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/chat_history_response.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_cubit.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
 class PatientChatsHistoryScreen extends StatefulWidget {
   const PatientChatsHistoryScreen({super.key});
@@ -111,7 +113,17 @@ class _PatientChatsHistoryScreenState extends State<PatientChatsHistoryScreen> {
                   ],
                 ),
                 onTap: () {
-                  // TODO: Wire entry point routing target passing: chat.conversationId
+                  final conversationId = chat.conversationId;
+                  if (conversationId == null) return;
+                  // Pre-fetch messages so they are ready in state when the screen loads
+                  getIt<AiChatCubit>().getConversationMessages(conversationId);
+                  context.push(
+                    AppRoutes.doctorChatBoxPatient,
+                    extra: <String, dynamic>{
+                      'conversationId': conversationId,
+                      'isDoctor': false,
+                    },
+                  );
                 },
               ),
             );
