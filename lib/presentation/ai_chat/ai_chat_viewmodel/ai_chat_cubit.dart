@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/check_symptoms_response.dart';
@@ -267,6 +269,28 @@ class AiChatCubit extends Cubit<AiChatState> {
       showToast(message: e.toString());
     }
   }
+
+  Future<void> getChatMessages(String conversationId, Map<String, dynamic>? queryParameters,
+      ) async {
+    try {
+      emit(const GetChatHistoryLoading(message: ""));
+      final response = await ApiService.getChatMessages(conversationId, queryParameters);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = response.data;
+        final chatsHistoryResponse = ChatsHistoryResponse.fromJson(responseData);
+        emit(GetChatHistorySuccessful(chatsHistoryResponse: chatsHistoryResponse));
+        getIt.registerSingleton<ChatsHistoryResponse>(chatsHistoryResponse);
+      }
+    } catch (e) {
+      dismissEaseLoadingIndicator();
+      handleError(
+        e,
+        onEmit: (msg) => emit(GetChatHistoryError(error: msg)),
+      );
+      showToast(message: e.toString());
+    }
+  }
+
 
 
 }

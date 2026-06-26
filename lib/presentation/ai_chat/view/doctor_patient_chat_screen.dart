@@ -9,6 +9,7 @@ import '../ai_chat_service/response/chat_model.dart';
 import '../doctor_patient_chat_viewmodel/doctor_patient_chat_cubit.dart';
 
 class DoctorsPatientChatScreen extends StatefulWidget {
+
   final bool isDoctor;
   final String? conversationId;
 
