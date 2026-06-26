@@ -7,6 +7,7 @@ import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_ch
 import 'package:naija_med_assistant/router/route.dart';
 
 class PatientChatsHistoryScreen extends StatefulWidget {
+
   const PatientChatsHistoryScreen({super.key});
 
   @override

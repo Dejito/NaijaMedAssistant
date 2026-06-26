@@ -55,7 +55,24 @@ class AiChatCubit extends Cubit<AiChatState> {
       conversationId: conversationId,
       conversationType: conversationType,
     );
-    emit(state.copyWith(isAiTyping: true, clearError: true));
+
+    final optimisticMessage = ChatUiModel(
+      text: text,
+      isUser: true,
+      time: _formatMessageTime(DateTime.now().toIso8601String()),
+      conversationId: conversationId,
+      senderRole: 'patient',
+      identifier: 'human',
+    );
+
+    final updatedMessages = List<ChatUiModel>.from(state.messages)
+      ..add(optimisticMessage);
+
+    emit(state.copyWith(
+      messages: updatedMessages,
+      isAiTyping: true,
+      clearError: true,
+    ));
     return true;
   }
 

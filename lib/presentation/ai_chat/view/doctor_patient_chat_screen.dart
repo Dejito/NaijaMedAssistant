@@ -43,11 +43,41 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
     _scrollController.addListener(_onScroll);
     // Seed any messages already fetched on the history screen
     _seedHistoryMessages();
+    _ensureConversationHistory();
+  }
+
+  String _normalizedId(String? id) => (id ?? '').trim();
+
+  Future<void> _ensureConversationHistory() async {
+    final conversationId = _normalizedId(widget.conversationId);
+    if (conversationId.isEmpty) return;
+
+    final aiCubit = getIt<AiChatCubit>();
+    final aiState = aiCubit.state;
+    final hasSeedablePayload =
+        _normalizedId(aiState.loadedConversationId) == conversationId &&
+        (aiState.conversationPayload?.messages?.isNotEmpty ?? false);
+
+    if (!hasSeedablePayload) {
+      await aiCubit.getConversationMessages(conversationId);
+      if (!mounted) return;
+    }
+
+    _seedHistoryMessages();
   }
 
   void _seedHistoryMessages() {
     final aiState = getIt<AiChatCubit>().state;
-    if (aiState.loadedConversationId != widget.conversationId) return;
+    final expectedConversationId = _normalizedId(widget.conversationId);
+    if (expectedConversationId.isEmpty) return;
+
+    final loadedConversationId = _normalizedId(aiState.loadedConversationId);
+    final payloadConversationId = _normalizedId(aiState.conversationPayload?.conversationId);
+    final isMatchingConversation =
+        loadedConversationId == expectedConversationId ||
+        payloadConversationId == expectedConversationId;
+    if (!isMatchingConversation) return;
+
     final logItems = aiState.conversationPayload?.messages ?? [];
     if (logItems.isEmpty) return;
     final uiMessages = logItems.map(_toUiModel).toList();
@@ -100,7 +130,9 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
   }
 
   void _sendMessage() {
-    final sent = _chatCubit.sendMessage(_messageController.text);
+    final sent = _chatCubit.sendMessage(
+        _messageController.text
+    );
     if (!sent) return;
 
     _chatCubit.sendTypingStopped();
@@ -123,6 +155,7 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
   }
 
   void _scrollToBottom() {
+    FocusManager.instance.primaryFocus?.unfocus();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_scrollController.hasClients) return;
       _scrollController.animateTo(
@@ -243,7 +276,8 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
                 builder: (context, aiState) {
                   // When new pages arrive, merge them into _chatCubit
                   if (!aiState.isLoadingConversation &&
-                      aiState.loadedConversationId == widget.conversationId &&
+                      (_normalizedId(aiState.loadedConversationId) == _normalizedId(widget.conversationId) ||
+                          _normalizedId(aiState.conversationPayload?.conversationId) == _normalizedId(widget.conversationId)) &&
                       aiState.conversationPayload != null) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       final msgs = (aiState.conversationPayload!.messages ?? [])
