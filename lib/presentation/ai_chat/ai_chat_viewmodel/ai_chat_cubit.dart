@@ -1,9 +1,10 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/check_symptoms_response.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/conversation_payload_response.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/check_symptoms_state.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/escalate_symptoms_states.dart';
-import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/get_patient_symptoms_check_history.dart';
 import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
 import 'package:naija_med_assistant/presentation/views/widgets/flutter_toast.dart';
 
@@ -13,6 +14,7 @@ import '../../../data/service/user_api.dart';
 import '../../../socket_manager/socket_manager.dart';
 import '../ai_chat_service/request_body/check_symptoms__req_body.dart';
 import '../ai_chat_service/request_body/escalate_symptoms_req_body.dart';
+import '../ai_chat_service/response/chat_history_response.dart';
 import '../ai_chat_service/response/chat_model.dart';
 import '../ai_chat_service/response/escalate_symptoms_response.dart';
 import '../ai_chat_service/response/fetch_symptoms_history_response.dart';
@@ -46,7 +48,13 @@ class AiChatCubit extends Cubit<AiChatState> {
       return false;
     }
 
-    _socketManager.sendMessage(message: text, patientUserId: patientUserId, doctorUserId: doctorUserId, conversationId: conversationId, conversationType: conversationId);
+    _socketManager.sendMessage(
+      message: text,
+      patientUserId: patientUserId,
+      doctorUserId: doctorUserId,
+      conversationId: conversationId,
+      conversationType: conversationType,
+    );
     emit(state.copyWith(isAiTyping: true, clearError: true));
     return true;
   }
@@ -210,23 +218,169 @@ class AiChatCubit extends Cubit<AiChatState> {
 
   Future<void> getPatientSymptomChecksHistory() async {
     try {
-      emit(const GetPatientSymptomsCheckLoading(message: ""));
+      emit(state.copyWith(
+        isLoadingSymptomHistory: true,
+        clearSymptomHistoryError: true,
+      ));
       final response = await ApiService.getPatientSymptomChecksHistory();
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = response.data;
         final patientSymptomCheckHistoryResponse = PatientSymptomCheckHistoryResponse.fromJson(responseData);
-        emit(GetPatientSymptomsCheckSuccessful(patientSymptomCheckHistoryResponse: patientSymptomCheckHistoryResponse));
+        emit(state.copyWith(
+          isLoadingSymptomHistory: false,
+          patientSymptomCheckHistoryResponse: patientSymptomCheckHistoryResponse,
+        ));
         getIt.registerSingleton<PatientSymptomCheckHistoryResponse>(patientSymptomCheckHistoryResponse);
       }
     } catch (e) {
       dismissEaseLoadingIndicator();
       handleError(
         e,
-        onEmit: (msg) => emit(CheckSymptomsError(error: msg)),
+        onEmit: (msg) => emit(state.copyWith(
+          isLoadingSymptomHistory: false,
+          symptomHistoryError: msg,
+        )),
       );
       showToast(message: e.toString());
     }
   }
+
+  Future<void> getChatsHistory() async {
+    try {
+      emit(state.copyWith(
+        isLoadingChatHistory: true,
+        clearChatHistoryError: true,
+      ));
+      final response = await ApiService.getChatsHistory();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = response.data;
+        final chatsHistoryResponse = ChatsHistoryResponse.fromJson(responseData);
+        emit(state.copyWith(
+          isLoadingChatHistory: false,
+          chatsHistoryResponse: chatsHistoryResponse,
+        ));
+        getIt.registerSingleton<ChatsHistoryResponse>(chatsHistoryResponse);
+      }
+    } catch (e) {
+      dismissEaseLoadingIndicator();
+      handleError(
+        e,
+        onEmit: (msg) => emit(state.copyWith(
+          isLoadingChatHistory: false,
+          chatHistoryError: msg,
+        )),
+      );
+      showToast(message: e.toString());
+    }
+  }
+
+  Future<void> getConversationMessages(
+    String conversationId, {
+    Map<String, dynamic>? queryParameters,
+    bool loadMore = false,
+  }) async {
+    try {
+      final page = loadMore ? (state.conversationPage + 1) : 1;
+
+      // Reset messages when loading a fresh conversation
+      if (!loadMore) {
+        emit(state.copyWith(
+          isLoadingConversation: true,
+          clearConversationError: true,
+          loadedConversationId: conversationId,
+          conversationPage: 1,
+          conversationHasMore: false,
+        ));
+      } else {
+        emit(state.copyWith(isLoadingConversation: true));
+      }
+
+      final params = <String, dynamic>{
+        'page': page,
+        ...?queryParameters,
+      };
+
+      final response = await ApiService.getConversationMessages(conversationId, params);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final fresh = ConversationPayloadResponse.fromJson(response.data);
+
+        // Merge messages when paginating (older messages prepended)
+        final mergedMessages = <MessageLogItem>[
+          ...(fresh.messages ?? <MessageLogItem>[]),
+          if (loadMore) ...(state.conversationPayload?.messages ?? <MessageLogItem>[]),
+        ];
+
+        final merged = ConversationPayloadResponse(
+          conversationId: fresh.conversationId,
+          conversation: fresh.conversation,
+          messages: mergedMessages,
+          pagination: fresh.pagination,
+        );
+
+        final totalPages = fresh.pagination?.totalPages ?? 1;
+        final hasMore = page < totalPages;
+
+        emit(state.copyWith(
+          isLoadingConversation: false,
+          conversationPayload: merged,
+          loadedConversationId: conversationId,
+          conversationPage: page,
+          conversationHasMore: hasMore,
+        ));
+
+        getIt.registerSingleton<ConversationPayloadResponse>(merged);
+      }
+    } catch (e) {
+      dismissEaseLoadingIndicator();
+      handleError(
+        e,
+        onEmit: (msg) => emit(state.copyWith(
+          isLoadingConversation: false,
+          conversationError: msg,
+        )),
+      );
+      showToast(message: e.toString());
+    }
+  }
+
+  void seedConversationMessages(String conversationId) {
+    if (conversationId.trim().isEmpty) return;
+    if (state.loadedConversationId != conversationId) return;
+
+    final conversationMessages = state.conversationPayload?.messages ?? <MessageLogItem>[];
+    if (conversationMessages.isEmpty) return;
+
+    final mapped = conversationMessages
+        .map(
+          (item) => ChatUiModel(
+            text: item.message ?? '',
+            isUser: item.isOutgoing,
+            time: _formatMessageTime(item.timestamp ?? item.createdAt),
+            messageType: item.messageType,
+            isRead: item.isRead,
+            isEmergency: item.isEmergency,
+            messageId: item.messageId,
+            conversationId: item.conversationId,
+            userId: item.userId,
+            identifier: item.identifier,
+            senderRole: item.senderRole,
+          ),
+        )
+        .toList();
+
+    emit(state.copyWith(messages: mapped, clearError: true));
+  }
+
+  String _formatMessageTime(String? rawIsoDate) {
+    final parsed = DateTime.tryParse(rawIsoDate ?? '');
+    final local = (parsed ?? DateTime.now()).toLocal();
+    final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
+    final minute = local.minute.toString().padLeft(2, '0');
+    final period = local.hour < 12 ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
 
 
 }

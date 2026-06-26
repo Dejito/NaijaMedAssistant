@@ -150,6 +150,19 @@ class ApiService {
     return response;
   }
 
+  static Future<Response> getChatsHistory() async {
+    var response = await HttpUtil()
+        .get(AppUrl.getChats);
+    return response;
+  }
+
+  static Future<Response> getConversationMessages(String conversationId,Map<String, dynamic>? queryParameters,
+      ) async {
+    var response = await HttpUtil()
+        .get(AppUrl.getConversationMessages(conversationId), queryParameters: queryParameters);
+    return response;
+  }
+
 
 
 

@@ -2,13 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/app_launch.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/conversation_payload_response.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_cubit.dart';
 
 import '../../../router/route.dart';
 import '../ai_chat_service/response/chat_model.dart';
 import '../doctor_patient_chat_viewmodel/doctor_patient_chat_cubit.dart';
 
 class DoctorsPatientChatScreen extends StatefulWidget {
+
   final bool isDoctor;
   final String? conversationId;
 
@@ -35,11 +40,59 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
       conversationId: widget.conversationId ?? '',
       isDoctor: widget.isDoctor,
     );
+    _scrollController.addListener(_onScroll);
+    // Seed any messages already fetched on the history screen
+    _seedHistoryMessages();
+  }
+
+  void _seedHistoryMessages() {
+    final aiState = getIt<AiChatCubit>().state;
+    if (aiState.loadedConversationId != widget.conversationId) return;
+    final logItems = aiState.conversationPayload?.messages ?? [];
+    if (logItems.isEmpty) return;
+    final uiMessages = logItems.map(_toUiModel).toList();
+    _chatCubit.seedMessages(uiMessages);
+  }
+
+  ChatUiModel _toUiModel(MessageLogItem item) {
+    final ts = DateTime.tryParse(item.timestamp ?? item.createdAt ?? '');
+    final local = (ts ?? DateTime.now()).toLocal();
+    final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
+    final min = local.minute.toString().padLeft(2, '0');
+    final period = local.hour < 12 ? 'AM' : 'PM';
+    return ChatUiModel(
+      text: item.message ?? '',
+      isUser: item.isOutgoing,
+      time: '$hour:$min $period',
+      messageId: item.messageId,
+      conversationId: item.conversationId,
+      userId: item.userId,
+      identifier: item.identifier,
+      senderRole: item.senderRole,
+      messageType: item.messageType,
+      isRead: item.isRead,
+      isEmergency: item.isEmergency,
+    );
+  }
+
+  /// Triggered when user scrolls to the very top — loads older messages
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    if (_scrollController.position.pixels <=
+        _scrollController.position.minScrollExtent + 80) {
+      final aiCubit = getIt<AiChatCubit>();
+      if (!aiCubit.state.isLoadingConversation &&
+          aiCubit.state.conversationHasMore &&
+          widget.conversationId != null) {
+        aiCubit.getConversationMessages(widget.conversationId!, loadMore: true);
+      }
+    }
   }
 
   @override
   void dispose() {
     _typingDebounce?.cancel();
+    _scrollController.removeListener(_onScroll);
     _chatCubit.close();
     _messageController.dispose();
     _scrollController.dispose();
@@ -184,6 +237,27 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
                   ),
                 ),
               ),
+              // Pagination loading indicator at the top
+              BlocBuilder<AiChatCubit, AiChatState>(
+                bloc: getIt<AiChatCubit>(),
+                builder: (context, aiState) {
+                  // When new pages arrive, merge them into _chatCubit
+                  if (!aiState.isLoadingConversation &&
+                      aiState.loadedConversationId == widget.conversationId &&
+                      aiState.conversationPayload != null) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      final msgs = (aiState.conversationPayload!.messages ?? [])
+                          .map(_toUiModel)
+                          .toList();
+                      _chatCubit.seedMessages(msgs);
+                    });
+                  }
+                  if (aiState.isLoadingConversation) {
+                    return const LinearProgressIndicator(minHeight: 2);
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
               Expanded(
                 child: ListView.builder(
                   controller: _scrollController,
@@ -225,12 +299,27 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  msg.text,
-                  style: TextStyle(
-                    color: Colors.black.withValues(alpha: 0.85),
-                    fontSize: 13,
-                    height: 1.4,
+                MarkdownBody(
+                  data: msg.text,
+                  selectable: false,
+                  styleSheet: MarkdownStyleSheet(
+                    p: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 13,
+                      height: 1.45,
+                    ),
+                    strong: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      height: 1.45,
+                    ),
+                    listBullet: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 13,
+                      height: 1.45,
+                    ),
+                    blockSpacing: 6,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -345,4 +434,3 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
     );
   }
 }
-
