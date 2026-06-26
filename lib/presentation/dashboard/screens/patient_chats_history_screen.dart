@@ -112,11 +112,25 @@ class _PatientChatsHistoryScreenState extends State<PatientChatsHistoryScreen> {
                     Icon(Icons.chevron_right, size: 16, color: Colors.black),
                   ],
                 ),
-                onTap: () {
+                onTap: () async {
                   final conversationId = chat.conversationId;
                   if (conversationId == null) return;
-                  // Pre-fetch messages so they are ready in state when the screen loads
-                  getIt<AiChatCubit>().getConversationMessages(conversationId);
+
+                  final aiChatCubit = getIt<AiChatCubit>();
+                  // Pre-fetch messages so destination screen can hydrate immediately.
+                  await aiChatCubit.getConversationMessages(conversationId);
+                  if (!context.mounted) return;
+
+                  final conversationType = (chat.type ?? '').toLowerCase();
+                  if (conversationType == 'patient_ai') {
+                    context.push(
+                      AppRoutes.chatWithAi,
+                      extra: <String, dynamic>{
+                        'conversationId': conversationId,
+                      },
+                    );
+                    return;
+                  }
 
                   context.push(
                     AppRoutes.doctorChatBoxPatient,

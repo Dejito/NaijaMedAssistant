@@ -48,7 +48,13 @@ class AiChatCubit extends Cubit<AiChatState> {
       return false;
     }
 
-    _socketManager.sendMessage(message: text, patientUserId: patientUserId, doctorUserId: doctorUserId, conversationId: conversationId, conversationType: conversationId);
+    _socketManager.sendMessage(
+      message: text,
+      patientUserId: patientUserId,
+      doctorUserId: doctorUserId,
+      conversationId: conversationId,
+      conversationType: conversationType,
+    );
     emit(state.copyWith(isAiTyping: true, clearError: true));
     return true;
   }
@@ -336,6 +342,43 @@ class AiChatCubit extends Cubit<AiChatState> {
       );
       showToast(message: e.toString());
     }
+  }
+
+  void seedConversationMessages(String conversationId) {
+    if (conversationId.trim().isEmpty) return;
+    if (state.loadedConversationId != conversationId) return;
+
+    final conversationMessages = state.conversationPayload?.messages ?? <MessageLogItem>[];
+    if (conversationMessages.isEmpty) return;
+
+    final mapped = conversationMessages
+        .map(
+          (item) => ChatUiModel(
+            text: item.message ?? '',
+            isUser: item.isOutgoing,
+            time: _formatMessageTime(item.timestamp ?? item.createdAt),
+            messageType: item.messageType,
+            isRead: item.isRead,
+            isEmergency: item.isEmergency,
+            messageId: item.messageId,
+            conversationId: item.conversationId,
+            userId: item.userId,
+            identifier: item.identifier,
+            senderRole: item.senderRole,
+          ),
+        )
+        .toList();
+
+    emit(state.copyWith(messages: mapped, clearError: true));
+  }
+
+  String _formatMessageTime(String? rawIsoDate) {
+    final parsed = DateTime.tryParse(rawIsoDate ?? '');
+    final local = (parsed ?? DateTime.now()).toLocal();
+    final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
+    final minute = local.minute.toString().padLeft(2, '0');
+    final period = local.hour < 12 ? 'AM' : 'PM';
+    return '$hour:$minute $period';
   }
 
 

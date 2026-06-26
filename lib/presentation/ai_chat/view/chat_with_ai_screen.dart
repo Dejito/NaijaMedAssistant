@@ -9,7 +9,9 @@ import '../ai_chat_service/response/chat_model.dart';
 
 class ChatWithAiScreen extends StatefulWidget {
 
-  const ChatWithAiScreen({super.key});
+  final String? conversationId;
+
+  const ChatWithAiScreen({super.key, this.conversationId});
 
   @override
   State<ChatWithAiScreen> createState() => _ChatWithAiScreenState();
@@ -20,15 +22,37 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
   final AiChatCubit _chatCubit = getIt<AiChatCubit>();
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  String? _activeConversationId;
+  bool _joinedExistingConversation = false;
 
   @override
   void initState() {
     super.initState();
+    _activeConversationId = widget.conversationId?.trim().isEmpty == true
+        ? null
+        : widget.conversationId?.trim();
     _chatCubit.initializeSocket();
+    _prepareExistingConversation();
+  }
+
+  Future<void> _prepareExistingConversation() async {
+    final conversationId = _activeConversationId;
+    if (conversationId == null || conversationId.isEmpty) return;
+
+    if (_chatCubit.state.loadedConversationId != conversationId) {
+      await _chatCubit.getConversationMessages(conversationId);
+      if (!mounted) return;
+    }
+
+    _chatCubit.seedConversationMessages(conversationId);
   }
 
   void _sendMessage() {
-    final sent = _chatCubit.sendMessage(rawText: _messageController.text);
+    final sent = _chatCubit.sendMessage(
+      rawText: _messageController.text,
+      conversationId: _activeConversationId,
+      conversationType: 'patient_ai',
+    );
     if (sent) {
       _messageController.clear();
       _scrollToBottom();
@@ -93,6 +117,21 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
               previous.messages.length != current.messages.length;
         },
         listener: (context, state) {
+          if (state.isConnected &&
+              !_joinedExistingConversation &&
+              _activeConversationId != null &&
+              _activeConversationId!.isNotEmpty) {
+            _chatCubit.joinConversation(_activeConversationId!);
+            _joinedExistingConversation = true;
+          }
+
+          if (state.messages.isNotEmpty) {
+            final latestConversationId = state.messages.last.conversationId;
+            if (latestConversationId != null && latestConversationId.isNotEmpty) {
+              _activeConversationId = latestConversationId;
+            }
+          }
+
           final error = state.errorMessage;
           if (error != null && error.isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(

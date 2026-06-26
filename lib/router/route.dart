@@ -156,7 +156,20 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.chatWithAi,
-      builder: (_, __) => const ChatWithAiScreen(),
+      builder: (_, state) {
+        final extra = state.extra;
+        String? conversationId;
+
+        if (extra is String) {
+          conversationId = extra;
+        } else if (extra is Map<String, dynamic>) {
+          conversationId = extra['conversationId']?.toString();
+        } else if (extra is Map) {
+          conversationId = extra['conversationId']?.toString();
+        }
+
+        return ChatWithAiScreen(conversationId: conversationId);
+      },
     ),
     GoRoute(
       path: AppRoutes.aiSymptomClerkFeedbackScreen,
