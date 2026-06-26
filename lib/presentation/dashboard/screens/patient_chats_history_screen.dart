@@ -117,6 +117,7 @@ class _PatientChatsHistoryScreenState extends State<PatientChatsHistoryScreen> {
                   if (conversationId == null) return;
                   // Pre-fetch messages so they are ready in state when the screen loads
                   getIt<AiChatCubit>().getConversationMessages(conversationId);
+
                   context.push(
                     AppRoutes.doctorChatBoxPatient,
                     extra: <String, dynamic>{

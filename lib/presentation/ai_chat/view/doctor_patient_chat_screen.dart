@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/app_launch.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/conversation_payload_response.dart';
@@ -298,12 +299,27 @@ class _DoctorsPatientChatScreenState extends State<DoctorsPatientChatScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  msg.text,
-                  style: TextStyle(
-                    color: Colors.black.withValues(alpha: 0.85),
-                    fontSize: 13,
-                    height: 1.4,
+                MarkdownBody(
+                  data: msg.text,
+                  selectable: false,
+                  styleSheet: MarkdownStyleSheet(
+                    p: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 13,
+                      height: 1.45,
+                    ),
+                    strong: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      height: 1.45,
+                    ),
+                    listBullet: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 13,
+                      height: 1.45,
+                    ),
+                    blockSpacing: 6,
                   ),
                 ),
                 const SizedBox(height: 12),
