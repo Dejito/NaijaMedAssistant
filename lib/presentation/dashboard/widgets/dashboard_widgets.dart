@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:naija_med_assistant/core/constant/app_colors.dart';
+import 'package:naija_med_assistant/core/utils/extension/string_extension.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/response/fetch_symptoms_history_response.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
@@ -294,7 +295,7 @@ Widget symptomCheckHistoryItemFromServer(SymptomCheckItem item) {
   final statusText = item.status ?? 'N/A';
 
   return Container(
-    padding: EdgeInsets.all(12.w),
+    padding: EdgeInsets.all(8.w),
     margin: EdgeInsets.only(bottom: 12.h),
     decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
@@ -307,7 +308,7 @@ Widget symptomCheckHistoryItemFromServer(SymptomCheckItem item) {
           value: symptomsText,
         ),
         symptomCheckHistoryItemItem(key: 'Date', value: formattedDate),
-        symptomCheckHistoryItemItem(key: 'Status Tag', value: statusText),
+        symptomCheckHistoryItemItem(key: 'Status Tag', value: statusText.toSentenceCase()),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -333,9 +334,9 @@ Widget symptomCheckHistoryItemItem(
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Container(
+      SizedBox(
         width: 150.w,
-        child: titleText(key, fontWeight: FontWeight.w600, bottomPadding: 3),
+        child: titleText(key, fontWeight: FontWeight.w500, bottomPadding: 3),
       ),
       Expanded(
           child: Container(

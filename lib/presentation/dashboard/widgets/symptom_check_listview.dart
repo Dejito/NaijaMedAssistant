@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_cubit.dart';
 import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/get_patient_symptoms_check_history.dart';
 import 'package:naija_med_assistant/presentation/dashboard/widgets/dashboard_widgets.dart';
 import 'package:naija_med_assistant/app_launch.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
 class SymptomCheckListview extends StatelessWidget {
   const SymptomCheckListview({super.key});
@@ -28,7 +30,9 @@ class SymptomCheckListview extends StatelessWidget {
               itemCount: items.length,
               shrinkWrap: true,
               itemBuilder: (context, i) {
-                return symptomCheckHistoryItemFromServer(items[i]);
+                return InkWell(
+                    onTap: (){context.push(AppRoutes.patientSymptomCheckSummaryScreen, extra: items[i]);},
+                    child: symptomCheckHistoryItemFromServer(items[i]));
               },
             ),
           );
