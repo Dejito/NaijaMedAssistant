@@ -146,7 +146,9 @@ class _DashboardState extends State<Dashboard> {
                 });
               },
             ),
-            viewMoreSymptoms(),
+            viewMoreSymptoms((){
+
+            }),
             const Expanded(child: SymptomCheckListview(),)
 
           ],

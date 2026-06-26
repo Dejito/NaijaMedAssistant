@@ -131,9 +131,22 @@ class ApiService {
         .post(AppUrl.acceptCase(caseId));
     return response;
   }
+
   static Future<Response> declineCase(String caseId) async {
     var response = await HttpUtil()
         .post(AppUrl.declineCase(caseId));
+    return response;
+  }
+
+  static Future<Response> getPatientSymptomChecksHistory() async {
+    var response = await HttpUtil()
+        .get(AppUrl.getPatientSymptomChecksHistory);
+    return response;
+  }
+
+  static Future<Response> getDoctorSymptomChecksHistory() async {
+    var response = await HttpUtil()
+        .get(AppUrl.getDoctorSymptomsCheckHistory);
     return response;
   }
 

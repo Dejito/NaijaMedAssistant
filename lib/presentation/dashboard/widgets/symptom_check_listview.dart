@@ -1,55 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_cubit.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_module_states/get_patient_symptoms_check_history.dart';
 import 'package:naija_med_assistant/presentation/dashboard/widgets/dashboard_widgets.dart';
+import 'package:naija_med_assistant/app_launch.dart';
+import 'package:naija_med_assistant/router/route.dart';
 
 class SymptomCheckListview extends StatelessWidget {
   const SymptomCheckListview({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        color: Colors.white,
-        child: ListView.builder(
-          itemBuilder: (context, i) {
-            return symptomCheckHistoryItem(symptomCheckHistory[i]);
-          },
-          itemCount: symptomCheckHistory.length,
-          shrinkWrap: true,
-          // physics: const NeverScrollableScrollPhysics(),
-        ),
-      ),
+    return BlocBuilder<AiChatCubit, AiChatState>(
+      bloc: getIt<AiChatCubit>(),
+      builder: (context, state) {
+        if (state is GetPatientSymptomsCheckLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is GetPatientSymptomsCheckSuccessful) {
+          final items = state.patientSymptomCheckHistoryResponse.items ?? [];
+          if (items.isEmpty) {
+            return const Center(child: Text('No symptom checks found.'));
+          }
+          return Container(
+            color: Colors.white,
+            child: ListView.builder(
+              itemCount: items.length,
+              shrinkWrap: true,
+              itemBuilder: (context, i) {
+                return InkWell(
+                    onTap: (){context.push(AppRoutes.patientSymptomCheckSummaryScreen, extra: items[i]);},
+                    child: symptomCheckHistoryItemFromServer(items[i]));
+              },
+            ),
+          );
+        }
+
+        return const Center(child: Text('No symptom checks found.'));
+      },
     );
   }
 }
-
-class SymptomCheckHistory {
-
-  final String symptomChecked;
-  final String date;
-  final String status;
-
-  SymptomCheckHistory(
-      {required this.symptomChecked, required this.date, required this.status,});
-
-}
-
-List<SymptomCheckHistory> symptomCheckHistory = [
-  SymptomCheckHistory(
-    symptomChecked: 'Fever, Headache, Nausea',
-    date: '13/06/2024',
-    status: 'AI Resolved',),
-  SymptomCheckHistory(
-    symptomChecked: 'Fever, Headache, Nausea',
-    date: '13/06/2024',
-    status: 'Doctor Resolved',),
-  SymptomCheckHistory(
-    symptomChecked: 'Fever, Headache, Nausea',
-    date: '13/06/2024',
-    status: 'Doctor Resolved',),
-  SymptomCheckHistory(
-    symptomChecked: 'Fever, Headache, Nausea',
-    date: '13/06/2024',
-    status: 'AI Resolved',),
-
-];

@@ -5,18 +5,22 @@ import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/
 class DoctorCasesListViewItem extends StatelessWidget {
   final List<MedicalCase> cases;
   final ValueChanged<MedicalCase> onViewPatientDetails;
+  final bool isScrollable;
 
   const DoctorCasesListViewItem({
     super.key,
     required this.cases,
     required this.onViewPatientDetails,
+    this.isScrollable = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: !isScrollable,
+      physics: isScrollable
+          ? const AlwaysScrollableScrollPhysics()
+          : const NeverScrollableScrollPhysics(),
       itemCount: cases.length,
       itemBuilder: (context, index) {
         final item = cases[index];

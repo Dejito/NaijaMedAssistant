@@ -10,10 +10,6 @@ import '../../../../router/route.dart';
 import '../../ai_chat_service/request_body/escalate_symptoms_req_body.dart';
 import '../../ai_chat_service/response/check_symptoms_response.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-// Form-factor state tracking matching the screenshots
 enum ChatFlowState { initial, accepted, declined }
 
 class AiSymptomClerkFeedbackScreen extends StatefulWidget {
@@ -79,7 +75,13 @@ class _AiSymptomClerkFeedbackScreenState
               );
               return;
             }
-            context.push(AppRoutes.doctorChatBoxPatient, extra: conversationId);
+            context.push(
+              AppRoutes.doctorChatBoxPatient,
+              extra: {
+                'conversationId': conversationId,
+                'isDoctor': false,
+              },
+            );
           }
         },
         builder: (context, state) {

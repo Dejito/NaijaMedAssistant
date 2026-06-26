@@ -7,6 +7,7 @@ import 'package:naija_med_assistant/presentation/doctor/doctor_view/create_presc
 import 'package:naija_med_assistant/presentation/doctor/doctor_view/doctor_cases_screen.dart';
 import 'package:naija_med_assistant/presentation/emergency/emergency_support_screen.dart';
 
+import '../presentation/ai_chat/ai_chat_service/response/fetch_symptoms_history_response.dart';
 import '../presentation/ai_chat/view/symptoms_clerk/ai_symptom_clerk_screen.dart';
 import '../presentation/ai_chat/view/symptoms_clerk/symptoms_input_screen.dart';
 import '../presentation/ai_chat/view/symptoms_clerk/symptoms_input_connect_ai_clerk_screen.dart';
@@ -18,6 +19,7 @@ import '../presentation/ai_chat/ai_chat_service/response/check_symptoms_response
 import '../presentation/auth/auth_views/login/login_screen.dart';
 import '../presentation/auth/auth_views/sign_up/sign_up.dart';
 import '../presentation/auth/auth_views/sign_up/verify_email.dart';
+import '../presentation/dashboard/screens/patient_symptom_check_details.dart';
 import '../presentation/doctor/doctor_service/response/fetch_cases_response.dart';
 import '../presentation/doctor/doctor_view/doctor_case_summary_screen.dart';
 import '../presentation/doctor/doctor_view/previous_documentation_screen.dart';
@@ -37,10 +39,13 @@ class AppRoutes {
   static const String profileSetup = "/profile-setup";
   static const String profileSetupDoctor = "/profile-setup-doctor";
   static const String dashboard = "/dashboard";
+  static const String patientSymptomCheckSummaryScreen =
+      "/patient-symptom-check-summary-screen";
   static const String patientAppPage = "/app-page";
   static const String doctorAppPage = "/doctor-app-page";
   static const String aiSymptomChecker = "/symptom-checker";
-  static const String symptomsInputConnectAiClerkScreen = "/symptoms-input-connect-ai-clerk-screen";
+  static const String symptomsInputConnectAiClerkScreen =
+      "/symptoms-input-connect-ai-clerk-screen";
   static const String aiHealthChatBox = "/chatbox";
   static const String chatWithAi = '/chat-with-ai';
   static const String doctorConnectionScreen = '/doctor-connection-screen';
@@ -50,7 +55,8 @@ class AppRoutes {
   static const String caseSummaryScreen = '/doctor-cases-summary-screen';
   static const String previousDocumentationScreen = '/previous-documentation';
   static const String createPrescriptionScreen = '/create-prescription';
-  static const String aiSymptomClerkFeedbackScreen = '/ai-symptom-clerk-feedback-screen';
+  static const String aiSymptomClerkFeedbackScreen =
+      '/ai-symptom-clerk-feedback-screen';
 }
 
 final GoRouter router = GoRouter(
@@ -60,22 +66,18 @@ final GoRouter router = GoRouter(
       path: AppRoutes.splash,
       builder: (_, __) => const LoginScreen(),
     ),
-
     GoRoute(
       path: AppRoutes.onboarding,
       builder: (_, __) => const OnboardingScreen(),
     ),
-
     GoRoute(
       path: AppRoutes.login,
       builder: (_, __) => const LoginScreen(),
     ),
-
     GoRoute(
       path: AppRoutes.signup,
       builder: (_, __) => const Signup(),
     ),
-
     GoRoute(
       path: AppRoutes.verifyEmail,
       builder: (_, state) {
@@ -95,37 +97,39 @@ final GoRouter router = GoRouter(
         return VerifyEmail(email: email.trim());
       },
     ),
-
     GoRoute(
       path: AppRoutes.profileSetup,
-      builder: (_, __) => PatientProfileSetup(),
+      builder: (_, __) => const PatientProfileSetup(),
     ),
-
     GoRoute(
       path: AppRoutes.profileSetupDoctor,
-      builder: (_, __) => DoctorProfileSetup(),
+      builder: (_, __) => const DoctorProfileSetup(),
     ),
-
     GoRoute(
       path: AppRoutes.dashboard,
       builder: (_, __) => const Dashboard(),
     ),
-
+    GoRoute(
+        path: AppRoutes.patientSymptomCheckSummaryScreen,
+        builder: (_, state) {
+          final extra = state.extra;
+          if (extra is SymptomCheckItem) {
+            return PatientSymptomCheckSummaryScreen(symptomCheckItem: extra);
+          }
+          return const SizedBox.shrink();
+        }),
     GoRoute(
       path: AppRoutes.patientAppPage,
       builder: (_, __) => const ApplicationPage(),
     ),
-
     GoRoute(
       path: AppRoutes.doctorAppPage,
       builder: (_, __) => const DoctorApplicationPage(),
     ),
-
     GoRoute(
       path: AppRoutes.aiSymptomChecker,
       builder: (_, __) => const SymptomsInputScreen(),
     ),
-
     GoRoute(
       path: AppRoutes.symptomsInputConnectAiClerkScreen,
       builder: (_, state) {
@@ -138,7 +142,6 @@ final GoRouter router = GoRouter(
         return SymptomsInputConnectAiClerkScreen(symptoms: symptoms);
       },
     ),
-
     GoRoute(
       path: AppRoutes.aiHealthChatBox,
       builder: (_, state) {
@@ -151,12 +154,10 @@ final GoRouter router = GoRouter(
         return AiSymptomsClerkScreen(symptoms: symptoms);
       },
     ),
-
     GoRoute(
       path: AppRoutes.chatWithAi,
       builder: (_, __) => const ChatWithAiScreen(),
     ),
-
     GoRoute(
       path: AppRoutes.aiSymptomClerkFeedbackScreen,
       builder: (_, state) {
@@ -167,55 +168,64 @@ final GoRouter router = GoRouter(
         return const SizedBox.shrink();
       },
     ),
-
-    
     GoRoute(
       path: AppRoutes.doctorConnectionScreen,
       builder: (_, __) => const DoctorConnectionScreen(),
     ),
-
     GoRoute(
       path: AppRoutes.doctorChatBoxPatient,
       builder: (_, state) {
         final extra = state.extra;
-        final conversationId = extra is String ? extra : null;
+        String? conversationId;
+        var isDoctor = true;
+
+        if (extra is String) {
+          conversationId = extra;
+        } else if (extra is Map<String, dynamic>) {
+          conversationId = extra['conversationId']?.toString();
+          final rawIsDoctor = extra['isDoctor'];
+          if (rawIsDoctor is bool) {
+            isDoctor = rawIsDoctor;
+          }
+        } else if (extra is Map) {
+          conversationId = extra['conversationId']?.toString();
+          final rawIsDoctor = extra['isDoctor'];
+          if (rawIsDoctor is bool) {
+            isDoctor = rawIsDoctor;
+          }
+        }
+
         return DoctorsPatientChatScreen(
-          isDoctor: true,
+          isDoctor: isDoctor,
           conversationId: conversationId,
         );
       },
     ),
-
-  GoRoute(
+    GoRoute(
       path: AppRoutes.emergencyServices,
       builder: (_, __) => const EmergencySupportScreen(),
     ),
-
-  GoRoute(
+    GoRoute(
       path: AppRoutes.doctorCases,
       builder: (_, __) => const DoctorCasesScreen(),
     ),
-
-  GoRoute(
+    GoRoute(
       path: AppRoutes.caseSummaryScreen,
-       builder: (_, state) {
-         final extra = state.extra;
-         if (extra is MedicalCase) {
-           return DoctorCaseSummaryScreen(medicalCase: extra);
-         }
-         return const DoctorCaseSummaryScreen();
-       },
+      builder: (_, state) {
+        final extra = state.extra;
+        if (extra is MedicalCase) {
+          return DoctorCaseSummaryScreen(medicalCase: extra);
+        }
+        return const DoctorCaseSummaryScreen();
+      },
     ),
-
-  GoRoute(
+    GoRoute(
       path: AppRoutes.previousDocumentationScreen,
       builder: (_, __) => const PreviousDocumentationScreen(),
     ),
-  GoRoute(
+    GoRoute(
       path: AppRoutes.createPrescriptionScreen,
       builder: (_, __) => const CreatePrescriptionScreen(),
     ),
-
-
   ],
 );
