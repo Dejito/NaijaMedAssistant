@@ -150,6 +150,12 @@ class ApiService {
     return response;
   }
 
+  static Future<Response> getChatsHistory() async {
+    var response = await HttpUtil()
+        .get(AppUrl.getChats);
+    return response;
+  }
+
 
 
 

@@ -31,6 +31,7 @@ class AppUrl {
 
   ///Chats
   static const getChats = 'chats';
+  static String getChatMessages(String conversationId) => 'chats/$conversationId/messages';
   static const initiateChat = 'chats/initiate';
 
   ///Notifications
