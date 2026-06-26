@@ -6,6 +6,7 @@ import 'package:naija_med_assistant/app_launch.dart';
 import 'package:naija_med_assistant/presentation/auth/auth_viewmodel/auth_cubit.dart';
 import 'package:naija_med_assistant/presentation/auth/auth_views/auth_widgets.dart';
 import 'package:naija_med_assistant/presentation/utils/loading_indicator.dart';
+import 'package:naija_med_assistant/presentation/views/widgets/flutter_toast.dart';
 import 'package:naija_med_assistant/router/route.dart';
 
 import '../../../views/widgets/elevated_bottom_button.dart';
@@ -66,8 +67,10 @@ class _SignupState extends State<Signup> {
               dismissEaseLoadingIndicator();
             } else if (state is SignUpSuccessful) {
               dismissEaseLoadingIndicator();
-              context.push(AppRoutes.verifyEmail,
-                  extra: {'email': _emailController.text.trim()});
+              showToast(message: "Congratulations! Account created successfully");
+              context.pushReplacementNamed(AppRoutes.login);
+              // context.push(AppRoutes.verifyEmail,
+              //     extra: {'email': _emailController.text.trim()});
               // context.go(AppRoutes.verifyEmail,
               //     extra: {'email': _emailController.text.trim()});
               // NavHelper.navToVerifyEmail(email: _emailController.text);
