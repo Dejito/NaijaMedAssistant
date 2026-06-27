@@ -342,200 +342,203 @@ class _PatientProfileSetupState extends State<PatientProfileSetup> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: BlocConsumer<UsersCubit, UsersState>(
-          bloc: getIt<UsersCubit>(),
-          listener: (context, state) async {
-            if (state is UpdatePatientLoading) {
-              showEaseLoadingIndicator();
-            } else if (state is UpdatePatientFailed) {
-              dismissEaseLoadingIndicator();
-              showToast(message: state.error ?? 'Unable to update profile. Please try again.');
-            } else if (state is UpdatePatientSuccessful) {
-              dismissEaseLoadingIndicator();
-              showToast(message: state.message ?? 'Profile updated successfully.');
-              await getIt<UsersCubit>().getPatientProfile();
-              if (!context.mounted) {
-                return;
+      body: PopScope(
+        canPop: false,
+        child: SafeArea(
+          child: BlocConsumer<UsersCubit, UsersState>(
+            bloc: getIt<UsersCubit>(),
+            listener: (context, state) async {
+              if (state is UpdatePatientLoading) {
+                showEaseLoadingIndicator();
+              } else if (state is UpdatePatientFailed) {
+                dismissEaseLoadingIndicator();
+                showToast(message: state.error ?? 'Unable to update profile. Please try again.');
+              } else if (state is UpdatePatientSuccessful) {
+                dismissEaseLoadingIndicator();
+                showToast(message: state.message ?? 'Profile updated successfully.');
+                await getIt<UsersCubit>().getPatientProfile();
+                if (!context.mounted) {
+                  return;
+                }
+                context.pop();
+              } else if (state is GetPatientStateSuccessful) {
+                _hydrateForm(state.user);
+              } else if (state is GetPatientStateFailed && !_hasHydratedForm) {
+                showToast(message: state.error ?? 'Unable to load patient profile.');
               }
-              context.pop();
-            } else if (state is GetPatientStateSuccessful) {
-              _hydrateForm(state.user);
-            } else if (state is GetPatientStateFailed && !_hasHydratedForm) {
-              showToast(message: state.error ?? 'Unable to load patient profile.');
-            }
-          },
-          builder: (context, state) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  profileAvatar(),
-                  Center(
-                    child: titleText(
-                      'Complete your patient profile',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      bottomPadding: 20,
+            },
+            builder: (context, state) {
+              return SingleChildScrollView(
+                padding: EdgeInsets.all(16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    profileAvatar(),
+                    Center(
+                      child: titleText(
+                        'Complete your patient profile',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        bottomPadding: 20,
+                      ),
                     ),
-                  ),
-                  InputText(
-                    title: 'First Name',
-                    controller: _firstNameController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Last Name',
-                    controller: _lastNameController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Email Address',
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    enabled: false,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Phone Number',
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Home Address',
-                    controller: _addressController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Date of Birth',
-                    controller: _dateOfBirthController,
-                    readOnly: true,
-                    onTap: _pickDateOfBirth,
-                    suffixIcon: const Icon(Icons.calendar_today_outlined),
-                    bottomPadding: 16,
-                  ),
-                  _buildDropdownField(
-                    title: 'Gender',
-                    value: _selectedGender,
-                    options: _genderOptions,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedGender = value;
-                        _genderController.text = value ?? '';
-                      });
-                    },
-                  ),
-                  InputText(
-                    title: 'State',
-                    controller: _stateController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'LGA',
-                    controller: _lgaController,
-                    bottomPadding: 16,
-                  ),
-                  _buildDropdownField(
-                    title: 'Blood Group',
-                    value: _selectedBloodGroup,
-                    options: _bloodGroupOptions,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedBloodGroup = value;
-                        _bloodGroupController.text = value ?? '';
-                      });
-                    },
-                  ),
-                  _buildDropdownField(
-                    title: 'Genotype',
-                    value: _selectedGenotype,
-                    options: _genotypeOptions,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedGenotype = value;
-                        _genotypeController.text = value ?? '';
-                      });
-                    },
-                  ),
-                  InputText(
-                    title: 'Height (m)',
-                    controller: _heightController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Weight (kg)',
-                    controller: _weightController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Allergies',
-                    controller: _allergiesController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Chronic Conditions',
-                    controller: _chronicConditionsController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Current Medications',
-                    controller: _medicationsController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Emergency Contact Name',
-                    controller: _emergencyContactNameController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Emergency Contact Phone',
-                    controller: _emergencyContactPhoneController,
-                    keyboardType: TextInputType.phone,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Emergency Contact Relationship',
-                    controller: _emergencyContactRelationshipController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Next of Kin Name',
-                    controller: _nextOfKinNameController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Next of Kin Phone',
-                    controller: _nextOfKinPhoneController,
-                    keyboardType: TextInputType.phone,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Next of Kin Relationship',
-                    controller: _nextOfKinRelationshipController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'BMI',
-                    controller: _bmiController,
-                    readOnly: true,
-                    enabled: false,
-                    bottomPadding: 0,
-                  ),
-                  MedBottomButton(
-                    text: 'Save',
-                    isLoading: state is UpdatePatientLoading,
-                    onPressed: _submitProfile,
-                    topMargin: 30,
-                    bottomMargin: 12,
-                  ),
-                ],
-              ),
-            );
-          },
+                    InputText(
+                      title: 'First Name',
+                      controller: _firstNameController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Last Name',
+                      controller: _lastNameController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Email Address',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      enabled: false,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Phone Number',
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Home Address',
+                      controller: _addressController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Date of Birth',
+                      controller: _dateOfBirthController,
+                      readOnly: true,
+                      onTap: _pickDateOfBirth,
+                      suffixIcon: const Icon(Icons.calendar_today_outlined),
+                      bottomPadding: 16,
+                    ),
+                    _buildDropdownField(
+                      title: 'Gender',
+                      value: _selectedGender,
+                      options: _genderOptions,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedGender = value;
+                          _genderController.text = value ?? '';
+                        });
+                      },
+                    ),
+                    InputText(
+                      title: 'State',
+                      controller: _stateController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'LGA',
+                      controller: _lgaController,
+                      bottomPadding: 16,
+                    ),
+                    _buildDropdownField(
+                      title: 'Blood Group',
+                      value: _selectedBloodGroup,
+                      options: _bloodGroupOptions,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedBloodGroup = value;
+                          _bloodGroupController.text = value ?? '';
+                        });
+                      },
+                    ),
+                    _buildDropdownField(
+                      title: 'Genotype',
+                      value: _selectedGenotype,
+                      options: _genotypeOptions,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedGenotype = value;
+                          _genotypeController.text = value ?? '';
+                        });
+                      },
+                    ),
+                    InputText(
+                      title: 'Height (m)',
+                      controller: _heightController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Weight (kg)',
+                      controller: _weightController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Allergies',
+                      controller: _allergiesController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Chronic Conditions',
+                      controller: _chronicConditionsController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Current Medications',
+                      controller: _medicationsController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Emergency Contact Name',
+                      controller: _emergencyContactNameController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Emergency Contact Phone',
+                      controller: _emergencyContactPhoneController,
+                      keyboardType: TextInputType.phone,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Emergency Contact Relationship',
+                      controller: _emergencyContactRelationshipController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Next of Kin Name',
+                      controller: _nextOfKinNameController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Next of Kin Phone',
+                      controller: _nextOfKinPhoneController,
+                      keyboardType: TextInputType.phone,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Next of Kin Relationship',
+                      controller: _nextOfKinRelationshipController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'BMI',
+                      controller: _bmiController,
+                      readOnly: true,
+                      enabled: false,
+                      bottomPadding: 0,
+                    ),
+                    MedBottomButton(
+                      text: 'Save',
+                      isLoading: state is UpdatePatientLoading,
+                      onPressed: _submitProfile,
+                      topMargin: 30,
+                      bottomMargin: 12,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

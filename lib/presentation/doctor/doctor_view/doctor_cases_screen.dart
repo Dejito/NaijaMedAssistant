@@ -105,68 +105,71 @@ class _DoctorCasesScreenState extends State<DoctorCasesScreen> {
         ),
       ),
       // Wrapped entire content stack tree inside a bounded layout safety net
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // --- Sort Configuration Functional Header Block ---
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  PopupMenuButton<String>(
-                    onSelected: _onSortOptionSelected,
-                    padding: EdgeInsets.zero,
-                    color: Colors.white,
-                    surfaceTintColor: Colors.white,
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                      side: BorderSide(color: Colors.grey.shade200),
-                    ),
-                    offset: Offset(0, 30.h),
-                    itemBuilder: (BuildContext context) => [
-                      _buildPopupOption("Most Urgent"),
-                      _buildPopupOption("Most Recent"),
-                    ],
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "Sort By",
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: const Color(0xFF4D2CFA),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(width: 4.w),
-                        Icon(
-                          Icons.arrow_drop_down,
-                          color: const Color(0xFF4D2CFA),
-                          size: 20.w,
-                        ),
+      body: PopScope(
+        canPop: false,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // --- Sort Configuration Functional Header Block ---
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    PopupMenuButton<String>(
+                      onSelected: _onSortOptionSelected,
+                      padding: EdgeInsets.zero,
+                      color: Colors.white,
+                      surfaceTintColor: Colors.white,
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                        side: BorderSide(color: Colors.grey.shade200),
+                      ),
+                      offset: Offset(0, 30.h),
+                      itemBuilder: (BuildContext context) => [
+                        _buildPopupOption("Most Urgent"),
+                        _buildPopupOption("Most Recent"),
                       ],
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Sort By",
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: const Color(0xFF4D2CFA),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 4.w),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: const Color(0xFF4D2CFA),
+                            size: 20.w,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            Expanded(
-              child: DoctorCasesListViewItem(
-                cases: _displayedCases,
-                isScrollable: true,
-                onViewPatientDetails: (selectedCase) {
-                  context.push(
-                    AppRoutes.caseSummaryScreen,
-                    extra: selectedCase,
-                  );
-                },
+              Expanded(
+                child: DoctorCasesListViewItem(
+                  cases: _displayedCases,
+                  isScrollable: true,
+                  onViewPatientDetails: (selectedCase) {
+                    context.push(
+                      AppRoutes.caseSummaryScreen,
+                      extra: selectedCase,
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

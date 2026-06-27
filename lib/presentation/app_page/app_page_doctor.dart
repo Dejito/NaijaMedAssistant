@@ -6,6 +6,7 @@ import '../ai_chat/view/patient_doctor_history_screen.dart';
 import '../dashboard/screens/dashboard.dart';
 import '../doctor/doctor_view/doctor_cases_screen.dart';
 import '../doctor/doctor_view/doctor_dashboard.dart';
+import '../user/users_view/profile_setup_doctor.dart';
 import '../views/profile/profile.dart';
 
 class DoctorApplicationPage extends StatefulWidget {
@@ -22,7 +23,7 @@ class _DoctorApplicationPageState extends State<DoctorApplicationPage> {
     const DoctorDashboard(),
     const DoctorCasesScreen(),
     const ChatWithAiScreen(),
-    const Profile(),
+    const DoctorProfileSetup(),
   ];
 
   var selectedIndex = 0;

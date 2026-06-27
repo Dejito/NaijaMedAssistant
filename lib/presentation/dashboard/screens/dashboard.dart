@@ -130,28 +130,31 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       drawer: const MainDrawer(),
-      body: Padding(
-        padding: EdgeInsets.all(16.0.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            dashboardWelcomeBar(userResponse.patient?.user?.firstName ?? ""),
-            quickActionsCardSlider(
-              context: context,
-              controller: _pageController,
-              index: swipeIndex.toDouble(),
-              onSwipe: (value) {
-                setState(() {
-                  swipeIndex = value;
-                });
-              },
-            ),
-            viewMoreSymptoms((){
+      body: PopScope(
+        canPop: false,
+        child: Padding(
+          padding: EdgeInsets.all(16.0.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              dashboardWelcomeBar(userResponse.patient?.user?.firstName ?? ""),
+              quickActionsCardSlider(
+                context: context,
+                controller: _pageController,
+                index: swipeIndex.toDouble(),
+                onSwipe: (value) {
+                  setState(() {
+                    swipeIndex = value;
+                  });
+                },
+              ),
+              viewMoreSymptoms((){
 
-            }),
-            const Expanded(child: SymptomCheckListview(),)
+              }),
+              const Expanded(child: SymptomCheckListview(),)
 
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: SizedBox(

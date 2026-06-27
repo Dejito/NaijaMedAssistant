@@ -272,165 +272,164 @@ class _DoctorProfileSetupState extends State<DoctorProfileSetup> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: BlocConsumer<UsersCubit, UsersState>(
-          bloc: getIt<UsersCubit>(),
-          listener: (context, state) async {
-            if (state is UpdateDoctorLoading) {
-              showEaseLoadingIndicator();
-            } else if (state is UpdateDoctorFailed) {
-              dismissEaseLoadingIndicator();
-              showToast(message: state.error ?? 'Unable to update profile. Please try again.');
-            } else if (state is UpdateDoctorSuccessful) {
-              dismissEaseLoadingIndicator();
-              showToast(message: state.message ?? 'Profile updated successfully.');
-              await getIt<UsersCubit>().getDoctorProfile();
-              if (!context.mounted) {
-                return;
+      body: PopScope(
+        canPop: false,
+        child: SafeArea(
+          child: BlocConsumer<UsersCubit, UsersState>(
+            bloc: getIt<UsersCubit>(),
+            listener: (context, state) async {
+              if (state is UpdateDoctorLoading) {
+                showEaseLoadingIndicator();
+              } else if (state is UpdateDoctorFailed) {
+                dismissEaseLoadingIndicator();
+                showToast(message: state.error ?? 'Unable to update profile. Please try again.');
+              } else if (state is UpdateDoctorSuccessful) {
+                dismissEaseLoadingIndicator();
+                showToast(message: state.message ?? 'Profile updated successfully.');
+                await getIt<UsersCubit>().getDoctorProfile();
+              } else if (state is GetDoctorStateSuccessful) {
+                _hydrateForm(state.user);
+              } else if (state is GetDoctorStateFailed && !_hasHydratedForm) {
+                showToast(message: state.error ?? 'Unable to load doctor profile.');
               }
-              context.pop();
-            } else if (state is GetDoctorStateSuccessful) {
-              _hydrateForm(state.user);
-            } else if (state is GetDoctorStateFailed && !_hasHydratedForm) {
-              showToast(message: state.error ?? 'Unable to load doctor profile.');
-            }
-          },
-          builder: (context, state) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  profileAvatar(),
-                  Center(
-                    child: titleText(
-                      'Complete your doctor profile',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      bottomPadding: 20,
+            },
+            builder: (context, state) {
+              return SingleChildScrollView(
+                padding: EdgeInsets.all(16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    profileAvatar(),
+                    Center(
+                      child: titleText(
+                        'Complete your doctor profile',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        bottomPadding: 20,
+                      ),
                     ),
-                  ),
-                  InputText(
-                    title: 'First Name',
-                    controller: _firstNameController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Last Name',
-                    controller: _lastNameController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Email Address',
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    enabled: false,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Phone Number',
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Date of Birth',
-                    controller: _dateOfBirthController,
-                    readOnly: true,
-                    onTap: () => _pickDate(
-                      _dateOfBirthController,
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime.now(),
+                    InputText(
+                      title: 'First Name',
+                      controller: _firstNameController,
+                      bottomPadding: 16,
                     ),
-                    suffixIcon: const Icon(Icons.calendar_today_outlined),
-                    bottomPadding: 16,
-                  ),
-                  _buildDropdownField(
-                    title: 'Gender',
-                    value: _selectedGender,
-                    options: _genderOptions,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedGender = value;
-                        _genderController.text = value ?? '';
-                      });
-                    },
-                  ),
-                  InputText(
-                    title: 'Nationality',
-                    controller: _nationalityController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Profile Image URL',
-                    controller: _profileUrlController,
-                    keyboardType: TextInputType.url,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Age',
-                    controller: _ageController,
-                    keyboardType: TextInputType.number,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Specialization',
-                    controller: _specializationController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Medical Rank',
-                    controller: _medicalRankController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Years of Experience',
-                    controller: _experienceYearsController,
-                    keyboardType: TextInputType.number,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'License Number',
-                    controller: _licenseNumberController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'License Expiry Date',
-                    controller: _licenseExpiryDateController,
-                    readOnly: true,
-                    onTap: () => _pickDate(
-                      _licenseExpiryDateController,
-                      firstDate: DateTime(2000),
+                    InputText(
+                      title: 'Last Name',
+                      controller: _lastNameController,
+                      bottomPadding: 16,
                     ),
-                    suffixIcon: const Icon(Icons.calendar_today_outlined),
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Hospital Affiliation',
-                    controller: _hospitalAffiliationController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'Address',
-                    controller: _addressController,
-                    bottomPadding: 16,
-                  ),
-                  InputText(
-                    title: 'State',
-                    controller: _stateController,
-                    bottomPadding: 0,
-                  ),
-                  MedBottomButton(
-                    text: 'Save',
-                    isLoading: state is UpdateDoctorLoading,
-                    onPressed: _submitProfile,
-                    topMargin: 30,
-                    bottomMargin: 12,
-                  ),
-                ],
-              ),
-            );
-          },
+                    InputText(
+                      title: 'Email Address',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      enabled: false,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Phone Number',
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Date of Birth',
+                      controller: _dateOfBirthController,
+                      readOnly: true,
+                      onTap: () => _pickDate(
+                        _dateOfBirthController,
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                      ),
+                      suffixIcon: const Icon(Icons.calendar_today_outlined),
+                      bottomPadding: 16,
+                    ),
+                    _buildDropdownField(
+                      title: 'Gender',
+                      value: _selectedGender,
+                      options: _genderOptions,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedGender = value;
+                          _genderController.text = value ?? '';
+                        });
+                      },
+                    ),
+                    InputText(
+                      title: 'Nationality',
+                      controller: _nationalityController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Profile Image URL',
+                      controller: _profileUrlController,
+                      keyboardType: TextInputType.url,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Age',
+                      controller: _ageController,
+                      keyboardType: TextInputType.number,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Specialization',
+                      controller: _specializationController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Medical Rank',
+                      controller: _medicalRankController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Years of Experience',
+                      controller: _experienceYearsController,
+                      keyboardType: TextInputType.number,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'License Number',
+                      controller: _licenseNumberController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'License Expiry Date',
+                      controller: _licenseExpiryDateController,
+                      readOnly: true,
+                      onTap: () => _pickDate(
+                        _licenseExpiryDateController,
+                        firstDate: DateTime(2000),
+                      ),
+                      suffixIcon: const Icon(Icons.calendar_today_outlined),
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Hospital Affiliation',
+                      controller: _hospitalAffiliationController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'Address',
+                      controller: _addressController,
+                      bottomPadding: 16,
+                    ),
+                    InputText(
+                      title: 'State',
+                      controller: _stateController,
+                      bottomPadding: 0,
+                    ),
+                    MedBottomButton(
+                      text: 'Save',
+                      isLoading: state is UpdateDoctorLoading,
+                      onPressed: _submitProfile,
+                      topMargin: 30,
+                      bottomMargin: 12,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
