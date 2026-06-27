@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_viewmodel/ai_chat_cubit.dart';
+import 'package:naija_med_assistant/presentation/auth/auth_viewmodel/auth_cubit.dart';
 
 import '../../../app_launch.dart';
 import '../../../router/route.dart';
@@ -221,7 +223,9 @@ class DoctorCaseSummaryScreen extends StatelessWidget {
                             _onStartChatPressed(context, caseItem);
                           }),
                           _buildActionButton("SCHEDULE FOR LATER", const Color(0xFF4D2CFA), () {}),
-                          _buildActionButton("FLAG TO ANOTHER DOCTOR", const Color(0xFF4D2CFA), () {}),
+                          _buildActionButton("FLAG TO ANOTHER DOCTOR", const Color(0xFF4D2CFA), () {
+                            getIt<DoctorCubit>().declineCase(caseItem.caseId ?? '');
+                          }),
                           SizedBox(height: 8.h),
                           _buildActionButton("VIEW PREVIOUS DOCUMENTATION", const Color(0xFF1E7E34), () {
                             context.push(AppRoutes.previousDocumentationScreen);

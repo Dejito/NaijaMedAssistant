@@ -141,134 +141,137 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           child: Container(color: Colors.grey.shade200, height: 1.h),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // --- 1. Doctor Profile Greeting Banner Row ---
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 22.r,
-                  // border: Border.all(color: Colors.black54, width: 1),
-                  backgroundImage: const AssetImage(AppImages.userImage),
-                ),
-                SizedBox(width: 12.w),
-                Text(
-                  "Welcome Dr. ${user.doctor?.user?.firstName ?? ""}",
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(width: 6.w),
-                const Icon(Icons.check_circle, color: Colors.green, size: 18),
-              ],
-            ),
-            SizedBox(height: 16.h),
-
-            // --- 2. Interactive Availability Panel Card ---
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(14.w),
-              decoration: BoxDecoration(
-                color: const Color(0xFFD6E4FF), // Soft lavender blue variant framework color
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: PopScope(
+        canPop: false,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // --- 1. Doctor Profile Greeting Banner Row ---
+              Row(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "You've attended to 5 Patient Today",
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const Icon(Icons.notifications_none, color: Colors.black87),
-                    ],
+                  CircleAvatar(
+                    radius: 22.r,
+                    // border: Border.all(color: Colors.black54, width: 1),
+                    backgroundImage: const AssetImage(AppImages.userImage),
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(width: 12.w),
                   Text(
-                    "3 were Critical and 2 were Mild.",
-                    style: TextStyle(fontSize: 11.sp, color: Colors.black54),
-                  ),
-                  SizedBox(height: 10.h),
-
-                  // Open daily log feature navigation trigger button
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4D2CFA),
-                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.r)),
-                      elevation: 0,
-                    ),
-                    child: Text(
-                      "OPEN DAILY CASE LOG",
-                      style: TextStyle(fontSize: 10.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                    "Welcome Dr. ${user.doctor?.user?.firstName ?? ""}",
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 12.h),
-
-                  Text(
-                    "Kindly Confirm Your Availability:",
-                    style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.black),
-                  ),
-                  SizedBox(height: 8.h),
-
-                  // Horizontal quick configuration actions rule matrix
-                  Row(
-                    children: [
-                      _buildStatusActionButton("AVAILABLE NOW", const Color(0xFF1E7E34)),
-                      SizedBox(width: 6.w),
-                      _buildStatusActionButton("SCHEDULE ME FOR LATER", const Color(0xFF4D2CFA)),
-                      SizedBox(width: 6.w),
-                      _buildStatusActionButton("NOT AVAILABLE", const Color(0xFF4D2CFA)),
-                    ],
-                  )
+                  SizedBox(width: 6.w),
+                  const Icon(Icons.check_circle, color: Colors.green, size: 18),
                 ],
               ),
-            ),
-            SizedBox(height: 20.h),
+              SizedBox(height: 16.h),
 
-            // --- 3. Queue List Section Header Navigation Link ---
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Cases that requires your attention",
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Colors.black),
+              // --- 2. Interactive Availability Panel Card ---
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(14.w),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD6E4FF), // Soft lavender blue variant framework color
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-                InkWell(
-                  onTap: (){
-                    context.push(AppRoutes.doctorCases);
-                  },
-                  child: Text(
-                    "View more",
-                    style: TextStyle(fontSize: 11.sp, color: const Color(0xFF4D2CFA), fontWeight: FontWeight.w600),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "You've attended to 5 Patient Today",
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const Icon(Icons.notifications_none, color: Colors.black87),
+                      ],
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      "3 were Critical and 2 were Mild.",
+                      style: TextStyle(fontSize: 11.sp, color: Colors.black54),
+                    ),
+                    SizedBox(height: 10.h),
+
+                    // Open daily log feature navigation trigger button
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4D2CFA),
+                        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.r)),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        "OPEN DAILY CASE LOG",
+                        style: TextStyle(fontSize: 10.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+
+                    Text(
+                      "Kindly Confirm Your Availability:",
+                      style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    SizedBox(height: 8.h),
+
+                    // Horizontal quick configuration actions rule matrix
+                    Row(
+                      children: [
+                        _buildStatusActionButton("AVAILABLE NOW", const Color(0xFF1E7E34)),
+                        SizedBox(width: 6.w),
+                        _buildStatusActionButton("SCHEDULE ME FOR LATER", const Color(0xFF4D2CFA)),
+                        SizedBox(width: 6.w),
+                        _buildStatusActionButton("NOT AVAILABLE", const Color(0xFF4D2CFA)),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: 20.h),
+
+              // --- 3. Queue List Section Header Navigation Link ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Cases that requires your attention",
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.h),
+                  InkWell(
+                    onTap: (){
+                      context.push(AppRoutes.doctorCases);
+                    },
+                    child: Text(
+                      "View more",
+                      style: TextStyle(fontSize: 11.sp, color: const Color(0xFF4D2CFA), fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.h),
 
-            DoctorCasesListViewItem(
-              cases: _cases,
-              onViewPatientDetails: (selectedCase) {
-                context.push(
-                  AppRoutes.caseSummaryScreen,
-                  extra: selectedCase,
-                );
-              },
-            ),
-          ],
+              DoctorCasesListViewItem(
+                cases: _cases,
+                onViewPatientDetails: (selectedCase) {
+                  context.push(
+                    AppRoutes.caseSummaryScreen,
+                    extra: selectedCase,
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

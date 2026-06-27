@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:naija_med_assistant/presentation/user/users_view/profile_setup_patient.dart';
 import 'package:naija_med_assistant/presentation/views/profile/profile.dart';
 import '../ai_chat/view/patient_doctor_history_screen.dart';
 import '../dashboard/screens/dashboard.dart';
@@ -18,7 +19,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final List<Widget> _pages = [
     const Dashboard(),
     const PatientHistoryScreen(),
-    const Profile(),
+    const PatientProfileSetup(),
   ];
 
   var selectedIndex = 0;

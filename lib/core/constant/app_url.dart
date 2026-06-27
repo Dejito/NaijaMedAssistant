@@ -41,7 +41,7 @@ class AppUrl {
   static String getPatient = 'users/profile';
   static String getDoctor = 'users/profile';
   static String updatePatient = 'users/patients/profile';
-  static String updateDoctor = 'users/doctor/profile';
+  static String updateDoctor = 'users/doctors/profile';
 
 
 
