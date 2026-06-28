@@ -19,6 +19,7 @@ import '../presentation/ai_chat/ai_chat_service/response/check_symptoms_response
 import '../presentation/auth/auth_views/login/login_screen.dart';
 import '../presentation/auth/auth_views/sign_up/sign_up.dart';
 import '../presentation/auth/auth_views/sign_up/verify_email.dart';
+import '../presentation/dashboard/screens/patient_history_tab_view.dart';
 import '../presentation/dashboard/screens/patient_symptom_check_details_screen.dart';
 import '../presentation/doctor/doctor_service/response/fetch_cases_response.dart';
 import '../presentation/doctor/doctor_view/doctor_case_summary_screen.dart';
@@ -57,6 +58,8 @@ class AppRoutes {
   static const String createPrescriptionScreen = '/create-prescription';
   static const String aiSymptomClerkFeedbackScreen =
       '/ai-symptom-clerk-feedback-screen';
+  static const String patientHistoryTabView =
+      '/patient-history-tab-view';
 }
 
 final GoRouter router = GoRouter(
@@ -239,6 +242,10 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutes.createPrescriptionScreen,
       builder: (_, __) => const CreatePrescriptionScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.patientHistoryTabView,
+      builder: (_, __) => const PatientHistoryTabView(),
     ),
   ],
 );

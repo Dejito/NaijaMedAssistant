@@ -149,7 +149,7 @@ class _DashboardState extends State<Dashboard> {
                 },
               ),
               viewMoreSymptoms((){
-
+                context.push(AppRoutes.patientHistoryTabView);
               }),
               const Expanded(child: SymptomCheckListview(),)
 

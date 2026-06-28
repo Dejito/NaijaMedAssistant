@@ -1,18 +1,19 @@
-
 import 'package:flutter/material.dart';
 
 import '../ai_chat/view/chat_with_ai_screen.dart';
-import '../ai_chat/view/patient_doctor_history_screen.dart';
-import '../dashboard/screens/dashboard.dart';
 import '../doctor/doctor_view/doctor_cases_screen.dart';
 import '../doctor/doctor_view/doctor_dashboard.dart';
 import '../user/users_view/profile_setup_doctor.dart';
-import '../views/profile/profile.dart';
 
 class DoctorApplicationPage extends StatefulWidget {
   static const route = "/app-page";
 
-  const DoctorApplicationPage({super.key});
+  final bool preventPopFromBottomNav;
+
+  const DoctorApplicationPage({
+    super.key,
+    this.preventPopFromBottomNav = true,
+  });
 
   @override
   State<DoctorApplicationPage> createState() => _DoctorApplicationPageState();
@@ -36,7 +37,7 @@ class _DoctorApplicationPageState extends State<DoctorApplicationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final scaffold = Scaffold(
       body: _pages[selectedIndex],
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
@@ -95,6 +96,24 @@ class _DoctorApplicationPageState extends State<DoctorApplicationPage> {
             ),
           ],        ),
       ),
+    );
+
+    if (!widget.preventPopFromBottomNav) {
+      return scaffold;
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        // Keep tab hosts from popping; move users to Home first.
+        if (selectedIndex != 0) {
+          setState(() {
+            selectedIndex = 0;
+          });
+        }
+      },
+      child: scaffold,
     );
   }
 }

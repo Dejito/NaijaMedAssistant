@@ -143,70 +143,67 @@ class _ChatWithAiScreenState extends State<ChatWithAiScreen> {
           _scrollToBottom();
         },
         builder: (context, state) {
-          return PopScope(
-            canPop: false,
-            child: Column(
-              children: [
-                // The floating card body container housing the chat window
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(14, 16, 14, 0),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                    ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 16),
+          return Column(
+            children: [
+              // The floating card body container housing the chat window
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(14, 16, 14, 0),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
 
-                        // Top Status Subheader Pill
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black87, width: 1),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Text(
-                            "AI Health Assistant",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 11,
-                              letterSpacing: 0.3,
-                            ),
+                      // Top Status Subheader Pill
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black87, width: 1),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Text(
+                          "AI Health Assistant",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                            letterSpacing: 0.3,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                      ),
+                      const SizedBox(height: 12),
 
-                        // Chat Message Stream
-                        Expanded(
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            itemCount: state.messages.length + (state.isAiTyping ? 1 : 0),
-                            itemBuilder: (context, index) {
-                              if (state.isAiTyping && index == state.messages.length) {
-                                return _buildTypingIndicator();
-                              }
-                              return _buildChatBubble(state.messages[index]);
-                            },
-                          ),
+                      // Chat Message Stream
+                      Expanded(
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          itemCount: state.messages.length + (state.isAiTyping ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (state.isAiTyping && index == state.messages.length) {
+                              return _buildTypingIndicator();
+                            }
+                            return _buildChatBubble(state.messages[index]);
+                          },
                         ),
+                      ),
 
-                        // Fixed Bottom Input Section dock frame
-                        _buildInputDock(),
-                      ],
-                    ),
+                      // Fixed Bottom Input Section dock frame
+                      _buildInputDock(),
+                    ],
                   ),
                 ),
+              ),
 
-                // Outer bottom structural spacing to complement safe areas nicely
-                Container(
-                  color: const Color(0xFF4D2CFA),
-                  height: MediaQuery.of(context).padding.bottom + 8,
-                ),
-              ],
-            ),
+              // Outer bottom structural spacing to complement safe areas nicely
+              Container(
+                color: const Color(0xFF4D2CFA),
+                height: MediaQuery.of(context).padding.bottom + 8,
+              ),
+            ],
           );
         },
       ),
