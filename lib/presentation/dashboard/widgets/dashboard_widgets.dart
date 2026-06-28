@@ -10,6 +10,7 @@ import 'package:naija_med_assistant/presentation/ai_chat/ai_chat_service/respons
 import 'package:naija_med_assistant/router/route.dart';
 
 import '../../../../core/constant/app_assets.dart';
+import '../../views/widgets/flutter_toast.dart';
 import '../../views/widgets/titleText.dart';
 
 Widget dashboardWelcomeBar(String name) {
@@ -131,7 +132,9 @@ Widget quickActionsCardSlider({
               ),
             ),
             InkWell(
-              onTap: () => context.push(AppRoutes.emergencyServices),
+              onTap: () => showToast(message: "Check back later, this feature is under development"),
+
+  // context.push(AppRoutes.emergencyServices),
               child: quickActionsCard(
                   icon: AppIcons.emergency,
                   label: 'Emergency Service',

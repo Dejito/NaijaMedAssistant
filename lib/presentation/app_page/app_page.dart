@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:naija_med_assistant/presentation/user/users_view/profile_setup_patient.dart';
-import 'package:naija_med_assistant/presentation/views/profile/profile.dart';
-import '../ai_chat/view/patient_doctor_history_screen.dart';
 import '../dashboard/screens/dashboard.dart';
 import '../dashboard/screens/patient_history_tab_view.dart';
 
@@ -9,7 +7,12 @@ import '../dashboard/screens/patient_history_tab_view.dart';
 class ApplicationPage extends StatefulWidget {
   static const route = "/app-page";
 
-  const ApplicationPage({super.key});
+  final bool preventPopFromBottomNav;
+
+  const ApplicationPage({
+    super.key,
+    this.preventPopFromBottomNav = true,
+  });
 
   @override
   State<ApplicationPage> createState() => _ApplicationPageState();
@@ -18,7 +21,7 @@ class ApplicationPage extends StatefulWidget {
 class _ApplicationPageState extends State<ApplicationPage> {
   final List<Widget> _pages = [
     const Dashboard(),
-    const PatientHistoryScreen(),
+    const PatientHistoryTabView(),
     const PatientProfileSetup(),
   ];
 
@@ -32,7 +35,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final scaffold = Scaffold(
       body: _pages[selectedIndex],
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
@@ -70,14 +73,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.chat_bubble_outline,
-                // color: selectedIndex == 1 ? const Color(0xFFFFD739) : Colors.white,
               ),
               label: "Chat History",
             ),
             // BottomNavigationBarItem(
             //   icon: SvgPicture.asset(
             //     AppIcons.transaction,
-            //     color: selectedIndex == 2 ? const Color(0xFFFFD739) : Colors.white,
             //   ),
             //   label: "Transactions",
             // ),
@@ -90,6 +91,24 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ],
         ),
       ),
+    );
+
+    if (!widget.preventPopFromBottomNav) {
+      return scaffold;
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        // Keep tab hosts from popping; move users to Home first.
+        if (selectedIndex != 0) {
+          setState(() {
+            selectedIndex = 0;
+          });
+        }
+      },
+      child: scaffold,
     );
   }
 }
