@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_service/req_body/initiate_chat_req_body.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/doctor_case_history_response.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/fetch_cases_response.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_service/response/initiate_chat_response.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_module_states/accept_case_states.dart';
+import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_module_states/fetch_caselogs.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_module_states/fetch_cases_state.dart';
 import 'package:naija_med_assistant/presentation/doctor/doctor_viewmodel/doctor_module_states/initiate_chat_states.dart';
 
@@ -135,6 +137,25 @@ class DoctorCubit extends Cubit<DoctorState> {
     } catch (e) {
       handleError(e,
         onEmit: (msg) => emit(DeclineCaseError(error: msg)),
+      );
+      showToast(message: e.toString());
+    }
+  }
+
+
+  Future<void> fetchCaselog(String  caseId, Map<String, dynamic>? queryParameters,) async {
+    try {
+      emit(FetchCaseLogLoadingState());
+      final response = await ApiService.getCaseLog(queryParameters);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = response.data;
+        final doctorCaselogResponse = DoctorCaselogsResponse.fromJson(responseData);
+        emit(FetchCaseLogSuccessful(doctorCaselogsResponse: doctorCaselogResponse));
+        getIt.registerSingleton<DoctorCaselogsResponse>(doctorCaselogResponse);
+      }
+    } catch (e) {
+      handleError(e,
+        onEmit: (msg) => emit(FetchCaseLogError(error: msg)),
       );
       showToast(message: e.toString());
     }

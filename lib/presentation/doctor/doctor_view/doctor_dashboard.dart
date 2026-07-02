@@ -204,17 +204,20 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                     SizedBox(height: 10.h),
 
                     // Open daily log feature navigation trigger button
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4D2CFA),
-                        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.r)),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        "OPEN DAILY CASE LOG",
-                        style: TextStyle(fontSize: 10.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                    Align(
+                      alignment: Alignment.center,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4D2CFA),
+                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 2.h),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.r)),
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          "OPEN DAILY CASE LOG",
+                          style: TextStyle(fontSize: 10.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                     SizedBox(height: 12.h),
