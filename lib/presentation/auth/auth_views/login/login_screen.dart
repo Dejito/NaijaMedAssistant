@@ -14,7 +14,6 @@ import '../../auth_viewmodel/auth_module_states/login_states.dart';
 import '../auth_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const route = '/login';
 
   const LoginScreen({super.key});
 
@@ -23,9 +22,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   bool isCheckedKeepLoggedIn = false;
-  final TextEditingController _emailController = TextEditingController(text: 'deem@yopmail.com');
-  final TextEditingController _passwordController = TextEditingController(text: 'Secret@123');
+  final TextEditingController _emailController = TextEditingController(text: '');
+  final TextEditingController _passwordController = TextEditingController(text: '');
+  // final TextEditingController _emailController = TextEditingController(text: 'deem@yopmail.com');
+  // final TextEditingController _passwordController = TextEditingController(text: 'Secret@123');
+  //
 
   @override
   void dispose() {

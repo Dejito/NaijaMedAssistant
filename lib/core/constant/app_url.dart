@@ -34,6 +34,12 @@ class AppUrl {
   static String getConversationMessages(String conversationId) => 'chats/$conversationId/messages';
   static const initiateChat = 'chats/initiate';
 
+  ///Doctor
+  static const getCaselog = 'caselog';
+
+
+
+
   ///Notifications
 
 

@@ -163,6 +163,13 @@ class ApiService {
     return response;
   }
 
+  static Future<Response> getCaseLog(Map<String, dynamic>? queryParameters,
+      ) async {
+    var response = await HttpUtil()
+        .get(AppUrl.getCaselog, queryParameters: queryParameters);
+    return response;
+  }
+
 
 
 

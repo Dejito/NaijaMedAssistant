@@ -140,6 +140,8 @@ class DoctorCubit extends Cubit<DoctorState> {
     }
   }
 
+
+
   Future<void> initiateChat(InitiateChatReqBody initiateChatReqBody) async {
     try {
       emit(InitiateChatLoading(message: ""));
